@@ -1,0 +1,44 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.button {
+  padding: 13px 20px;
+  min-height: 44px;
+  border: 1px solid transparent;
+  border-radius: $radius-control;
+  font-size: 13px;
+  font-weight: 700;
+  transition:
+    background 0.15s,
+    transform 0.15s,
+    box-shadow 0.15s;
+}
+.button--primary {
+  border-color: $color-text;
+  box-shadow: $shadow-offset;
+  background: $color-highlight;
+  color: $color-text;
+}
+.button--primary:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 $color-text;
+  background: $color-highlight-hover;
+}
+.button--secondary {
+  border-color: $color-border;
+  background: transparent;
+  color: $color-book-text;
+}
+.button--ghost {
+  background: transparent;
+  color: $color-accent;
+}
+.button--secondary:hover,
+.button--ghost:hover {
+  background: $color-soft;
+}
+
+.button--primary:active {
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 0 $color-text;
+}

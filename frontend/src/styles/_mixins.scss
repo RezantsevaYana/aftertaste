@@ -1,0 +1,74 @@
+@use 'sass:map';
+@use './variables' as *;
+
+// Верхняя граница включительна: respond-below('tablet') → max-width: 768px.
+@mixin respond-below($name) {
+  $width: map.get($breakpoints, $name);
+  @if $width == null {
+    @error 'Неизвестный брейкпоинт: #{$name}';
+  }
+  @media (max-width: $width) {
+    @content;
+  }
+}
+
+// Нижняя граница исключительна, чтобы диапазоны не пересекались.
+@mixin respond-above($name) {
+  $width: map.get($breakpoints, $name);
+  @if $width == null {
+    @error 'Неизвестный брейкпоинт: #{$name}';
+  }
+  @media (width > $width) {
+    @content;
+  }
+}
+
+@mixin field {
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    width: 100%;
+    font-size: 13px;
+  }
+  .field__label {
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100%;
+    border: 1px solid $color-border;
+    border-radius: $radius-control;
+    padding: 12px;
+    background: $color-input-background;
+    color: $color-book-text;
+    min-height: 44px;
+  }
+  .field textarea {
+    resize: vertical;
+    line-height: 1.7;
+  }
+  .field input::placeholder,
+  .field textarea::placeholder {
+    color: $color-subtle;
+  }
+}
+
+@mixin modal-actions {
+  .modal__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 20px;
+    margin-top: 6px;
+    border-top: 1px solid $color-border;
+  }
+  @include respond-below('tablet') {
+    .modal__actions :deep(.button) {
+      padding: 12px;
+      font-size: 12px;
+    }
+  }
+}

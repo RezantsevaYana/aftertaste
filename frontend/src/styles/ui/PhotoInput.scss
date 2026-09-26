@@ -1,0 +1,44 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+@include field;
+.photo-upload {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px dashed $color-border;
+  border-radius: 7px;
+  padding: 12px;
+}
+.photo-upload img {
+  width: 55px;
+  height: 65px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+.photo-upload__label {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+  padding: 6px;
+  color: $color-accent;
+  cursor: pointer;
+  font-size: 12px;
+}
+.photo-upload__label input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.photo-upload__label:focus-within {
+  outline: 2px solid $color-focus;
+  border-radius: 4px;
+}
+@include respond-below('tablet') {
+  .photo-upload :deep(.button) {
+    padding: 10px;
+  }
+}

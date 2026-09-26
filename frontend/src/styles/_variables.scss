@@ -1,0 +1,44 @@
+// Цвета интерфейса: меняй тему здесь.
+$color-white: #ffffff;
+$color-text: #24291e;
+$color-background: $color-white;
+$color-accent: #626d47;
+$color-accent-hover: #505d36;
+$color-highlight: #ffe13b;
+$color-highlight-hover: #f2cf16;
+$color-border: #d9ddcf;
+$color-focus: #90a16f;
+$color-surface: $color-white;
+$color-input-background: $color-white;
+$color-modal-background: $color-white;
+$color-muted: #7b8171;
+$color-subtle: #68705b;
+$color-soft: #e9ecdf;
+$color-accent-soft: #e7ebdb;
+$color-danger: #a04f40;
+$color-danger-soft: #f3e4db;
+$color-danger-icon: #a66b4c;
+$color-book-text: #596848;
+$color-cover-background: $color-accent;
+$color-cover-text: $color-white;
+$color-score-background: $color-highlight;
+$color-card-shadow: #292b250c;
+$color-modal-shadow: #20261626;
+$color-backdrop: #242b2259;
+
+$shadow-offset: 4px 4px 0 $color-text;
+$shadow-card: $shadow-offset;
+$shadow-modal: 8px 8px 0 $color-text;
+$radius-control: 2px;
+$radius-panel: 2px;
+
+$font-body: 'Onest', Arial, sans-serif;
+$font-display: 'Literata', Georgia, serif;
+
+$breakpoints: (
+  'wide': 1920px,
+  'desktop': 1440px,
+  'laptop': 1024px,
+  'tablet': 768px,
+  'mobile': 480px,
+);
