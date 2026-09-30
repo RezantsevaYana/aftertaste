@@ -42,10 +42,10 @@
 }
 .rating-option.is-selected {
   background: $color-highlight;
-  color: $color-text;
-  border-color: $color-text;
-  font-weight: 800;
-  box-shadow: 2px 2px 0 $color-text;
+  color: $color-background;
+  border-color: $color-accent;
+  font-weight: 600;
+  box-shadow: none;
 }
 @include respond-below('tablet') {
   .rating-options {

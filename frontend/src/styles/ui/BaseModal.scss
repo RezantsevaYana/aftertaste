@@ -2,11 +2,11 @@
 @use '@/styles/mixins' as *;
 
 .modal {
-  border: 2px solid $color-text;
+  border: 1px solid $color-border;
   border-radius: $radius-panel;
   background: $color-modal-background;
   color: $color-text;
-  padding: 30px;
+  padding: 34px;
   width: min(540px, calc(100% - 32px));
   max-height: calc(100dvh - 48px);
   box-shadow: $shadow-modal;
@@ -27,20 +27,9 @@
   margin-bottom: 10px;
 }
 .modal h2 {
-  font: 800 28px/1.2 $font-body;
+  font: 400 28px/1.25 $font-display;
   margin: 0;
   overflow-wrap: anywhere;
-}
-.close-button {
-  width: 30px;
-  height: 30px;
-  flex-shrink: 0;
-  border: 0;
-  border-radius: $radius-panel;
-  font-size: 23px;
-  line-height: 1;
-  color: $color-muted;
-  background: $color-soft;
 }
 @include respond-below('tablet') {
   .modal {

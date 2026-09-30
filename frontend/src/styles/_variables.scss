@@ -1,39 +1,51 @@
 // Цвета интерфейса: меняй тему здесь.
 $color-white: #ffffff;
-$color-text: #24291e;
-$color-background: $color-white;
-$color-accent: #626d47;
-$color-accent-hover: #505d36;
-$color-highlight: #ffe13b;
-$color-highlight-hover: #f2cf16;
-$color-border: #d9ddcf;
-$color-focus: #90a16f;
-$color-surface: $color-white;
+$color-text: #28282b;
+$color-background: #faf9f6;
+$color-accent: #7d2826;
+$color-accent-hover: #65201f;
+$color-highlight: #7d2826;
+$color-highlight-hover: #65201f;
+$color-border: #dedfdd;
+$color-focus: #7d2826;
+$color-surface: $color-background;
 $color-input-background: $color-white;
 $color-modal-background: $color-white;
-$color-muted: #7b8171;
-$color-subtle: #68705b;
-$color-soft: #e9ecdf;
-$color-accent-soft: #e7ebdb;
+$color-muted: #6b6b70;
+$color-subtle: #6b6b70;
+$color-soft: #f0f1eb;
+$color-accent-soft: #f5eaea;
 $color-danger: #a04f40;
 $color-danger-soft: #f3e4db;
 $color-danger-icon: #a66b4c;
-$color-book-text: #596848;
-$color-cover-background: $color-accent;
-$color-cover-text: $color-white;
+$color-book-text: $color-text;
+$color-olive: #898861;
+$color-forest: #343723;
+$color-cover-olive: #a0a37b;
+$color-cover-cream: #f2eedf;
+$color-cover-wine-light: #99514e;
+$color-cover-background: $color-forest;
+$color-cover-text: $color-background;
 $color-score-background: $color-highlight;
-$color-card-shadow: #292b250c;
-$color-modal-shadow: #20261626;
-$color-backdrop: #242b2259;
+$color-card-shadow: #2020240c;
+$color-modal-shadow: #20202426;
+$color-vinyl: #202023;
+$color-vinyl-groove: #ffffff12;
+$color-vinyl-shine: #505055;
+$color-backdrop: #20202459;
 
-$shadow-offset: 4px 4px 0 $color-text;
-$shadow-card: $shadow-offset;
-$shadow-modal: 8px 8px 0 $color-text;
-$radius-control: 2px;
-$radius-panel: 2px;
+$shadow-offset: 0 4px 14px $color-card-shadow;
+$shadow-card: 0 10px 24px $color-card-shadow;
+$shadow-modal: 0 24px 80px $color-modal-shadow;
+$radius-button: 9px;
+$radius-control: 12px;
+$radius-panel: 20px;
 
 $font-body: 'Onest', Arial, sans-serif;
-$font-display: 'Literata', Georgia, serif;
+$font-display: 'Prata', Georgia, serif;
+
+$container-width: 90%;
+$container-max-width: 1700px;
 
 $breakpoints: (
   'wide': 1920px,

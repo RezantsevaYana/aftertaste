@@ -13,7 +13,7 @@
           accept="image/jpeg,image/png,image/webp"
           aria-label="Добавить фото"
           @change="selectPhoto" /></label
-      ><BaseButton v-if="model" variant="ghost" @click="model = undefined"
+      ><BaseButton v-if="model" variant="secondary" @click="model = undefined"
         >Убрать</BaseButton
       >
     </div>

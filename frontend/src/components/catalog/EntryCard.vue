@@ -1,40 +1,30 @@
 <template>
-  <button
-    class="entry-card"
-    :class="`entry-card--${entry.type}`"
-    @click="emit('open', entry)"
-  >
-    <div class="entry-card__art">
-      <img v-if="entry.photo" :src="entry.photo" :alt="entry.title" /><template
-        v-else
-        ><span class="art-orbit art-orbit--one" /><span
-          class="art-orbit art-orbit--two"
-        /><span class="art-caption">{{
-          contentTypes.find((type) => type.value === entry.type)?.singular
-        }}</span
-        ><span class="art-title">{{ entry.title }}</span
-        ><span class="art-symbol">{{
-          contentTypes.find((type) => type.value === entry.type)?.icon
-        }}</span></template
-      ><span class="score">{{ entry.rating }}<span>/10</span></span>
-    </div>
-    <div class="entry-card__body">
+  <button class="entry-card" @click="emit('open', entry)">
+    <img
+      v-if="entry.photo"
+      class="entry-photo"
+      :src="entry.photo"
+      :alt="entry.title"
+    />
+    <EntryCover v-else class="entry-photo" :type="entry.type" />
+    <span class="entry-content">
       <span class="entry-type">{{
         contentTypes.find((type) => type.value === entry.type)?.singular
       }}</span>
-      <h3>{{ entry.title }}</h3>
-      <p>
-        {{
-          entry.review ||
-          'Оценка есть. Рецензию можно дописать позже.'
-        }}
-      </p>
-      <span class="entry-card__link">Открыть запись <span>↗</span></span>
-    </div>
+      <span class="entry-title">{{ entry.title }}</span>
+      <span class="entry-review">{{
+        entry.review || 'Рецензии пока нет.'
+      }}</span>
+    </span>
+    <span class="entry-score" :aria-label="`Оценка ${entry.rating} из 10`"
+      >{{ entry.rating }}<span>/ 10</span></span
+    >
+    <span class="entry-arrow" aria-hidden="true">↗</span>
   </button>
 </template>
 
 <script setup lang="ts">
+import EntryCover from './EntryCover.vue'
 import type { Entry } from '@/types/entry'
 import { contentTypes } from '@/types/entry'
 defineProps<{ entry: Entry }>()

@@ -1,0 +1,147 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.catalog-collage {
+  position: relative;
+  width: 100%;
+  max-width: 390px;
+  height: 370px;
+  isolation: isolate;
+}
+.vinyl-record {
+  position: absolute;
+  width: 285px;
+  aspect-ratio: 1;
+  right: 0;
+  top: 22px;
+  border-radius: 50%;
+  background:
+    repeating-radial-gradient(
+      circle,
+      transparent 0 3px,
+      $color-vinyl-groove 4px,
+      transparent 5px
+    ),
+    conic-gradient(
+      from 30deg,
+      $color-vinyl,
+      $color-vinyl-shine 15%,
+      $color-vinyl 30%,
+      $color-vinyl 60%,
+      $color-vinyl-shine 75%,
+      $color-vinyl 90%
+    );
+  box-shadow: 8px 18px 35px $color-modal-shadow;
+  display: grid;
+  place-items: center;
+}
+.vinyl-label {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: $color-accent;
+  color: $color-background;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  transform: rotate(16deg);
+  font: 400 12px $font-display;
+}
+.vinyl-label i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: $color-background;
+}
+.vinyl-label small {
+  color: inherit;
+  font: 6px $font-body;
+  letter-spacing: 0.05em;
+}
+.record-sleeve {
+  position: absolute;
+  top: 40px;
+  left: 3px;
+  width: 245px;
+  height: 285px;
+  padding: 21px;
+  border-radius: 5px;
+  transform: rotate(-7deg);
+  background: $color-forest;
+  color: $color-background;
+  box-shadow: $shadow-card;
+  overflow: hidden;
+}
+.sleeve-header,
+.sleeve-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 7px;
+  letter-spacing: 0.12em;
+}
+.sleeve-art {
+  height: 127px;
+  position: relative;
+  overflow: hidden;
+  margin: 16px 0 10px;
+}
+.art-disc {
+  position: absolute;
+  width: 125px;
+  height: 125px;
+  border: 1px solid $color-olive;
+  border-radius: 50%;
+  left: 24px;
+  top: 5px;
+  box-shadow:
+    0 0 0 12px $color-forest,
+    0 0 0 13px $color-olive;
+}
+.art-cut {
+  position: absolute;
+  width: 160px;
+  height: 72px;
+  background: $color-olive;
+  border-radius: 100% 100% 0 0;
+  bottom: 0;
+  right: -10px;
+  transform: rotate(-25deg);
+}
+.sleeve-title {
+  font: 400 22px/1.2 $font-display;
+  letter-spacing: -0.04em;
+}
+.sleeve-footer {
+  margin-top: 18px;
+  font-size: 6px;
+  letter-spacing: 0.04em;
+}
+.collection-caption {
+  position: absolute;
+  bottom: 0;
+  left: 12px;
+  font: italic 13px $font-display;
+  color: $color-muted;
+}
+@include respond-below('laptop') {
+  .catalog-collage {
+    height: 320px;
+  }
+  .vinyl-record {
+    width: 235px;
+    top: 20px;
+  }
+  .record-sleeve {
+    width: 205px;
+    height: 255px;
+    padding: 18px;
+  }
+  .sleeve-art {
+    height: 105px;
+  }
+  .sleeve-title {
+    font-size: 19px;
+  }
+}

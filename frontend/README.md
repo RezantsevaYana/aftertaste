@@ -85,6 +85,12 @@ npm run dev
 
 Брейкпоинты: `wide` 1920, `desktop` 1440, `laptop` 1024, `tablet` 768, `mobile` 480 px. `respond-below` включает указанную ширину, `respond-above` — строго больше неё. Четыре колонки каталога появляются выше 1440 px, три — выше 1024, две — выше 480, одна — на 480 и меньше.
 
-Шрифты: [Literata](https://github.com/googlefonts/literata) для выразительных книжных заголовков и [Onest](https://github.com/google/fonts/blob/main/ofl/onest/METADATA.pb) для интерфейса. Оба поддерживают кириллицу и распространяются под SIL OFL. Подключены через Google Fonts в `index.html` с `display=swap`; без сети используются Georgia и Arial. Семейства можно заменить в `_variables.scss`.
+Шрифты: [Prata](https://fonts.google.com/specimen/Prata) для выразительных книжных заголовков и [Onest](https://github.com/google/fonts/blob/main/ofl/onest/METADATA.pb) для интерфейса. Оба поддерживают кириллицу и распространяются под SIL OFL. Подключены через Google Fonts в `index.html` с `display=swap`; без сети используются Georgia и Arial. Семейства можно заменить в `_variables.scss`.
 
 Постоянные договорённости для следующих сессий сохранены в корневом `AGENTS.md`.
+
+## Контейнер страницы
+
+Шапка и основной контент используют `@include container`: `width: 90%`, `max-width: 1700px`, `margin-inline: auto`. Значения заданы в `_variables.scss`, миксин — в `_mixins.scss`. Дополнительных горизонтальных padding у контейнера нет.
+
+Брейкпоинты зафиксированы: 1920 / 1440 / 1024 / 768 / 480 px. Контейнер плавно меняет ширину между ними.

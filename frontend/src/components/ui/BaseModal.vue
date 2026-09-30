@@ -12,19 +12,20 @@
           <p v-if="eyebrow" class="eyebrow">{{ eyebrow }}</p>
           <h2 :id="titleId">{{ title }}</h2>
         </div>
-        <button
-          class="close-button"
+        <BaseButton
+          variant="secondary"
           aria-label="Закрыть окно"
           @click="emit('close')"
         >
           ×
-        </button>
+        </BaseButton>
       </header>
       <slot /></dialog
   ></Teleport>
 </template>
 
 <script setup lang="ts">
+import BaseButton from './BaseButton.vue'
 import { onMounted, onBeforeUnmount, ref, useId } from 'vue'
 defineProps<{ title: string; eyebrow?: string }>()
 const emit = defineEmits<{ close: [] }>()

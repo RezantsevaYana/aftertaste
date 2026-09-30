@@ -1,77 +1,61 @@
 <template>
-  <header class="site-header">
-    <a class="brand" href="./">aftertaste<span>✳</span></a
-    ><span class="header-note">смотрим. читаем. оцениваем.</span
-    ><span class="profile-badge" aria-label="Личный каталог">я</span>
-  </header>
-  <main class="page">
-    <section class="intro">
-      <div>
-        <p class="eyebrow">Твой каталог и твои оценки</p>
-        <h1>
-          <span class="intro-heading-top"
-            >Сколько<span class="intro-stamp" aria-hidden="true"
-              >?/10</span
-            ></span
-          >
-          <span class="intro-heading-bottom">по десятибалльной?</span>
-        </h1>
-        <p class="intro-description">
-          Книги, фильмы, сериалы и спектакли.<br />Оценивай и записывай свои
-          впечатления.
-        </p>
-      </div>
-      <div class="intro-action">
-        <BaseButton @click="addEntry">＋ Добавить запись</BaseButton
-        ><span>Всё, что посмотрела и прочитала</span>
-      </div>
-    </section>
-    <section class="catalog-section" aria-label="Каталог">
-      <div class="catalog-title">
-        <h2>
-          Мой каталог <span>{{ entries.length }}</span>
-        </h2>
-        <span class="local-label"><i /> Сохранено в этом браузере</span>
-      </div>
-      <div class="catalog-toolbar">
-        <div class="filters" role="group" aria-label="Тип контента">
-          <button
-            :class="{ active: activeType === 'all' }"
-            :aria-pressed="activeType === 'all'"
-            @click="activeType = 'all'"
-          >
-            Все <span>{{ entries.length }}</span></button
-          ><button
-            v-for="type in contentTypes"
-            :key="type.value"
-            :class="{ active: activeType === type.value }"
-            :aria-pressed="activeType === type.value"
-            @click="activeType = type.value"
-          >
-            {{ type.label }}
-          </button>
+  <div class="catalog-page">
+    <header class="site-header">
+      <a class="brand" href="./"
+        ><span class="brand-record" aria-hidden="true" />aftertaste</a
+      >
+      <span class="header-note">Личный культурный дневник</span>
+    </header>
+    <main class="page">
+      <section class="intro">
+        <div>
+          <h1>
+            Мой каталог<span class="entry-count">{{ entries.length }}</span>
+          </h1>
+          <p class="intro-description">Сколько по десятибалльной?</p>
         </div>
-        <BaseInput
-          id="catalog-search"
-          v-model="search"
-          class="search-field"
-          label="Поиск по названию"
-          type="search"
-          placeholder="Поиск по названию…"
+        <BaseButton @click="addEntry">＋ Добавить запись</BaseButton>
+      </section>
+      <section class="catalog-section" aria-label="Каталог">
+        <div class="catalog-toolbar">
+          <div class="filters" role="group" aria-label="Тип контента">
+            <BaseButton
+              :variant="activeType === 'all' ? 'primary' : 'secondary'"
+              :aria-pressed="activeType === 'all'"
+              @click="activeType = 'all'"
+              >Все <span>{{ entries.length }}</span></BaseButton
+            >
+            <BaseButton
+              v-for="type in contentTypes"
+              :key="type.value"
+              :variant="activeType === type.value ? 'primary' : 'secondary'"
+              :aria-pressed="activeType === type.value"
+              @click="activeType = type.value"
+              >{{ type.label }}</BaseButton
+            >
+          </div>
+          <BaseInput
+            id="catalog-search"
+            v-model="search"
+            class="search-field"
+            label="Поиск по названию"
+            type="search"
+            placeholder="Поиск по названию…"
+          />
+        </div>
+        <EntryList
+          :entries="visibleEntries"
+          :filtered="activeType !== 'all' || !!search"
+          @open="selectedEntry = $event"
+          @add="addEntry"
         />
-      </div>
-      <EntryList
-        :entries="visibleEntries"
-        :filtered="activeType !== 'all' || !!search"
-        @open="selectedEntry = $event"
-        @add="addEntry"
-      />
-    </section>
-    <footer class="site-footer">
-      <span>aftertaste — посмотрела, оценила, записала</span
-      ><span>Можно не соглашаться с критиками</span>
-    </footer>
-  </main>
+      </section>
+      <footer class="site-footer">
+        <span>Записи сохранены в этом браузере</span
+        ><span>Можно не соглашаться с критиками</span>
+      </footer>
+    </main>
+  </div>
   <EntryDetailsModal
     v-if="selectedEntry"
     :entry="selectedEntry"

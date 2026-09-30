@@ -7,7 +7,7 @@
 <script setup lang="ts">
 withDefaults(
   defineProps<{
-    variant?: 'primary' | 'secondary' | 'ghost'
+    variant?: 'primary' | 'secondary'
     type?: 'button' | 'submit'
   }>(),
   { variant: 'primary', type: 'button' },
