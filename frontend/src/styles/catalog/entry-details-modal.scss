@@ -1,0 +1,49 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+@include modal-actions;
+.detail-meta {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  font-size: 12px;
+  color: $color-subtle;
+  margin-bottom: 20px;
+}
+.detail-meta strong {
+  background: $color-accent-soft;
+  color: $color-accent;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+.detail-photo {
+  width: 100%;
+  max-height: 340px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: $color-soft;
+}
+.detail-fields {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 20px;
+  font-size: 14px;
+  line-height: 1.5;
+
+  dt {
+    color: $color-subtle;
+    font-size: 12px;
+  }
+
+  dd {
+    margin: 4px 0 0;
+    overflow-wrap: anywhere;
+  }
+}
+.detail-review {
+  font-size: 14px;
+  line-height: 1.9;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin: 22px 0 30px;
+}

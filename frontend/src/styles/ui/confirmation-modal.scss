@@ -1,0 +1,11 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+@include modal-actions;
+
+.confirmation-message {
+  margin: 0;
+  color: $color-muted;
+  font-size: 14px;
+  line-height: 1.8;
+}

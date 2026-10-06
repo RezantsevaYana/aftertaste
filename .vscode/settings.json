@@ -1,0 +1,7 @@
+{
+  "workbench.colorTheme": "Default Dark+",
+  "editor.semanticHighlighting.enabled": true,
+  "files.associations": {
+    "*.vue": "vue"
+  }
+}

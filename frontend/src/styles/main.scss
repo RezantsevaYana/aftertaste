@@ -7,12 +7,17 @@
   background: $color-background;
   font-synthesis: none;
 }
+body {
+  background-color: $color-background;
+  background-image:
+    radial-gradient(circle at 25% 20%, rgb(40 40 43 / 0.035) 0 0.55px, transparent 0.7px),
+    radial-gradient(circle at 75% 65%, rgb(40 40 43 / 0.025) 0 0.45px, transparent 0.65px);
+  background-size: 9px 9px, 13px 13px;
+}
 * {
   box-sizing: border-box;
 }
-body {
-  margin: 0;
-}
+body { margin: 0; }
 button,
 input,
 select,
