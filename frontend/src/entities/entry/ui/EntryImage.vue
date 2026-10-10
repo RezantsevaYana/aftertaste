@@ -1,5 +1,5 @@
 <template>
-  <span class="entry-cover" :class="`entry-cover--${type}`" aria-hidden="true">
+  <span class="entry-image" :class="`entry-image--${type}`" aria-hidden="true">
     <img
       v-if="coverImage"
       class="cover-illustration"
@@ -30,4 +30,4 @@ const coverImages: Partial<Record<ContentType, string>> = {
 const coverImage = computed(() => coverImages[props.type])
 </script>
 
-<style scoped lang="scss" src="@/styles/catalog/entry-cover.scss"></style>
+<style scoped lang="scss" src="@/styles/catalog/entry-image.scss"></style>

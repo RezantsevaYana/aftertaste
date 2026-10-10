@@ -1,6 +1,5 @@
 <template>
   <div v-if="!entries.length" class="empty-state">
-    <span>✳</span>
     <h2>
       {{ filtered ? 'Ничего не нашлось' : 'Ну что, начнём?' }}
     </h2>
@@ -11,7 +10,7 @@
           : 'Добавь первую запись и поделись своими впечатлениями.'
       }}
     </p>
-    <BaseButton @click="emit('add')">＋ Добавить запись</BaseButton>
+    <BaseButton @click="emit('add')"><BaseIcon icon="lucide:plus" /> Добавить запись</BaseButton>
   </div>
   <section v-for="group in groups" :key="group.month" class="month-group">
     <div class="month-heading">
@@ -35,7 +34,7 @@ import { computed } from 'vue'
 import type { Entry } from '@/entities/entry'
 import { formatMonth } from '@/shared/lib/date'
 import { EntryCard } from '@/entities/entry'
-import { BaseButton } from '@/shared/ui'
+import { BaseButton, BaseIcon } from '@/shared/ui'
 const props = defineProps<{ entries: Entry[]; filtered: boolean }>()
 const emit = defineEmits<{ open: [entry: Entry]; add: [] }>()
 const groups = computed(() => {

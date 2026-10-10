@@ -1,6 +1,6 @@
 @use '@/styles/variables' as *;
 
-.entry-cover {
+.entry-image {
   display: block;
   position: relative;
   overflow: hidden;
@@ -58,24 +58,24 @@
   background: $color-cover-olive;
   box-shadow: 2px 2px 0 $color-cover-cream;
 }
-.entry-cover--film {
+.entry-image--film {
   background-color: #eee9de;
 }
-.entry-cover--series {
+.entry-image--series {
   background-color: #f3f0e7;
 }
-.entry-cover--series .cover-label {
+.entry-image--series .cover-label {
   background: $color-cover-olive;
 }
-.entry-cover--theatre {
+.entry-image--theatre {
   background-color: #e9e7dd;
 }
-.entry-cover--theatre .cover-record {
+.entry-image--theatre .cover-record {
   transform: rotate(-8deg);
 }
-.entry-cover--book .cover-record {
+.entry-image--book .cover-record {
   transform: rotate(8deg);
 }
-.entry-cover--book .cover-label {
+.entry-image--book .cover-label {
   background: $color-cover-wine-light;
 }

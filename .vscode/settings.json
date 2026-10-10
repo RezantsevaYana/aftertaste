@@ -1,6 +1,8 @@
 {
-  "workbench.colorTheme": "Default Dark+",
+  "workbench.colorTheme": "Dark+",
   "editor.semanticHighlighting.enabled": true,
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 500,
   "files.associations": {
     "*.vue": "vue"
   }

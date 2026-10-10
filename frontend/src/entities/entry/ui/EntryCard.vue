@@ -1,35 +1,51 @@
 <template>
-  <button class="entry-card" @click="emit('open', entry)">
+  <article class="entry-card">
     <img
       v-if="entry.photo"
       class="entry-photo"
       :src="entry.photo"
       :alt="entry.title"
     />
-    <EntryCover v-else class="entry-photo" :type="entry.type" />
-    <span class="entry-content">
-      <span class="entry-type">{{
-        contentTypes.find((type) => type.value === entry.type)?.singular
-      }}</span>
-      <span class="entry-title">{{ entry.title }}</span>
-      <span v-if="entry.type === 'album'" class="entry-artist">{{ entry.artist }}</span>
-      <span class="entry-review">{{
+    <EntryImage v-else class="entry-photo" :type="entry.type" />
+
+    <div class="entry-content">
+      <span class="entry-type">{{ entryTypeLabel }}</span>
+      <h3 class="entry-title">
+        <button
+          type="button"
+          class="entry-open"
+          :aria-label="`Открыть запись «${entry.title}»`"
+          aria-haspopup="dialog"
+          @click="emit('open', entry)"
+        >{{ entry.title }}</button>
+      </h3>
+      <p v-if="entry.type === 'album'" class="entry-artist">{{ entry.artist }}</p>
+      <p class="entry-review">{{
         entry.review || 'Рецензии пока нет.'
-      }}</span>
-    </span>
-    <span class="entry-score" :aria-label="`Оценка ${entry.rating} из 10`"
-      >{{ entry.rating }}<span>/ 10</span></span
+      }}</p>
+    </div>
+    <span class="entry-score" :aria-label="ratingLabel"
+      >{{ entry.rating }}<span>/ {{ RATING_MAX }}</span></span
     >
-    <span class="entry-arrow" aria-hidden="true">→</span>
-  </button>
+    <span class="entry-arrow"><BaseIcon icon="lucide:arrow-right" /></span>
+  </article>
 </template>
 
 <script setup lang="ts">
-import EntryCover from './EntryCover.vue'
+import { computed } from 'vue'
+import EntryImage from './EntryImage.vue'
+import { BaseIcon } from '@/shared/ui'
 import type { Entry } from '../model/entry'
 import { contentTypes } from '../model/entry'
-defineProps<{ entry: Entry }>()
+import { RATING_MAX } from '../model/rating'
+const props = defineProps<{ entry: Entry }>()
 const emit = defineEmits<{ open: [entry: Entry] }>()
+
+const ratingLabel = computed(() => `Оценка ${props.entry.rating} из ${RATING_MAX}`)
+
+const entryTypeLabel = computed(() =>
+  contentTypes.find((type) => type.value === props.entry.type)?.singular,
+)
 </script>
 
 <style scoped lang="scss" src="@/styles/catalog/entry-card.scss"></style>

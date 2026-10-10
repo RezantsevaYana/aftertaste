@@ -1,6 +1,6 @@
 import { demoEntries } from '@/mocks/demoEntries'
 import type { Entry } from '@/entities/entry'
-import { contentTypes, theatreGenres } from '@/entities/entry'
+import { contentTypes, theatreGenres, RATING_MIN, RATING_MAX } from '@/entities/entry'
 
 // Здесь позже можно заменить localStorage запросами к API.
 const STORAGE_KEY = 'aftertaste.entries.v1'
@@ -24,8 +24,8 @@ function isEntry(value: unknown): value is Entry {
     /^\d{4}-(0[1-9]|1[0-2])$/.test(entry.month) &&
     contentTypes.some((type) => type.value === entry.type) &&
     Number.isInteger(entry.rating) &&
-    Number(entry.rating) >= 1 &&
-    Number(entry.rating) <= 10 &&
+    Number(entry.rating) >= RATING_MIN &&
+    Number(entry.rating) <= RATING_MAX &&
     (entry.photo === undefined || typeof entry.photo === 'string') &&
     (entry.theatreGenre === undefined ||
       theatreGenres.some((genre) => genre.value === entry.theatreGenre)) &&

@@ -42,7 +42,7 @@
           maxlength="200"
         />
       </template>
-      <RatingInput v-model="draft.rating" /><BaseTextarea
+      <RatingInput v-model="draft.rating" :min="RATING_MIN" :max="RATING_MAX" /><BaseTextarea
         id="entry-review"
         v-model="draft.review"
         label="Рецензия · необязательно"
@@ -84,7 +84,7 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from 'vue'
 import type { Entry, EntryDraft, TheatreGenre } from '@/entities/entry'
-import { contentTypes, theatreGenres } from '@/entities/entry'
+import { contentTypes, theatreGenres, RATING_MIN, RATING_MAX, RATING_DEFAULT } from '@/entities/entry'
 import { currentMonth } from '@/shared/lib/date'
 import { BaseModal } from '@/shared/ui'
 import { BaseInput } from '@/shared/ui'
@@ -98,7 +98,7 @@ const emit = defineEmits<{ close: []; save: [draft: EntryDraft] }>()
 const draft = reactive<EntryDraft>(
   props.entry
     ? { ...props.entry }
-    : { type: 'book', title: '', rating: 7, review: '', month: currentMonth() },
+    : { type: 'book', title: '', rating: RATING_DEFAULT, review: '', month: currentMonth() },
 )
 const photoBusy = ref(false)
 const titleField = computed(() => {

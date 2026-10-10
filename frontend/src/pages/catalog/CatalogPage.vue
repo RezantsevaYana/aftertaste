@@ -4,9 +4,9 @@
       <h1>
         Мой каталог<span class="entry-count">{{ entries.length }}</span>
       </h1>
-      <p class="intro-description">Сколько по десятибалльной?</p>
+      <p class="intro-description">{{ ratingQuestion }}</p>
     </div>
-    <BaseButton @click="addEntry">＋ Добавить запись</BaseButton>
+    <BaseButton @click="addEntry"><BaseIcon icon="lucide:plus" /> Добавить запись</BaseButton>
   </section>
   <section class="catalog-section" aria-label="Каталог">
     <div class="catalog-toolbar">
@@ -23,7 +23,7 @@
           :variant="activeType === type.value ? 'primary' : 'secondary'"
           :aria-pressed="activeType === type.value"
           @click="activeType = type.value"
-          >{{ type.label }}</BaseButton
+          ><BaseIcon :icon="type.icon" />{{ type.label }}</BaseButton
         >
       </div>
       <BaseInput
@@ -71,12 +71,17 @@
 </template>
 
 <script setup lang="ts">
-import { contentTypes } from '@/entities/entry'
-import { BaseButton, BaseInput, NotificationModal, ConfirmationModal } from '@/shared/ui'
+import { computed } from 'vue'
+import { contentTypes, RATING_MAX } from '@/entities/entry'
+import { BaseButton, BaseIcon, BaseInput, NotificationModal, ConfirmationModal } from '@/shared/ui'
 import EntryList from './components/EntryList.vue'
 import EntryFormModal from './components/EntryFormModal.vue'
 import EntryDetailsModal from './components/EntryDetailsModal.vue'
 import { useCatalog } from './composables/useCatalog'
+
+const ratingQuestion = computed(() =>
+  RATING_MAX === 10 ? 'Сколько по десятибалльной?' : `Сколько по ${RATING_MAX}-балльной?`,
+)
 
 const {
   entries, notification, activeType, search, formOpen, editingEntry,

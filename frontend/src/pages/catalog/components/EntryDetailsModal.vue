@@ -1,10 +1,10 @@
 <template>
   <BaseModal
     :title="entry.title"
-    :eyebrow="contentTypes.find((type) => type.value === entry.type)?.singular"
+    :eyebrow="entryTypeLabel"
     @close="emit('close')"
     ><div class="detail-meta">
-      <strong>{{ entry.rating }} / 10</strong
+      <strong>{{ entry.rating }} / {{ RATING_MAX }}</strong
       ><span>{{ formatMonth(entry.month) }}</span>
     </div>
     <dl v-if="entry.type === 'album'" class="detail-fields">
@@ -19,7 +19,7 @@
     >
       <div v-if="entry.theatreGenre">
         <dt>Жанр</dt>
-        <dd>{{ theatreGenres.find((genre) => genre.value === entry.theatreGenre)?.label }}</dd>
+        <dd>{{ theatreGenreLabel }}</dd>
       </div>
       <div v-if="entry.venue">
         <dt>Место просмотра</dt>
@@ -48,13 +48,21 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import type { Entry } from '@/entities/entry'
-import { contentTypes, theatreGenres } from '@/entities/entry'
+import { contentTypes, theatreGenres, RATING_MAX } from '@/entities/entry'
 import { formatMonth } from '@/shared/lib/date'
 import { BaseModal } from '@/shared/ui'
 import { BaseButton } from '@/shared/ui'
-defineProps<{ entry: Entry }>()
+const props = defineProps<{ entry: Entry }>()
 const emit = defineEmits<{ close: []; edit: []; requestDelete: [] }>()
+
+const entryTypeLabel = computed(() =>
+  contentTypes.find((type) => type.value === props.entry.type)?.singular,
+)
+const theatreGenreLabel = computed(() =>
+  theatreGenres.find((genre) => genre.value === props.entry.theatreGenre)?.label,
+)
 </script>
 
 <style scoped lang="scss" src="@/styles/catalog/entry-details-modal.scss"></style>

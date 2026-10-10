@@ -1,28 +1,38 @@
 <template>
   <fieldset class="rating-field">
     <legend class="field__label">
-      Твоя оценка <span class="muted">/ 10</span>
+      Твоя оценка <span class="muted">/ {{ max }}</span>
     </legend>
     <div class="rating-options">
       <label
-        v-for="rating in 10"
-        :key="rating"
+        v-for="option in ratingOptions"
+        :key="option.value"
         class="rating-option"
-        :class="{ 'is-selected': model === rating }"
+        :class="{ 'is-selected': model === option.value }"
         ><input
           v-model="model"
           type="radio"
           name="rating"
-          :value="rating"
-          :aria-label="`${rating} из 10`"
-        /><span>{{ rating }}</span></label
+          :value="option.value"
+          :aria-label="option.label"
+        /><span>{{ option.value }}</span></label
       >
     </div>
-    <small>1 — не понравилось, 10 — в любимое.</small>
+    <small>{{ min }} — не понравилось, {{ max }} — в любимое.</small>
   </fieldset>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+
+const props = defineProps<{ min: number; max: number }>()
+const ratingOptions = computed(() =>
+  Array.from({ length: props.max - props.min + 1 }, (_, index) => {
+    const value = props.min + index
+    return { value, label: `${value} из ${props.max}` }
+  }),
+)
+
 const model = defineModel<number>({ required: true })
 </script>
 

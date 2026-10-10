@@ -1,4 +1,5 @@
 export { contentTypes, theatreGenres } from './model/entry'
+export { RATING_MIN, RATING_MAX, RATING_DEFAULT } from './model/rating'
 export type { ContentType, Entry, EntryDraft, TheatreGenre } from './model/entry'
 export { default as EntryCard } from './ui/EntryCard.vue'
-export { default as EntryCover } from './ui/EntryCover.vue'
+export { default as EntryImage } from './ui/EntryImage.vue'

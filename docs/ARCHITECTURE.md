@@ -31,7 +31,7 @@ frontend/src/
   entities/
     entry/
       model/entry.ts              # типы и категории записи
-      ui/                         # EntryCard, EntryCover
+      ui/                         # EntryCard, EntryImage
       index.ts
   shared/
     ui/
@@ -136,6 +136,19 @@ import { loadEntries, saveEntries } from '@/api/catalog'
 Внутри модуля используем относительные пути, не собственный публичный index.
 
 ## TypeScript и стили
+
+### SVG-иконки
+
+Общий `BaseIcon` экспортируется из `@/shared/ui` и использует `@iconify/vue`.
+В справочниках храним имя иконки Iconify, например `icon: 'lucide:book-open'`,
+и выводим `<BaseIcon :icon="type.icon" />`. Для единого оформления используем
+контурный набор Lucide. Другую иконку можно выбрать на https://icon-sets.iconify.design/lucide/.
+
+Размер — `1em`, цвет наследуется через `currentColor`. По умолчанию иконка
+декоративная; для самостоятельного изображения передаём `label`. У кнопки
+только с иконкой доступное название задаём самой кнопке через `aria-label`.
+Иконки по имени загружаются из API Iconify при отображении; для первого
+получения нужен доступ к сети. Локальный SVG-спрайт больше не используется.
 
 Отдельный `.ts` не нужен каждому компоненту. Props, emits и небольшая локальная
 логика остаются в `<script setup lang="ts">`. Типы записи — в

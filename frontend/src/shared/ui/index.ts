@@ -1,4 +1,5 @@
 export { default as BaseButton } from './buttons/BaseButton.vue'
+export { default as BaseIcon } from './icons/BaseIcon.vue'
 export { default as BaseInput } from './form/BaseInput.vue'
 export { default as BaseSelect } from './form/BaseSelect.vue'
 export { default as BaseTextarea } from './form/BaseTextarea.vue'

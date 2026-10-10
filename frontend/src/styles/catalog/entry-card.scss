@@ -22,6 +22,33 @@
 .entry-card:hover {
   background: $color-soft;
 }
+.entry-open {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-align: inherit;
+  overflow-wrap: anywhere;
+
+  // Расширяем область нажатия, сохраняя содержимое отдельным от кнопки.
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+}
+
+.entry-card:has(.entry-open:focus-visible) {
+  outline: 3px solid $color-focus;
+  outline-offset: 3px;
+}
+
+.entry-open:focus-visible {
+  outline: none;
+}
 .entry-photo {
   width: 70px;
   height: 94px;
@@ -42,6 +69,7 @@
   letter-spacing: 0.03em;
 }
 .entry-title {
+  margin: 0;
   font-size: 19px;
   font-weight: 500;
   letter-spacing: -0.35px;
@@ -49,12 +77,14 @@
   overflow-wrap: anywhere;
 }
 .entry-artist {
+  margin: 0;
   color: $color-muted;
   font-size: 13px;
   line-height: 1.5;
   overflow-wrap: anywhere;
 }
 .entry-review {
+  margin: 0;
   max-width: 610px;
   color: $color-muted;
   font-size: 13px;
