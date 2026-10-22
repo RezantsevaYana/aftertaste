@@ -2,10 +2,14 @@
 @use '@/styles/mixins' as *;
 
 .app-layout {
+  display: flex;
+  flex-direction: column;
   min-height: 100dvh;
   background: rgb(250 249 246 / 0.92);
   font-family: $font-body;
 }
+
 .page {
   @include container;
+  flex: 1;
 }

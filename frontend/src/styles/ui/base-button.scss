@@ -1,4 +1,5 @@
 @use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
 
 .button {
   display: inline-flex;
@@ -13,22 +14,75 @@
   font-weight: 500;
   line-height: 1.4;
   transition:
-    background 0.15s,
-    border-color 0.15s;
-}
-.button--primary {
-  background: $color-accent;
-  border-color: $color-accent;
-  color: $color-white;
-}
-.button--primary:hover:not(:disabled) {
-  background: $color-accent-hover;
-  border-color: $color-accent-hover;
-}
-.button--secondary {
-  background: transparent;
-  color: $color-text;
-}
-.button--secondary:hover:not(:disabled) {
-  background: $color-soft;
+    background-color 280ms ease,
+    border-color 280ms ease,
+    transform 220ms ease,
+    box-shadow 280ms ease;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+
+  @include respond-below('tablet') {
+    min-height: 40px;
+    padding: 9px 12px;
+    gap: 5px;
+  }
+
+  @include respond-below('mobile') {
+    min-height: 36px;
+    padding: 8px 10px;
+    line-height: 1.35;
+  }
+
+  &--primary {
+    background: $color-accent;
+    border-color: $color-accent;
+    color: $color-white;
+
+    &:hover:not(:disabled) {
+      background: $color-accent-hover;
+      border-color: $color-accent-hover;
+    }
+  }
+
+  &--secondary {
+    background: transparent;
+    color: $color-text;
+
+    &:hover:not(:disabled) {
+      background: $color-soft;
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-focus;
+    outline-offset: 4px;
+  }
+
+  &:hover:not(:disabled) {
+    @media (hover: hover) {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 8px $color-card-shadow;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      transform: none;
+    }
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: none;
+  }
+
+  &--compact {
+    min-height: 32px;
+    padding: 6px 10px;
+    gap: 4px;
+
+    @media (pointer: coarse) {
+      min-height: 36px;
+    }
+  }
 }

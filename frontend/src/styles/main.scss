@@ -1,4 +1,5 @@
 @use './variables' as *;
+@use './mixins' as *;
 
 :root {
   font-family: $font-body;
@@ -16,8 +17,68 @@ body {
 }
 * {
   box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: $color-scrollbar-thumb $color-scrollbar-track;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: $color-scrollbar-track;
+  border-radius: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background: $color-scrollbar-thumb;
+  border: 2px solid $color-scrollbar-track;
+  border-radius: 8px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: $color-scrollbar-thumb-hover;
+}
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
+@media (forced-colors: active) {
+  * {
+    scrollbar-color: auto;
+  }
 }
 body { margin: 0; }
+
+// Меню календаря телепортируется в слой модалки и не наследует стили поля.
+.aftertaste-datepicker-theme {
+  width: 272px;
+  max-width: calc(100vw - 16px);
+  --dp-font-family: #{$font-body};
+  --dp-font-size: 12px;
+  --dp-menu-padding: 6px;
+  --dp-cell-size: 32px;
+  --dp-cell-padding: 3px;
+  --dp-row-margin: 2px 0;
+  --dp-calendar-header-cell-padding: 4px;
+  --dp-month-year-row-height: 32px;
+  --dp-common-padding: 6px;
+  --dp-overlay-col-padding: 2px;
+  --dp-background-color: #{$color-input-background};
+  --dp-text-color: #{$color-text};
+  --dp-primary-color: #{$color-accent};
+  --dp-primary-text-color: #{$color-white};
+  --dp-hover-color: #{$color-accent-soft};
+  --dp-hover-text-color: #{$color-text};
+  --dp-hover-icon-color: #{$color-accent};
+  --dp-secondary-color: #{$color-muted};
+  --dp-icon-color: #{$color-muted};
+  --dp-border-color: #{$color-border};
+  --dp-menu-border-color: #{$color-border};
+  --dp-border-color-hover: #{$color-input-focus-border};
+  --dp-border-color-focus: #{$color-input-focus-border};
+  --dp-border-radius: #{$radius-control};
+  --dp-cell-border-radius: 7px;
+  --dp-scroll-bar-background: #{$color-scrollbar-track};
+  --dp-scroll-bar-color: #{$color-scrollbar-thumb};
+  box-shadow: $shadow-card;
+}
 button,
 input,
 select,
@@ -58,6 +119,17 @@ small {
 .muted {
   color: $color-subtle;
   font-weight: 400;
+}
+
+// На телефоне категории листаются до края экрана без видимой полосы.
+@include respond-below('mobile') {
+  .filters {
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
 }
 .error-text {
   color: $color-danger !important;

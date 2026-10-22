@@ -1,4 +1,25 @@
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
-
 @include field;
+
+.field {
+  &.field--floating input[type='search'] {
+    padding-right: 42px;
+    appearance: none;
+
+    &::-webkit-search-cancel-button,
+    &::-webkit-search-decoration {
+      appearance: none;
+      display: none;
+    }
+  }
+
+  .input-clear {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $color-muted;
+    background: transparent;
+  }
+}

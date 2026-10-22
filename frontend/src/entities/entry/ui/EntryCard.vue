@@ -1,9 +1,9 @@
 <template>
   <article class="entry-card">
     <img
-      v-if="entry.photo"
+      v-if="coverPhoto"
       class="entry-photo"
-      :src="entry.photo"
+      :src="coverPhoto"
       :alt="entry.title"
     />
     <EntryImage v-else class="entry-photo" :type="entry.type" />
@@ -27,20 +27,26 @@
     <span class="entry-score" :aria-label="ratingLabel"
       >{{ entry.rating }}<span>/ {{ RATING_MAX }}</span></span
     >
-    <span class="entry-arrow"><BaseIcon icon="lucide:arrow-right" /></span>
+    <span class="entry-arrow" aria-hidden="true"><BaseIcon icon="lucide:arrow-right" /></span>
   </article>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { getPrimaryPhoto } from '@/entities/entry/model/photos'
 import EntryImage from './EntryImage.vue'
 import { BaseIcon } from '@/shared/ui'
 import type { Entry } from '../model/entry'
 import { contentTypes } from '../model/entry'
 import { RATING_MAX } from '../model/rating'
-const props = defineProps<{ entry: Entry }>()
-const emit = defineEmits<{ open: [entry: Entry] }>()
+const props = defineProps<{
+  entry: Entry
+}>()
+const emit = defineEmits<{
+  open: [entry: Entry]
+}>()
 
+const coverPhoto = computed(() => getPrimaryPhoto(props.entry))
 const ratingLabel = computed(() => `Оценка ${props.entry.rating} из ${RATING_MAX}`)
 
 const entryTypeLabel = computed(() =>

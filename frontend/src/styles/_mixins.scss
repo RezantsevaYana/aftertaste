@@ -1,7 +1,7 @@
 @use 'sass:map';
 @use './variables' as *;
-
 // Общая ширина страницы без дополнительных боковых отступов.
+
 @mixin container {
   width: $container-width;
   max-width: $container-max-width;
@@ -9,28 +9,53 @@
 }
 
 // Верхняя граница включительна: respond-below('tablet') → max-width: 768px.
+
 @mixin respond-below($name) {
   $width: map.get($breakpoints, $name);
+
   @if $width == null {
     @error 'Неизвестный брейкпоинт: #{$name}';
   }
+
   @media (max-width: $width) {
     @content;
   }
 }
 
 // Нижняя граница исключительна, чтобы диапазоны не пересекались.
+
 @mixin respond-above($name) {
   $width: map.get($breakpoints, $name);
+
   @if $width == null {
     @error 'Неизвестный брейкпоинт: #{$name}';
   }
+
   @media (width > $width) {
     @content;
   }
 }
 
 @mixin field {
+  .field__control {
+    position: relative;
+  }
+
+  .field--validated .field__control {
+    margin-bottom: 12px;
+  }
+
+  .field__error {
+    position: absolute;
+    top: calc(100% + 2px);
+    left: 0;
+    right: 0;
+    color: $color-danger;
+    font-size: 12px;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+  }
+
   .field {
     display: flex;
     flex-direction: column;
@@ -38,12 +63,15 @@
     width: 100%;
     font-size: 13px;
   }
+
   .field__label {
     font-size: 12px;
     font-weight: 500;
   }
+
   .field input,
   .field select,
+  .field .select-trigger,
   .field textarea {
     width: 100%;
     border: 1px solid $color-border;
@@ -53,13 +81,136 @@
     color: $color-book-text;
     min-height: 44px;
   }
+
+  .field--invalid input,
+  .field--invalid select,
+  .field--invalid .select-trigger,
+  .field--invalid textarea {
+    border-color: $color-input-error-border;
+    background: $color-input-error-background;
+  }
+
   .field textarea {
     resize: vertical;
     line-height: 1.7;
   }
+
   .field input::placeholder,
   .field textarea::placeholder {
     color: $color-subtle;
+  }
+
+  .field--floating {
+    input,
+    select,
+    .select-trigger,
+    textarea {
+      min-height: 44px;
+      padding: 17px 12px 5px;
+      line-height: 20px;
+      transition: border-color 0.15s, box-shadow 0.15s;
+
+      &:focus {
+        outline: none;
+        border-color: $color-input-focus-border;
+        box-shadow: 0 0 0 2px $color-input-focus-ring;
+      }
+
+      @include respond-below('tablet') {
+        min-height: 40px;
+        padding: 15px 10px 5px;
+        line-height: 18px;
+      }
+
+      @include respond-below('mobile') {
+        min-height: 38px;
+        padding-top: 14px;
+        padding-bottom: 4px;
+      }
+    }
+
+    .field__label {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      right: 30px;
+      color: $color-muted;
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 20px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      pointer-events: none;
+      transition: top 0.15s, font-size 0.15s;
+
+      @include respond-below('tablet') {
+        top: 10px;
+        left: 10px;
+        line-height: 18px;
+      }
+
+      @include respond-below('mobile') {
+        top: 9px;
+      }
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+
+    input:focus::placeholder,
+    textarea:focus::placeholder {
+      opacity: 1;
+    }
+
+    // У даты есть собственная маска браузера: оставляем для неё место.
+
+    &.field--filled .field__label,
+    .field__control:focus-within .field__label,
+    .field__control:has(input:is([type='month'], [type='date'], [type='time'], [type='datetime-local'])) .field__label,
+    .field__control:has(input:autofill) .field__label {
+      top: 5px;
+      font-size: 10px;
+      line-height: 12px;
+
+      @include respond-below('tablet') {
+        top: 3px;
+        line-height: 11px;
+      }
+    }
+
+    &:not(.field--filled) select:not(:focus) {
+      color: transparent;
+    }
+
+    select option {
+      color: $color-text;
+      background: $color-input-background;
+    }
+
+    textarea {
+      @include respond-below('tablet') {
+        height: 90px;
+        min-height: 76px;
+      }
+
+      @include respond-below('mobile') {
+        min-height: 76px;
+      }
+    }
+  }
+
+  .field--floating.field--invalid {
+    input:focus,
+    select:focus,
+    .select-trigger:focus,
+    textarea:focus {
+      border-color: $color-input-error-border;
+      box-shadow: 0 0 0 2px $color-input-error-ring;
+    }
   }
 }
 
@@ -71,5 +222,10 @@
     padding-top: 20px;
     margin-top: 6px;
     border-top: 1px solid $color-border;
+
+    @include respond-below('mobile') {
+      flex-direction: column;
+      align-items: stretch;
+    }
   }
 }

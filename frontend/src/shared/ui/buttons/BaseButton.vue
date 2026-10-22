@@ -1,5 +1,5 @@
 <template>
-  <button :type="type" class="button" :class="`button--${variant}`">
+  <button :type="type" class="button" :class="[`button--${variant}`, { 'button--compact': size === 'compact' }]">
     <slot />
   </button>
 </template>
@@ -8,9 +8,10 @@
 withDefaults(
   defineProps<{
     variant?: 'primary' | 'secondary'
+    size?: 'default' | 'compact'
     type?: 'button' | 'submit'
   }>(),
-  { variant: 'primary', type: 'button' },
+  { variant: 'primary', type: 'button', size: 'default' },
 )
 </script>
 

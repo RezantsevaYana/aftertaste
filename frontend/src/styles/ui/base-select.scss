@@ -1,4 +1,90 @@
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
-
 @include field;
+
+.field {
+  .select-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    text-align: left;
+  }
+
+  .select-value {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding-right: 20px;
+  }
+
+  &:not(.field--filled):not(:focus-within) .select-value {
+    visibility: hidden;
+  }
+
+  .select-chevron {
+    position: absolute;
+    right: 12px;
+    top: 15px;
+    color: $color-muted;
+    pointer-events: none;
+
+    @include respond-below('tablet') {
+      right: 10px;
+      top: 13px;
+    }
+
+    @include respond-below('mobile') {
+      top: 12px;
+    }
+  }
+
+  .select-clear {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  &--open .select-chevron {
+    transform: rotate(180deg);
+  }
+}
+
+.select-dropdown {
+  position: fixed;
+  z-index: 100;
+  font-family: $font-body;
+  font-size: 13px;
+  max-height: 220px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  margin: 0;
+  padding: 5px;
+  list-style: none;
+  border: 1px solid $color-border;
+  border-radius: $radius-control;
+  background: $color-input-background;
+  box-shadow: $shadow-card;
+
+  .select-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-height: 36px;
+    padding: 8px 10px;
+    border-radius: 7px;
+    cursor: pointer;
+    overflow-wrap: anywhere;
+
+    &.is-selected {
+      color: $color-accent;
+    }
+
+    &.is-active {
+      background: $color-accent-soft;
+    }
+  }
+}

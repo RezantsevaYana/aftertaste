@@ -1,5 +1,6 @@
 import { computed, nextTick, ref } from 'vue'
 import type { ContentType, Entry, EntryDraft } from '@/entities/entry'
+import { matchesEntryDateFilter, getEntryFilterYears } from '@/entities/entry'
 import { loadEntries, saveEntries } from '@/api/catalog'
 
 // Состояние и сценарии одного экземпляра страницы каталога.
@@ -24,6 +25,10 @@ export function useCatalog() {
   }
   const activeType = ref<ContentType | 'all'>('all')
   const search = ref<string | number>('')
+  const dateFilter = ref<string | string[]>('')
+  const yearFilter = ref('')
+  const yearOptions = computed(() => getEntryFilterYears(entries.value).map((year) => ({ value: year, label: year })))
+  const hasFilters = computed(() => activeType.value !== 'all' || !!String(search.value).trim() || !!dateFilter.value.length || !!yearFilter.value)
   const formOpen = ref(false)
   const editingEntry = ref<Entry>()
   const selectedEntry = ref<Entry>()
@@ -32,6 +37,7 @@ export function useCatalog() {
     entries.value.filter(
       (entry) =>
         (activeType.value === 'all' || entry.type === activeType.value) &&
+        matchesEntryDateFilter(entry, dateFilter.value, yearFilter.value) &&
         entry.title
           .toLocaleLowerCase('ru')
           .includes(String(search.value).trim().toLocaleLowerCase('ru')),
@@ -63,6 +69,8 @@ export function useCatalog() {
       formOpen.value = false
       activeType.value = 'all'
       search.value = ''
+      dateFilter.value = ''
+      yearFilter.value = ''
       await nextTick()
       notification.value = {
         status: 'success',
@@ -108,7 +116,7 @@ export function useCatalog() {
   }
 
   return {
-    entries, notification, activeType, search, formOpen, editingEntry,
+    entries, notification, activeType, search, dateFilter, yearFilter, yearOptions, hasFilters, formOpen, editingEntry,
     selectedEntry, entryToDelete, visibleEntries, addEntry, editEntry,
     save, requestEntryDeletion, deleteEntry,
   }

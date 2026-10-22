@@ -10,35 +10,172 @@
   width: min(540px, calc(100% - 32px));
   max-height: calc(100dvh - 48px);
   box-shadow: $shadow-modal;
-}
-.modal::backdrop {
-  background: $color-backdrop;
-  backdrop-filter: blur(4px);
-}
-.modal__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 20px;
-  margin-bottom: 26px;
-}
-.modal__header .eyebrow {
-  font-size: 9px;
-  margin-bottom: 10px;
-}
-.modal h2 {
-  font: 600 28px/1.25 $font-display;
-  margin: 0;
-  overflow-wrap: anywhere;
-}
-@include respond-below('tablet') {
-  .modal {
+
+  @include respond-below('tablet') {
     padding: 23px 19px;
     max-height: calc(100dvh - 24px);
   }
+
+  @include respond-below('mobile') {
+    position: fixed;
+    inset: auto 0 0;
+    margin: 0;
+    width: 100%;
+    max-width: none;
+    max-height: calc(100dvh - 16px - env(safe-area-inset-top, 0px));
+    padding: 0;
+    overflow: visible;
+    border-bottom: 0;
+    border-radius: $radius-panel $radius-panel 0 0;
+    transform: translateY(var(--sheet-offset, 0px));
+    transition: transform 240ms ease;
+    overscroll-behavior: contain;
+  }
+
+  &::backdrop {
+    background: $color-backdrop;
+    backdrop-filter: blur(4px);
+
+    @include respond-below('mobile') {
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+    }
+  }
+
+  .modal__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 26px;
+
+    @include respond-below('mobile') {
+      margin-bottom: 14px;
+      gap: 12px;
+    }
+
+    .eyebrow {
+      font-size: 9px;
+      margin-bottom: 10px;
+
+      @include respond-below('tablet') {
+        margin-bottom: 6px;
+      }
+    }
+  }
+
+  .modal__close {
+    flex-shrink: 0;
+
+    @include respond-below('mobile') {
+      display: none;
+    }
+  }
+
+  h2 {
+    font: 600 28px/1.25 $font-display;
+    margin: 0;
+    overflow-wrap: anywhere;
+
+    @include respond-below('tablet') {
+      font-size: 22px;
+    }
+  }
+
+  .modal__handle {
+    display: none;
+
+    @include respond-below('mobile') {
+      display: grid;
+      place-items: center;
+      height: 24px;
+
+      span {
+        width: 36px;
+        height: 4px;
+        border-radius: 4px;
+        background: $color-border;
+      }
+    }
+  }
+
+  &[open] {
+    @include respond-below('mobile') {
+      display: flex;
+      flex-direction: column;
+      animation: modal-sheet-enter 280ms ease-out;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+      transition: none;
+    }
+  }
+
+  .modal__drag-area {
+    @include respond-below('mobile') {
+      flex-shrink: 0;
+      padding: 0 16px;
+      touch-action: pan-x;
+      user-select: none;
+    }
+  }
+
+  .modal__content {
+    @include respond-below('mobile') {
+      min-height: 0;
+      overflow-y: auto;
+      overscroll-behavior-y: contain;
+      padding: 2px 16px 14px;
+    }
+
+    &:last-child {
+      @include respond-below('mobile') {
+        padding-bottom: max(14px, env(safe-area-inset-bottom, 0px));
+      }
+    }
+  }
+
+  .modal__footer {
+    @include respond-below('mobile') {
+      flex-shrink: 0;
+      padding: 10px 16px max(10px, env(safe-area-inset-bottom, 0px));
+      border-top: 1px solid $color-border;
+      background: $color-modal-background;
+
+      :deep(.modal__actions) {
+        padding-top: 0;
+        margin-top: 0;
+        border-top: 0;
+        flex-wrap: nowrap;
+        gap: 8px;
+      }
+    }
+  }
+
+  &.modal--dragging {
+    @include respond-below('mobile') {
+      transition: none;
+      animation: none;
+    }
+  }
+
+  &.modal--closing {
+    @include respond-below('mobile') {
+      pointer-events: none;
+      animation: none;
+    }
+  }
 }
-@include respond-below('tablet') {
-  .modal h2 {
-    font-size: 25px;
+
+// Нижняя панель — только на телефонах; выше mobile остаётся обычное окно.
+
+@keyframes modal-sheet-enter {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
   }
 }

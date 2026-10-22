@@ -1,4 +1,50 @@
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
-
 @include field;
+
+.field {
+  .textarea-shell {
+    padding-top: 22px;
+    border: 1px solid $color-border;
+    border-radius: $radius-control;
+    background: $color-input-background;
+    overflow: hidden;
+    transition: border-color 150ms, box-shadow 150ms;
+
+    &:focus-within {
+      border-color: $color-input-focus-border;
+      box-shadow: 0 0 0 2px $color-input-focus-ring;
+    }
+
+    @include respond-below('tablet') {
+      padding-top: 19px;
+    }
+  }
+
+  &.field--floating textarea {
+    display: block;
+    padding: 0 12px 8px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    outline: none;
+
+    @include respond-below('tablet') {
+      padding-inline: 10px;
+    }
+  }
+
+  &.field--floating.field--invalid textarea:focus {
+    box-shadow: none;
+  }
+
+  &--invalid .textarea-shell {
+    border-color: $color-input-error-border;
+    background: $color-input-error-background;
+
+    &:focus-within {
+      box-shadow: 0 0 0 2px $color-input-error-ring;
+    }
+  }
+}

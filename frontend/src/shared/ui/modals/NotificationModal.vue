@@ -8,17 +8,25 @@
       >
       <p>{{ message }}</p>
     </div>
+    <template #actions>
     <div class="modal__actions">
       <BaseButton @click="emit('close')">Понятно</BaseButton>
-    </div></BaseModal
+    </div>
+    </template></BaseModal
   >
 </template>
 
 <script setup lang="ts">
 import BaseModal from './BaseModal.vue'
 import BaseButton from '../buttons/BaseButton.vue'
-defineProps<{ status: 'success' | 'error'; title: string; message: string }>()
-const emit = defineEmits<{ close: [] }>()
+defineProps<{
+  status: 'success' | 'error'
+  title: string
+  message: string
+}>()
+const emit = defineEmits<{
+  close: []
+}>()
 </script>
 
 <style scoped lang="scss" src="@/styles/ui/notification-modal.scss"></style>

@@ -1,0 +1,88 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+@include field;
+
+.field {
+  &.field--floating .date-trigger {
+    padding-right: 44px;
+  }
+
+  .date-clear {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .date-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    text-align: left;
+    text-transform: capitalize;
+
+    > .base-icon {
+      position: absolute;
+      right: 12px;
+      top: 15px;
+      color: $color-muted;
+
+      @include respond-below('tablet') {
+        right: 10px;
+        top: 13px;
+      }
+
+      @include respond-below('mobile') {
+        top: 12px;
+      }
+    }
+
+    > span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+}
+
+.date-modes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2px;
+  width: 100%;
+  padding: 0 0 6px;
+
+  .date-mode {
+    padding: 4px 6px;
+    min-height: 28px;
+    border: 0;
+    border-radius: 5px;
+    background: transparent;
+    color: $color-muted;
+    font-size: 11px;
+    line-height: 16px;
+    white-space: nowrap;
+
+    &:hover {
+      background: $color-soft;
+    }
+
+    &.is-active {
+      background: $color-accent-soft;
+      color: $color-accent;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-focus;
+      outline-offset: -2px;
+    }
+  }
+}
+
+// В режиме месяца год выбирается отдельным фильтром каталога.
+
+:global(.aftertaste-datepicker-month .dp--year-mode-picker) {
+  display: none;
+}

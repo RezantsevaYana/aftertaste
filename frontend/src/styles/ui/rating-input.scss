@@ -6,59 +6,99 @@
   padding: 0;
   margin: 0;
   min-width: 0;
-}
-.rating-field legend {
-  margin-bottom: 12px;
-}
-.rating-options {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(28px, 1fr));
-  gap: 5px;
-  margin-bottom: 8px;
-}
-.rating-option {
-  position: relative;
-  display: grid;
-  place-items: center;
-  height: 36px;
-  font-size: 12px;
-  border: 1px solid $color-border;
-  border-radius: $radius-control;
-  background: $color-soft;
-  color: $color-muted;
-  cursor: pointer;
-}
-.rating-option input {
-  position: absolute;
-  opacity: 0;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  cursor: pointer;
-}
-.rating-option:has(input:focus-visible) {
-  outline: 3px solid $color-focus;
-  outline-offset: 2px;
-}
-.rating-option.is-selected {
-  background: $color-highlight;
-  color: $color-background;
-  border-color: $color-accent;
-  font-weight: 600;
-  box-shadow: none;
-}
-@include respond-below('tablet') {
-  .rating-options {
-    gap: 3px;
-  }
-}
-@include respond-below('tablet') {
-  .rating-option {
-    height: 34px;
-  }
-}
 
-.field__label {
-  font-size: 12px;
-  font-weight: 500;
+  legend {
+    margin-bottom: 12px;
+  }
+
+  &--invalid .rating-option {
+    border-color: $color-input-error-border;
+    background: $color-input-error-background;
+    color: $color-text;
+  }
+
+  &:not(.rating-field--invalid) .rating-option:hover {
+    @media (hover: hover) {
+      transform: translateY(-2px);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      transform: none;
+    }
+  }
+
+  .rating-control {
+    position: relative;
+    margin-bottom: 12px;
+  }
+
+  .rating-error {
+    position: absolute;
+    top: calc(100% + 2px);
+    left: 0;
+    right: 0;
+    color: $color-danger;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  .rating-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(28px, 1fr));
+    gap: 5px;
+    margin-bottom: 8px;
+
+    @include respond-below('tablet') {
+      gap: 3px;
+    }
+  }
+
+  .rating-option {
+    position: relative;
+    display: grid;
+    place-items: center;
+    height: 36px;
+    font-size: 12px;
+    border: 1px solid $color-border;
+    border-radius: $radius-control;
+    background: $color-rating-option;
+    color: $color-text;
+    transition: transform 180ms ease;
+    cursor: pointer;
+
+    @include respond-below('tablet') {
+      height: 34px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+
+    input {
+      position: absolute;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      cursor: pointer;
+    }
+
+    &:has(input:focus-visible) {
+      outline: 3px solid $color-focus;
+      outline-offset: 2px;
+    }
+
+    &.is-selected {
+      background: $color-highlight;
+      color: $color-background;
+      border-color: $color-accent;
+      font-weight: 600;
+      box-shadow: none;
+    }
+  }
+
+  .field__label {
+    font-size: 12px;
+    font-weight: 500;
+  }
 }

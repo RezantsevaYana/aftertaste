@@ -16,7 +16,6 @@
     <div class="month-heading">
       <h2>{{ formatMonth(group.month) }}</h2>
       <span>{{ group.entries.length }}</span>
-      <div />
     </div>
     <div class="entry-grid">
       <EntryCard
@@ -35,8 +34,16 @@ import type { Entry } from '@/entities/entry'
 import { formatMonth } from '@/shared/lib/date'
 import { EntryCard } from '@/entities/entry'
 import { BaseButton, BaseIcon } from '@/shared/ui'
-const props = defineProps<{ entries: Entry[]; filtered: boolean }>()
-const emit = defineEmits<{ open: [entry: Entry]; add: [] }>()
+
+const props = defineProps<{
+  entries: Entry[]
+  filtered: boolean
+}>()
+const emit = defineEmits<{
+  open: [entry: Entry]
+  add: []
+}>()
+
 const groups = computed(() => {
   const result = new Map<string, Entry[]>()
   for (const entry of [...props.entries].sort((a, b) =>

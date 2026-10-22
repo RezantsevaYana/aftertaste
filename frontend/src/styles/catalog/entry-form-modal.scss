@@ -1,9 +1,9 @@
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
-
 @include modal-actions;
+
 .entry-form {
   display: flex;
   flex-direction: column;
-  gap: 21px;
+  gap: 8px;
 }

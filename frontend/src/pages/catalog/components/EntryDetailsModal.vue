@@ -5,7 +5,7 @@
     @close="emit('close')"
     ><div class="detail-meta">
       <strong>{{ entry.rating }} / {{ RATING_MAX }}</strong
-      ><span>{{ formatMonth(entry.month) }}</span>
+      ><span>{{ entryDate }}</span>
     </div>
     <dl v-if="entry.type === 'album'" class="detail-fields">
       <div>
@@ -26,36 +26,46 @@
         <dd>{{ entry.venue }}</dd>
       </div>
     </dl>
-    <img
-      v-if="entry.photo"
-      class="detail-photo"
-      :src="entry.photo"
-      :alt="entry.title"
-    />
+    <PhotoGallery v-if="photos.length" :photos="photos" :label="entry.title" />
     <p class="detail-review">
       {{
         entry.review ||
         'Пока без рецензии. Её можно добавить через «Редактировать».'
       }}
     </p>
+    <template #actions>
     <div class="modal__actions">
       <BaseButton variant="secondary" @click="emit('requestDelete')"
         >Удалить запись</BaseButton
       >
       <BaseButton @click="emit('edit')">Редактировать</BaseButton>
-    </div></BaseModal
+    </div>
+    </template></BaseModal
   >
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { Entry } from '@/entities/entry'
-import { contentTypes, theatreGenres, RATING_MAX } from '@/entities/entry'
-import { formatMonth } from '@/shared/lib/date'
-import { BaseModal } from '@/shared/ui'
+import { getEntryPhotos, contentTypes, theatreGenres, RATING_MAX } from '@/entities/entry'
+import { formatDate } from '@/shared/lib/date'
+import { BaseModal, PhotoGallery } from '@/shared/ui'
 import { BaseButton } from '@/shared/ui'
-const props = defineProps<{ entry: Entry }>()
-const emit = defineEmits<{ close: []; edit: []; requestDelete: [] }>()
+const props = defineProps<{
+  entry: Entry
+}>()
+const photos = computed(() => getEntryPhotos(props.entry))
+const entryDate = computed(() => {
+  const end = formatDate(props.entry.date ?? props.entry.month)
+  return props.entry.dateStart && props.entry.dateStart !== props.entry.date
+    ? `${formatDate(props.entry.dateStart)} — ${end}`
+    : end
+})
+const emit = defineEmits<{
+  close: []
+  edit: []
+  requestDelete: []
+}>()
 
 const entryTypeLabel = computed(() =>
   contentTypes.find((type) => type.value === props.entry.type)?.singular,

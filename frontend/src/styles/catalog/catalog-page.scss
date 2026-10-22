@@ -2,81 +2,136 @@
 @use '@/styles/mixins' as *;
 
 .intro {
-  padding: 48px 0 38px;
+  padding: 28px 0 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
+
+  @include respond-below('tablet') {
+    padding: 20px 0 18px;
+    gap: 16px;
+  }
+
+  @include respond-below('mobile') {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+    padding-bottom: 16px;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 30px;
+    font-family: $font-display;
+    font-weight: 600;
+    letter-spacing: -1.25px;
+    line-height: 1.2;
+
+    @include respond-below('tablet') {
+      font-size: 24px;
+    }
+  }
+
+  .entry-count {
+    margin-left: 12px;
+    color: $color-muted;
+    font-size: 15px;
+    font-weight: 400;
+    letter-spacing: 0;
+    vertical-align: middle;
+  }
+
+  .intro-description {
+    margin: 8px 0 0;
+    color: $color-muted;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+
+    @include respond-below('tablet') {
+      margin-top: 8px;
+    }
+  }
 }
-h1 {
-  margin: 0;
-  font-size: 36px;
-  font-weight: 500;
-  letter-spacing: -1.25px;
-  line-height: 1.2;
-}
-.entry-count {
-  margin-left: 12px;
-  color: $color-muted;
-  font-size: 15px;
-  font-weight: 400;
-  letter-spacing: 0;
-  vertical-align: middle;
-}
-.intro-description {
-  margin: 14px 0 0;
-  color: $color-muted;
-  font-size: 13px;
-  letter-spacing: 0.02em;
-}
+
 .catalog-toolbar {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 18px;
-  margin-bottom: 34px;
-}
-.filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-.filters span {
-  margin-left: 5px;
-  font-size: 11px;
-}
-.search-field {
-  width: 100%;
-}
-.search-field > :deep(.field__label) {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-}
-.search-field :deep(input) {
-  background: $color-input-background;
-  font-size: 13px;
-}
-@include respond-below('tablet') {
-  .intro {
-    padding-top: 32px;
-  }
-  h1 {
-    font-size: 30px;
-  }
-}
-@include respond-below('mobile') {
-  .intro {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 24px;
-    padding-bottom: 28px;
-  }
-}
+  gap: 12px;
+  margin-bottom: 24px;
 
-h1 {
-  font-family: $font-display;
-  font-weight: 600;
+  @include respond-below('tablet') {
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    @include respond-below('mobile') {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding: 6px 5vw;
+      margin: -6px -5vw;
+      scroll-padding-inline: 5vw;
+
+      > :deep(.button) {
+        flex-shrink: 0;
+        white-space: nowrap;
+      }
+    }
+
+    @include respond-below('tablet') {
+      gap: 6px;
+    }
+
+    span {
+      margin-left: 5px;
+      font-size: 11px;
+    }
+  }
+
+  .search-field {
+    width: 100%;
+
+    > :deep(.field__label) {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+    }
+
+    :deep(input) {
+      background: $color-input-background;
+      font-size: 13px;
+    }
+  }
+
+  .catalog-search-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(360px, 440px);
+    align-items: start;
+    gap: 12px;
+
+    @include respond-below('tablet') {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 10px;
+    }
+  }
+
+  .catalog-date-filters {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 110px;
+    gap: 10px;
+    min-width: 0;
+
+    @include respond-below('mobile') {
+      grid-template-columns: minmax(0, 1fr) 90px;
+      gap: 8px;
+    }
+  }
 }

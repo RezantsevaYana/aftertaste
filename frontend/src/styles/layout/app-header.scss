@@ -3,50 +3,50 @@
 
 .site-header {
   @include container;
-}
-.site-header {
   border-bottom: 1px solid $color-text;
-  min-height: 92px;
+  min-height: 76px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-}
-.brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 21px;
-  font-weight: 600;
-  letter-spacing: -0.8px;
-}
-.brand-record {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: repeating-radial-gradient(circle, $color-vinyl 0 2px, $color-vinyl-shine 2.4px 3px);
-  position: relative;
-}
-.brand-record::after {
-  content: '';
-  position: absolute;
-  inset: 7px;
-  background: $color-surface;
-  border-radius: 50%;
-}
-.header-note {
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: $color-muted;
-}
-@include respond-below('tablet') {
-  .site-header {
-    min-height: 80px;
+
+  @include respond-below('tablet') {
+    min-height: 60px;
   }
-}
-@include respond-below('mobile') {
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 21px;
+    font-weight: 600;
+    letter-spacing: -0.8px;
+  }
+
+  .brand-record {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: repeating-radial-gradient(circle, $color-vinyl 0 2px, $color-vinyl-shine 2.4px 3px);
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 7px;
+      background: $color-surface;
+      border-radius: 50%;
+    }
+  }
+
   .header-note {
-    display: none;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: $color-muted;
+
+    @include respond-below('mobile') {
+      display: none;
+    }
   }
 }

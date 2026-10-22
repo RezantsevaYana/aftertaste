@@ -27,7 +27,12 @@ export interface EntryDraft {
   rating: number
   review: string
   month: string
+  date?: string
+  dateStart?: string
+  // Старый формат: одно фото. Новые записи используют photos.
   photo?: string
+  photos?: string[]
+  primaryPhotoIndex?: number
   theatreGenre?: TheatreGenre
   venue?: string
   artist?: string
