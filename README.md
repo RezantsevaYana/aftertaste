@@ -97,7 +97,7 @@
 | Тесты фронтенда | Vitest | Значимая логика и поведение компонентов |
 | Тесты сервера | Vitest, Supertest | API, бизнес-правила и права доступа |
 | Сквозные тесты, позже | Playwright | Ключевые сценарии в браузере |
-| Локальная инфраструктура | Docker Compose | Сначала запуск PostgreSQL |
+| Локальная инфраструктура | Docker Compose | PostgreSQL, API, фронтенд, Adminer |
 | CI/CD | GitHub Actions | Проверки, сборка, затем деплой |
 
 Один репозиторий: фронтенд в `frontend/`, сервер NestJS в `backend/`;
@@ -125,33 +125,58 @@ PWA само по себе не требует Nuxt. Переход на Nuxt б
 [NestJS](https://docs.nestjs.com/),
 [TypeScript во Vue](https://vuejs.org/guide/typescript/overview).
 
-## Локальный запуск фронтенда
+## Локальный запуск приложения
 
-Команды выполняются из корня репозитория:
+Сначала установи зависимости фронтенда и бэкенда:
 
 ```sh
 nvm use
 cd frontend
 npm install
+cd ../backend
+npm install
+```
+
+Для запуска обоих серверов одной командой перейди в `frontend` и выполни:
+
+```sh
+cd frontend
 npm run dev
 ```
 
-`npm run type-check` проверяет типы, `npm run build` проверяет типы и собирает
-приложение. Дополнительные сведения о шаблоне: [docs/FRONTEND_SETUP.md](docs/FRONTEND_SETUP.md).
+Команда поднимает Vite и NestJS; адрес сайта Vite покажет в терминале (обычно
+`http://localhost:5173`). Остановка через `Ctrl+C` завершает оба процесса.
+Нужен Node.js версии 22.18+ или 24.12+.
 
-## Локальный запуск бэкенда
+Только фронтенд или backend можно запустить командами `npm run dev:frontend` и
+`npm run dev:backend` из папки `frontend`. `npm run type-check` проверяет типы,
+`npm run build` собирает фронтенд.
 
-В отдельном терминале, из корня репозитория:
+Backend отдельно запускается так:
 
 ```sh
-nvm use
 cd backend
-npm install
 npm run start:dev
 ```
 
-Стартовый сервер отвечает `Hello World!` на http://localhost:3000.
-Команды проверок: [docs/BACKEND_SETUP.md](docs/BACKEND_SETUP.md).
+Сведения о проверках: [docs/BACKEND_SETUP.md](docs/BACKEND_SETUP.md).
+
+## Запуск через Docker
+
+Если установлен Docker Desktop, из корня проекта выполни:
+
+```sh
+docker compose up --build
+```
+
+После сборки приложение будет доступно на http://localhost:8080, просмотр
+PostgreSQL в Adminer — на http://localhost:8081. Остановка — `Ctrl+C`; для
+остановки и удаления контейнеров выполни `docker compose down`.
+Записи хранятся в PostgreSQL в постоянном Docker volume `aftertaste-db` и
+переживают перезапуск контейнеров. Adminer: сервер `database`, база `aftertaste`,
+логин `aftertaste`, пароль `aftertaste-local`. Предыдущий JSON-файл остаётся в
+`aftertaste-data` как резервная копия. Чтобы удалить базу и резервную копию,
+используй `docker compose down -v`.
 
 ## Дизайн
 

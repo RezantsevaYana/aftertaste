@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ContentType {
+  book
+  film
+  series
+  theatre
+  album
+  exhibition
+}
+
+enum TheatreGenre {
+  theatre
+  opera
+  ballet
+  musical
+  other
+}
+
+model Entry {
+  id                String       @id
+  type              ContentType
+  title             String       @db.VarChar(200)
+  rating            Int
+  review            String       @db.VarChar(10000)
+  month             String       @db.VarChar(7)
+  date              String?      @db.VarChar(10)
+  dateStart         String?      @db.VarChar(10)
+  photo             String?
+  photos            String[]     @default([])
+  primaryPhotoIndex Int?
+  theatreGenre      TheatreGenre?
+  venue             String?      @db.VarChar(200)
+  artist            String?      @db.VarChar(200)
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  @@index([month])
+  @@index([type])
+}

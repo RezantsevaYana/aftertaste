@@ -10,6 +10,8 @@ lerna-debug.log*
 node_modules
 .DS_Store
 dist
+backend/data/*.json
+backend/data/*.tmp
 dist-ssr
 coverage
 *.local

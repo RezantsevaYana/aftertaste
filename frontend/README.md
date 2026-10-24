@@ -1,10 +1,10 @@
 # Aftertaste — фронтенд
 
-Прототип личного каталога на Vue 3 + TypeScript. Бэкенд пока не нужен.
+Личный каталог на Vue 3 + TypeScript с NestJS API.
 
 ## Запуск
 
-Из корня проекта:
+Сначала установи зависимости из папок `frontend` и `backend`. Затем из `frontend`:
 
 ```sh
 nvm use
@@ -12,6 +12,11 @@ cd frontend
 npm install
 npm run dev
 ```
+
+Эта команда запускает Vite и NestJS вместе. `Ctrl+C` останавливает оба сервера.
+
+Через Docker всё приложение запускается из корня репозитория командой
+`docker compose up --build`; сайт будет на http://localhost:8080.
 
 `npm run build` проверяет TypeScript и собирает production-версию.
 

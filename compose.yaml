@@ -1,0 +1,58 @@
+services:
+  database:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: aftertaste
+      POSTGRES_USER: aftertaste
+      POSTGRES_PASSWORD: aftertaste-local
+    volumes:
+      - aftertaste-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aftertaste -d aftertaste"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      PORT: 3000
+      DATA_DIR: /app/data
+      FRONTEND_ORIGIN: http://localhost:8080
+      DATABASE_URL: postgresql://aftertaste:aftertaste-local@database:5432/aftertaste?schema=public
+    volumes:
+      - aftertaste-data:/app/data
+    depends_on:
+      database:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ""
+    ports:
+      - "127.0.0.1:8080:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  database-viewer:
+    image: adminer:4
+    environment:
+      ADMINER_DEFAULT_SERVER: database
+    ports:
+      - "127.0.0.1:8081:8080"
+    depends_on:
+      database:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  aftertaste-data:
+  aftertaste-db:

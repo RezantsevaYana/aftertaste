@@ -13,6 +13,9 @@
 - [TypeScript](typescript.md) — интерфейсы, extends, структурная типизация,
   получение типов из значений, typeof, as const.
 
+- [Backend](backend.md) — HTTP API, NestJS, dependency injection, Prisma,
+  миграции PostgreSQL и вопросы с ответами для собеседования.
+
 ## Как ведём конспекты
 
 - Каждой теме или технологии — отдельный Markdown-файл с именем в kebab-case.

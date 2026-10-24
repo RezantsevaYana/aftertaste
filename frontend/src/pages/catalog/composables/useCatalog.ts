@@ -1,7 +1,7 @@
 import { computed, nextTick, ref } from 'vue'
 import type { ContentType, Entry, EntryDraft } from '@/entities/entry'
 import { matchesEntryDateFilter, getEntryFilterYears } from '@/entities/entry'
-import { loadEntries, saveEntries } from '@/api/catalog'
+import { createEntry, deleteEntry as deleteCatalogEntry, loadEntries, updateEntry } from '@/api/catalog'
 
 // Состояние и сценарии одного экземпляра страницы каталога.
 export function useCatalog() {
@@ -11,18 +11,18 @@ export function useCatalog() {
     title: string
     message: string
   }>()
-  let storageAvailable = true
-  try {
-    entries.value = loadEntries()
-  } catch {
-    storageAvailable = false
+  let apiAvailable = true
+  void loadEntries().then((loadedEntries) => {
+    entries.value = loadedEntries
+  }).catch(() => {
+    apiAvailable = false
     notification.value = {
       status: 'error',
       title: 'Каталог не загрузился',
       message:
-        'Не удалось прочитать данные браузера. Попробуй перезагрузить страницу или проверить доступ к хранилищу. Сохранение временно недоступно, чтобы не перезаписать твои записи.',
+        'Не удалось подключиться к серверу каталога. Проверь, что backend запущен, и перезагрузи страницу.',
     }
-  }
+  })
   const activeType = ref<ContentType | 'all'>('all')
   const search = ref<string | number>('')
   const dateFilter = ref<string | string[]>('')
@@ -56,15 +56,15 @@ export function useCatalog() {
   async function save(draft: EntryDraft) {
     const isEditing = !!editingEntry.value
     try {
-      if (!storageAvailable) throw new Error('Storage unavailable')
       const entry: Entry = {
         ...draft,
         id: editingEntry.value?.id ?? crypto.randomUUID(),
       }
+      if (!apiAvailable) throw new Error('API unavailable')
+      const savedEntry = isEditing ? await updateEntry(entry) : await createEntry(entry)
       const updated = isEditing
-        ? entries.value.map((item) => (item.id === entry.id ? entry : item))
-        : [entry, ...entries.value]
-      saveEntries(updated)
+        ? entries.value.map((item) => (item.id === savedEntry.id ? savedEntry : item))
+        : [savedEntry, ...entries.value]
       entries.value = updated
       formOpen.value = false
       activeType.value = 'all'
@@ -76,14 +76,14 @@ export function useCatalog() {
         status: 'success',
         title: isEditing ? 'Изменения сохранены' : 'Запись в каталоге',
         message:
-          'Всё на месте: оценка, дата и твой комментарий. Запись сохранена в этом браузере.',
+          'Всё на месте: оценка, дата и твой комментарий. Запись сохранена на сервере.',
       }
     } catch {
       notification.value = {
         status: 'error',
         title: 'Не удалось сохранить',
         message:
-          'Хранилище браузера недоступно или заполнено. Попробуй убрать фото и повторить. Все заполненные поля остались в форме.',
+          'Сервер не сохранил запись. Проверь подключение и повтори попытку. Все заполненные поля остались в форме.',
       }
     }
   }
@@ -91,13 +91,13 @@ export function useCatalog() {
     entryToDelete.value = selectedEntry.value
     selectedEntry.value = undefined
   }
-  function deleteEntry() {
+  async function deleteEntry() {
     const entry = entryToDelete.value
     if (!entry) return
     try {
-      if (!storageAvailable) throw new Error('Storage unavailable')
+      if (!apiAvailable) throw new Error('API unavailable')
+      await deleteCatalogEntry(entry.id)
       const updated = entries.value.filter((item) => item.id !== entry.id)
-      saveEntries(updated)
       entries.value = updated
       entryToDelete.value = undefined
       notification.value = {
@@ -110,7 +110,7 @@ export function useCatalog() {
         status: 'error',
         title: 'Не удалось удалить запись',
         message:
-          'Хранилище браузера недоступно. Попробуй перезагрузить страницу и повторить.',
+          'Сервер не удалил запись. Проверь подключение и повтори попытку.',
       }
     }
   }
