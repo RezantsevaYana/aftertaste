@@ -1,0 +1,41 @@
+[
+  {
+    "width": 390,
+    "initial": {
+      "trigger": "flex",
+      "desktop": "none",
+      "overflow": false,
+      "line": "0px"
+    },
+    "reset": {
+      "category": "Книги",
+      "search": ""
+    }
+  },
+  {
+    "width": 768,
+    "initial": {
+      "trigger": "flex",
+      "desktop": "none",
+      "overflow": false,
+      "line": "0px"
+    },
+    "reset": {
+      "category": "Книги",
+      "search": ""
+    }
+  },
+  {
+    "width": 1440,
+    "initial": {
+      "trigger": "none",
+      "desktop": "block",
+      "overflow": false,
+      "line": "1px"
+    },
+    "reset": {
+      "category": "Книги",
+      "search": ""
+    }
+  }
+]

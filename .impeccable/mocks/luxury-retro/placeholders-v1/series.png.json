@@ -1,0 +1,9 @@
+{
+  "key": "series",
+  "source": "/Users/yanocka/.codex/generated_images/01a16e0b-0609-7051-b98c-93115240c523/exec-59aaea0c-0f29-4d5e-8ada-ab36fbb226fc.png",
+  "destination": ".impeccable/mocks/luxury-retro/placeholders-v1/series.png",
+  "tool": "built-in image_gen",
+  "prompt": "Use case: product-mockup. Generate a photographic category placeholder for the adult luxury-retro Aftertaste cultural diary, landscape 3:2. The input book photograph is a STYLE REFERENCE ONLY: match its near-white neutral surface, soft directional window light from upper left, precise real-world material detail, quiet analogue tonality and gentle dimensional shadow. Do not include a book in the new image. Subject: one vintage cinema clapperboard with a dark charcoal unmarked slate and a hinged black-and-ivory striped clapstick slightly open. The slate has absolutely NO writing, ruled fields, title lines, numbers or labels. Restrained black-lacquer and aged ivory construction, fine physical craftsmanship, with only a tiny deep-burgundy hinge detail. A quiet three-quarter overhead angle. It must read instantly as a real film clapperboard, clearly distinct from a film reel. The object fills most of the frame while remaining entirely legible, centred and immediately recognisable in a tiny thumbnail. The image should be a sophisticated photographic still life of a real collectible object, not an illustration, cartoon, plastic 3D toy or vector art. Palette: deep cool burgundy, charcoal black, ivory and silver-grey only. Keep the background clean and almost white, not parchment, yellow or green. No text, letters, numbers, brands, logos, hands, extra props, watermark, frame border or UI. Match the reference's photographic angle and scale as closely as this object allows.",
+  "reference": ".impeccable/mocks/luxury-retro/placeholders-v1/book.png",
+  "approved": false
+}

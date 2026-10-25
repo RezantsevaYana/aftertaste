@@ -11,24 +11,31 @@ export function useCatalog() {
     title: string
     message: string
   }>()
-  let apiAvailable = true
-  void loadEntries().then((loadedEntries) => {
-    entries.value = loadedEntries
-  }).catch(() => {
-    apiAvailable = false
-    notification.value = {
-      status: 'error',
-      title: 'Каталог не загрузился',
-      message:
-        'Не удалось подключиться к серверу каталога. Проверь, что backend запущен, и перезагрузи страницу.',
+  const isLoading = ref(false)
+  const loadError = ref(false)
+  const isSaving = ref(false)
+  const isDeleting = ref(false)
+  const toast = ref('')
+
+  async function reload() {
+    if (isLoading.value) return
+    isLoading.value = true
+    loadError.value = false
+    try {
+      entries.value = await loadEntries()
+    } catch {
+      loadError.value = true
+    } finally {
+      isLoading.value = false
     }
-  })
+  }
+  void reload()
   const activeType = ref<ContentType | 'all'>('all')
   const search = ref<string | number>('')
   const dateFilter = ref<string | string[]>('')
   const yearFilter = ref('')
   const yearOptions = computed(() => getEntryFilterYears(entries.value).map((year) => ({ value: year, label: year })))
-  const hasFilters = computed(() => activeType.value !== 'all' || !!String(search.value).trim() || !!dateFilter.value.length || !!yearFilter.value)
+  const hasFilters = computed(() => !!String(search.value).trim() || !!dateFilter.value.length || !!yearFilter.value)
   const formOpen = ref(false)
   const editingEntry = ref<Entry>()
   const selectedEntry = ref<Entry>()
@@ -43,7 +50,13 @@ export function useCatalog() {
           .includes(String(search.value).trim().toLocaleLowerCase('ru')),
     ),
   )
+  function resetFilters() {
+    search.value = ''
+    dateFilter.value = ''
+    yearFilter.value = ''
+  }
   function addEntry() {
+    if (isLoading.value || loadError.value) return
     editingEntry.value = undefined
     formOpen.value = true
   }
@@ -54,30 +67,29 @@ export function useCatalog() {
     formOpen.value = true
   }
   async function save(draft: EntryDraft) {
+    if (isSaving.value) return
+    isSaving.value = true
+    toast.value = ''
     const isEditing = !!editingEntry.value
     try {
       const entry: Entry = {
         ...draft,
         id: editingEntry.value?.id ?? crypto.randomUUID(),
       }
-      if (!apiAvailable) throw new Error('API unavailable')
       const savedEntry = isEditing ? await updateEntry(entry) : await createEntry(entry)
       const updated = isEditing
         ? entries.value.map((item) => (item.id === savedEntry.id ? savedEntry : item))
         : [savedEntry, ...entries.value]
       entries.value = updated
       formOpen.value = false
-      activeType.value = 'all'
-      search.value = ''
-      dateFilter.value = ''
-      yearFilter.value = ''
+      if (!isEditing) resetFilters()
       await nextTick()
-      notification.value = {
-        status: 'success',
-        title: isEditing ? 'Изменения сохранены' : 'Запись в каталоге',
-        message:
-          'Всё на месте: оценка, дата и твой комментарий. Запись сохранена на сервере.',
+      if (!isEditing) {
+        const card = document.getElementById(`entry-${savedEntry.id}`)
+        card?.scrollIntoView({ block: 'nearest', behavior: 'instant' })
+        card?.querySelector<HTMLButtonElement>('button')?.focus({ preventScroll: true })
       }
+      toast.value = isEditing ? 'Изменения сохранены' : 'Запись добавлена в каталог'
     } catch {
       notification.value = {
         status: 'error',
@@ -85,6 +97,8 @@ export function useCatalog() {
         message:
           'Сервер не сохранил запись. Проверь подключение и повтори попытку. Все заполненные поля остались в форме.',
       }
+    } finally {
+      isSaving.value = false
     }
   }
   function requestEntryDeletion() {
@@ -93,18 +107,15 @@ export function useCatalog() {
   }
   async function deleteEntry() {
     const entry = entryToDelete.value
-    if (!entry) return
+    if (!entry || isDeleting.value) return
+    isDeleting.value = true
+    toast.value = ''
     try {
-      if (!apiAvailable) throw new Error('API unavailable')
       await deleteCatalogEntry(entry.id)
       const updated = entries.value.filter((item) => item.id !== entry.id)
       entries.value = updated
       entryToDelete.value = undefined
-      notification.value = {
-        status: 'success',
-        title: 'Запись удалена',
-        message: `«${entry.title}» больше нет в каталоге.`,
-      }
+      toast.value = `«${entry.title}» удалена из каталога`
     } catch {
       notification.value = {
         status: 'error',
@@ -112,10 +123,13 @@ export function useCatalog() {
         message:
           'Сервер не удалил запись. Проверь подключение и повтори попытку.',
       }
+    } finally {
+      isDeleting.value = false
     }
   }
 
   return {
+    isLoading, loadError, isSaving, isDeleting, toast, reload, resetFilters,
     entries, notification, activeType, search, dateFilter, yearFilter, yearOptions, hasFilters, formOpen, editingEntry,
     selectedEntry, entryToDelete, visibleEntries, addEntry, editEntry,
     save, requestEntryDeletion, deleteEntry,

@@ -1,11 +1,10 @@
 <template>
   <BaseModal
     :title="entry.title"
-    :eyebrow="entryTypeLabel"
     @close="emit('close')"
     ><div class="detail-meta">
       <strong>{{ entry.rating }} / {{ RATING_MAX }}</strong
-      ><span>{{ entryDate }}</span>
+      ><span>{{ entryTypeLabel }}</span><span>{{ entryDate }}</span>
     </div>
     <dl v-if="entry.type === 'album'" class="detail-fields">
       <div>

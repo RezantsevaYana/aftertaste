@@ -1,10 +1,10 @@
 <template>
   <BaseModal
     :title="entry ? 'Редактировать запись' : 'Что добавим?'"
-    eyebrow="Добавить в коллекцию"
     :before-close="confirmCloseIfChanged"
     @close="emit('close')"
     ><form :id="formId" ref="formElement" class="entry-form" novalidate @submit.prevent="submit">
+      <fieldset class="entry-form__fields" :disabled="saving" :aria-busy="saving">
       <BaseSelect
         id="entry-type"
         v-model="draft.type"
@@ -68,13 +68,14 @@
         v-model:primary-index="primaryPhotoIndex"
         @busy="photoBusy = $event"
       />
+      </fieldset>
     </form>
     <template #actions>
       <div class="modal__actions">
-        <BaseButton variant="secondary" @click="requestCancel"
+        <BaseButton variant="secondary" :disabled="saving" @click="requestCancel"
           >Отмена
           </BaseButton>
-          <BaseButton type="submit" :form="formId" :disabled="photoBusy">
+          <BaseButton type="submit" :form="formId" :disabled="photoBusy" :loading="saving || validating || photoBusy" :loading-label="photoBusy ? 'Читаем фото…' : 'Сохраняем…'">
               {{
               photoBusy
                 ? 'Читаем фото…'
@@ -113,6 +114,7 @@ import { RatingInput } from '@/shared/ui'
 import { PhotoInput, DatePicker } from '@/shared/ui'
 const props = defineProps<{
   entry?: Entry
+  saving?: boolean
 }>()
 const emit = defineEmits<{
   close: []
@@ -144,6 +146,7 @@ watch(isDateRange, (range) => {
 const photos = ref([...getEntryPhotos(draft)])
 const primaryPhotoIndex = ref(draft.primaryPhotoIndex ?? 0)
 const photoBusy = ref(false)
+const validating = ref(false)
 const monthLabel = computed(() => {
   if (draft.type === 'book') return 'Период чтения'
   if (draft.type === 'series') return 'Период просмотра'
@@ -180,6 +183,7 @@ const initialSnapshot = formSnapshot.value
 const hasChanges = computed(() => formSnapshot.value !== initialSnapshot)
 
 function confirmCloseIfChanged() {
+  if (props.saving || validating.value) return false
   if (!hasChanges.value && !photoBusy.value) return true
   closeConfirmationOpen.value = true
   return false
@@ -254,28 +258,34 @@ const fieldErrors = computed(() => ({
 }))
 
 async function submit() {
-  if (photoBusy.value) return
-  await nextTick()
-  const valid = await validation.value.$validate()
-  if (!valid) {
+  if (photoBusy.value || props.saving || validating.value) return
+  validating.value = true
+  try {
     await nextTick()
-    formElement.value?.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus()
-    return
+    const valid = await validation.value.$validate()
+    if (!valid) {
+      await nextTick()
+      formElement.value?.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus()
+      return
+    }
+    emit('save', {
+      ...draft,
+      photo: undefined,
+      photos: [...photos.value],
+      primaryPhotoIndex: photos.value.length ? primaryPhotoIndex.value : undefined,
+      month: endDate.value.slice(0, 7),
+      date: isCalendarDate(endDate.value) ? endDate.value : undefined,
+      dateStart: isDateRange.value && Array.isArray(selectedDate.value) ? selectedDate.value[0] : undefined,
+      title: draft.title.trim(),
+      review: draft.review.trim(),
+      theatreGenre: draft.type === 'theatre' ? theatreGenre.value || undefined : undefined,
+      venue: draft.type === 'theatre' ? draft.venue?.trim() || undefined : undefined,
+      artist: draft.type === 'album' ? draft.artist?.trim() : undefined,
+    })
+    await nextTick()
+  } finally {
+    validating.value = false
   }
-  emit('save', {
-    ...draft,
-    photo: undefined,
-    photos: [...photos.value],
-    primaryPhotoIndex: photos.value.length ? primaryPhotoIndex.value : undefined,
-    month: endDate.value.slice(0, 7),
-    date: isCalendarDate(endDate.value) ? endDate.value : undefined,
-    dateStart: isDateRange.value && Array.isArray(selectedDate.value) ? selectedDate.value[0] : undefined,
-    title: draft.title.trim(),
-    review: draft.review.trim(),
-    theatreGenre: draft.type === 'theatre' ? theatreGenre.value || undefined : undefined,
-    venue: draft.type === 'theatre' ? draft.venue?.trim() || undefined : undefined,
-    artist: draft.type === 'album' ? draft.artist?.trim() : undefined,
-  })
 }
 </script>
 

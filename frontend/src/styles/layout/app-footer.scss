@@ -8,7 +8,7 @@
   display: flex;
   justify-content: space-between;
   gap: 20px;
-  border-top: 1px solid $color-text;
+  border-top: 1px solid $color-border;
   color: $color-muted;
   font-size: 11px;
 
@@ -19,6 +19,7 @@
 
   @include respond-below('tablet') {
     margin-top: 24px;
-    padding: 20px 0 24px;
+    // Оставляем место для закреплённого действия каталога и домашнего индикатора.
+    padding: 20px 0 calc(80px + env(safe-area-inset-bottom, 0px));
   }
 }

@@ -1,7 +1,6 @@
 <template>
   <footer class="site-footer">
-    <span>Записи сохранены в этом браузере</span
-    ><span>Можно не соглашаться с критиками</span>
+    <span>Можно не соглашаться с критиками</span>
   </footer>
 </template>
 

@@ -1,0 +1,34 @@
+{
+  "actual": {
+    "count": 5,
+    "title": "Моя коллекция",
+    "headingColor": "rgba(0, 0, 0, 0)",
+    "headerColor": "rgb(79, 23, 24)"
+  },
+  "checks": [
+    "selected palette and light heading",
+    "real catalogue readable",
+    "error and retry",
+    "reduced-motion loading",
+    "all 6 fallbacks",
+    "primary photo override",
+    "details keep review",
+    "responsive 1440/1920/1024/768/390",
+    "mobile actions",
+    "submit-only validation",
+    "pending save and duplicate guard",
+    "search reset",
+    "select overlay viewport"
+  ],
+  "mutations": "All fixture writes fulfilled in isolated browser; no writes to real backend",
+  "fonts": "Official Onest file fulfilled locally in isolated browser to avoid external font-network dependency",
+  "screenshots": [
+    "actual-desktop",
+    "desktop",
+    "wide",
+    "laptop",
+    "tablet",
+    "mobile",
+    "mobile-details"
+  ]
+}

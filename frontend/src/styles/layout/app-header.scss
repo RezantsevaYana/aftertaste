@@ -2,48 +2,57 @@
 @use '@/styles/mixins' as *;
 
 .site-header {
-  @include container;
-  border-bottom: 1px solid $color-text;
-  min-height: 76px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
+  background: $color-header-background;
+  color: $color-header-text;
+  border-bottom: 1px solid $color-accent-hover;
 
-  @include respond-below('tablet') {
-    min-height: 60px;
+  .header-content {
+    @include container;
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+
+    @include respond-below('tablet') {
+      min-height: 58px;
+    }
   }
 
   .brand {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    font-size: 21px;
-    font-weight: 600;
-    letter-spacing: -0.8px;
+    font-size: 25px;
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.45px;
+
+    &:focus-visible {
+      outline-color: $color-header-text;
+    }
+
+    @include respond-below('tablet') {
+      font-size: 23px;
+    }
   }
 
   .brand-record {
-    width: 22px;
-    height: 22px;
+    display: block;
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
-    background: repeating-radial-gradient(circle, $color-vinyl 0 2px, $color-vinyl-shine 2.4px 3px);
-    position: relative;
 
-    &::after {
-      content: '';
-      position: absolute;
-      inset: 7px;
-      background: $color-surface;
-      border-radius: 50%;
+    @include respond-below('tablet') {
+      width: 30px;
+      height: 30px;
     }
   }
 
   .header-note {
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: $color-muted;
+    font-size: 11px;
+    color: $color-header-muted;
 
     @include respond-below('mobile') {
       display: none;

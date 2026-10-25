@@ -1,0 +1,48 @@
+@use '@/styles/variables' as *;
+
+.vinyl-loader {
+  display: inline-grid;
+  place-items: center;
+  position: relative;
+  flex-shrink: 0;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  background: repeating-radial-gradient(circle, $color-vinyl 0 6%, $color-vinyl-shine 7% 9%, $color-vinyl 10% 13%);
+  animation: vinyl-spin 1.4s linear infinite;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: conic-gradient(from 30deg, transparent 0 20%, $color-vinyl-groove 25% 30%, transparent 35% 70%, $color-vinyl-groove 75% 80%, transparent 85%);
+  }
+
+  .vinyl-loader__label {
+    position: relative;
+    width: 34%;
+    height: 34%;
+    border-radius: 50%;
+    background: $color-accent;
+
+    &::after {
+      content: '';
+      position: absolute;
+      width: 25%;
+      height: 25%;
+      top: 22%;
+      left: 40%;
+      border-radius: 50%;
+      background: $color-cover-cream;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes vinyl-spin {
+  to { transform: rotate(360deg); }
+}

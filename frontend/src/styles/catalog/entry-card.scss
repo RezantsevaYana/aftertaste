@@ -3,57 +3,21 @@
 
 .entry-card {
   position: relative;
-  width: 100%;
   display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  padding: 28px 12px;
-  border: 0;
-  border-bottom: 1px solid $color-border;
-  border-radius: 0;
-  background: transparent;
+  flex-direction: column;
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid $color-border;
+  border-radius: $radius-control;
+  background: $color-white;
   color: $color-text;
-  text-align: left;
-  transition:
-    background 0.18s,
-    transform 0.18s,
-    box-shadow 0.18s;
+  transition: border-color 180ms ease;
 
-  @include respond-below('tablet') {
-    padding: 14px 76px 14px 14px;
-    border: 1px solid $color-border;
-    border-radius: 10px;
-    background: $color-white;
-  }
-
-  @include respond-below('mobile') {
-    padding: 12px 60px 12px 12px;
-    gap: 8px;
-    flex-wrap: nowrap;
-  }
-
-  @include respond-above('tablet') {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    grid-template-rows: auto 1fr auto;
-    gap: 14px;
-    padding: 18px;
-    border: 1px solid $color-border;
-    border-radius: 12px;
-    background:
-      radial-gradient(circle at 12% 20%, rgb(40 40 43 / 0.035) 0 0.6px, transparent 0.8px),
-      $color-white;
-    background-size: 10px 10px;
-    min-height: 220px;
-  }
-
-  &:hover {
-    background-color: $color-soft;
-
-    @include respond-above('tablet') {
-      background-color: $color-surface;
-      box-shadow: $shadow-card;
-      transform: translateY(-2px) rotate(-0.25deg);
+  @media (hover: hover) {
+    &:hover {
+      border-color: $color-input-focus-border;
     }
   }
 
@@ -62,9 +26,76 @@
     outline-offset: 3px;
   }
 
-  &:not(:has(.entry-photo)) .entry-content {
-    @include respond-above('tablet') {
-      grid-row: 1 / 3;
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+
+  @include respond-below('tablet') {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    overflow: visible;
+  }
+
+  @include respond-below('mobile') {
+    gap: 10px;
+    padding: 11px;
+  }
+
+  .entry-photo {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    background: $color-cover-paper;
+
+    @include respond-below('tablet') {
+      width: 70px;
+      height: 94px;
+      aspect-ratio: auto;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
+    @include respond-below('mobile') {
+      width: 54px;
+      height: 72px;
+    }
+  }
+
+  .entry-caption {
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 13px 15px 15px;
+    min-width: 0;
+
+    @include respond-below('tablet') {
+      align-items: center;
+      padding: 0;
+    }
+  }
+
+  .entry-content {
+    min-width: 0;
+  }
+
+  .entry-title {
+    margin: 0;
+    font: 500 18px/1.4 $font-body;
+    letter-spacing: -0.2px;
+    overflow-wrap: anywhere;
+
+    @include respond-below('tablet') {
+      font-size: 15px;
+    }
+
+    @include respond-below('mobile') {
+      font-size: 14px;
     }
   }
 
@@ -75,15 +106,14 @@
     color: inherit;
     font: inherit;
     letter-spacing: inherit;
-    text-align: inherit;
+    text-align: left;
     overflow-wrap: anywhere;
-    // Расширяем область нажатия, сохраняя содержимое отдельным от кнопки.
 
     &::after {
       content: '';
       position: absolute;
       inset: 0;
-      border-radius: inherit;
+      border-radius: $radius-control;
     }
 
     &:focus-visible {
@@ -91,154 +121,37 @@
     }
   }
 
-  .entry-photo {
-    width: 70px;
-    height: 94px;
-    object-fit: cover;
-    border-radius: 6px;
-    flex-shrink: 0;
-
-    @include respond-below('mobile') {
-      width: 54px;
-      height: 72px;
-    }
-
-    @include respond-above('tablet') {
-      grid-column: 1 / -1;
-      grid-row: 1;
-      width: 100%;
-      height: auto;
-      aspect-ratio: 3 / 2;
-      border-radius: $radius-control;
-    }
-  }
-
-  .entry-content {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    min-width: 0;
-    flex: 1;
-
-    @include respond-below('mobile') {
-      flex-basis: auto;
-    }
-
-    @include respond-above('tablet') {
-      grid-column: 1 / -1;
-      grid-row: 2;
-    }
-  }
-
-  .entry-type {
+  .entry-meta {
+    margin: 4px 0 0;
     color: $color-muted;
-    font-size: 10px;
-    letter-spacing: 0.03em;
-
-    &::before {
-      content: '';
-      display: inline-block;
-      width: 5px;
-      height: 5px;
-      margin-right: 7px;
-      border-radius: 50%;
-      background: $color-olive;
-      vertical-align: middle;
-    }
-  }
-
-  .entry-title {
-    margin: 0;
-    font-size: 17px;
-    font-family: $font-display;
-    font-weight: 600;
-    letter-spacing: -0.35px;
-    line-height: 1.4;
-    overflow-wrap: anywhere;
-  }
-
-  .entry-artist {
-    margin: 0;
-    color: $color-muted;
-    font-size: 13px;
+    font-size: 11px;
     line-height: 1.5;
     overflow-wrap: anywhere;
   }
 
-  .entry-review {
-    margin: 0;
-    max-width: 610px;
-    color: $color-muted;
-    font-size: 13px;
-    line-height: 1.6;
-    overflow-wrap: anywhere;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-
-    @include respond-above('tablet') {
-      -webkit-line-clamp: 3;
-    }
-  }
-
   .entry-score {
-    display: flex;
+    display: inline-flex;
     align-items: baseline;
-    gap: 5px;
-    min-width: 60px;
-    margin-top: 24px;
-    font-size: 24px;
-    font-weight: 400;
-    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+    gap: 2px;
     color: $color-accent;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+
+    > span {
+      font-size: 10px;
+      font-weight: 400;
+    }
 
     @include respond-below('tablet') {
-      position: absolute;
-      top: 20px;
-      right: 12px;
-      margin: 0;
+      font-size: 21px;
     }
 
     @include respond-below('mobile') {
-      min-width: 56px;
-      font-size: 22px;
-      top: 12px;
-      right: 14px;
-    }
-
-    @include respond-above('tablet') {
-      grid-column: 1;
-      grid-row: 3;
-      margin: 0;
-      align-self: end;
-    }
-
-    > span {
-      display: inline;
-      font-size: 10px;
-      color: $color-muted;
-    }
-  }
-
-  .entry-arrow {
-    display: none;
-    font-size: 17px;
-    color: $color-muted;
-    margin-top: 27px;
-
-    @include respond-above('laptop') {
-      display: inline-flex;
-    }
-
-    @include respond-above('tablet') {
-      grid-column: 2;
-      grid-row: 3;
-      margin: 0;
-      align-self: center;
-      color: $color-accent;
-      font-size: 22px;
-      line-height: 1;
+      font-size: 20px;
     }
   }
 }

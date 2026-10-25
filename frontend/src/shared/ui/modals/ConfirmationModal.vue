@@ -1,12 +1,12 @@
 <template>
-  <BaseModal :title="title" @close="emit('close')">
+  <BaseModal :title="title" :before-close="canClose" @close="emit('close')">
     <p class="confirmation-message">{{ message }}</p>
     <template #actions>
     <div class="modal__actions">
-      <BaseButton variant="secondary" @click="emit('close')">{{
+      <BaseButton variant="secondary" :disabled="loading" @click="emit('close')">{{
         cancelLabel
       }}</BaseButton>
-      <BaseButton @click="emit('confirm')">{{ confirmLabel }}</BaseButton>
+      <BaseButton :loading="loading" :loading-label="loadingLabel" @click="emit('confirm')">{{ confirmLabel }}</BaseButton>
     </div>
     </template>
   </BaseModal>
@@ -16,18 +16,26 @@
 import BaseModal from './BaseModal.vue'
 import BaseButton from '../buttons/BaseButton.vue'
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     title: string
     message: string
     confirmLabel?: string
     cancelLabel?: string
+    loading?: boolean
+    loadingLabel?: string
   }>(),
   {
     confirmLabel: 'Подтвердить',
     cancelLabel: 'Отмена',
+    loading: false,
+    loadingLabel: 'Подтверждаем…',
   },
 )
+
+function canClose() {
+  return !props.loading
+}
 
 const emit = defineEmits<{
   close: []

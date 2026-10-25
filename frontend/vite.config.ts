@@ -17,7 +17,7 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/api': 'http://localhost:3000',
+      '/api': process.env.AFTERTASTE_API_PROXY || 'http://localhost:3000',
     },
   },
 })

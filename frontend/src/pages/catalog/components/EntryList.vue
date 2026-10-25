@@ -6,11 +6,11 @@
     <p>
       {{
         filtered
-          ? 'Попробуй другое название или переключи фильтр.'
+          ? 'Попробуй другое название или сбрось поиск и даты.'
           : 'Добавь первую запись и поделись своими впечатлениями.'
       }}
     </p>
-    <BaseButton @click="emit('add')"><BaseIcon icon="lucide:plus" /> Добавить запись</BaseButton>
+    <BaseButton v-if="!filtered" @click="emit('add')"><BaseIcon icon="lucide:plus" /> Добавить запись</BaseButton>
   </div>
   <section v-for="group in groups" :key="group.month" class="month-group">
     <div class="month-heading">
@@ -42,6 +42,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   open: [entry: Entry]
   add: []
+  reset: []
 }>()
 
 const groups = computed(() => {

@@ -1,0 +1,416 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-25T15:17:40.493191+00:00",
+  "title": "Design System: Aftertaste",
+  "extensions": {
+    "colorMeta": {
+      "accent": {
+        "role": "primary",
+        "displayName": "accent",
+        "tonalRamp": [
+          "oklch(15% .008 20)",
+          "oklch(25% .045 20)",
+          "oklch(35% .045 20)",
+          "oklch(45% .045 20)",
+          "oklch(60% .045 20)",
+          "oklch(75% .045 20)",
+          "oklch(85% .045 20)",
+          "oklch(95% .008 20)"
+        ]
+      },
+      "accent-hover": {
+        "role": "primary",
+        "displayName": "accent-hover",
+        "tonalRamp": [
+          "oklch(15% .008 20)",
+          "oklch(25% .045 20)",
+          "oklch(35% .045 20)",
+          "oklch(45% .045 20)",
+          "oklch(60% .045 20)",
+          "oklch(75% .045 20)",
+          "oklch(85% .045 20)",
+          "oklch(95% .008 20)"
+        ]
+      },
+      "accent-soft": {
+        "role": "primary",
+        "displayName": "accent-soft",
+        "tonalRamp": [
+          "oklch(15% .008 20)",
+          "oklch(25% .015 20)",
+          "oklch(35% .015 20)",
+          "oklch(45% .015 20)",
+          "oklch(60% .015 20)",
+          "oklch(75% .015 20)",
+          "oklch(85% .015 20)",
+          "oklch(95% .008 20)"
+        ]
+      },
+      "background": {
+        "role": "neutral",
+        "displayName": "background",
+        "tonalRamp": [
+          "oklch(15% .008 20)",
+          "oklch(25% .015 20)",
+          "oklch(35% .015 20)",
+          "oklch(45% .015 20)",
+          "oklch(60% .015 20)",
+          "oklch(75% .015 20)",
+          "oklch(85% .015 20)",
+          "oklch(95% .008 20)"
+        ]
+      },
+      "text": {
+        "role": "neutral",
+        "displayName": "text",
+        "tonalRamp": [
+          "oklch(15% .008 20)",
+          "oklch(25% .015 20)",
+          "oklch(35% .015 20)",
+          "oklch(45% .015 20)",
+          "oklch(60% .015 20)",
+          "oklch(75% .015 20)",
+          "oklch(85% .015 20)",
+          "oklch(95% .008 20)"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "muted",
+        "tonalRamp": [
+          "oklch(15% .008 20)",
+          "oklch(25% .015 20)",
+          "oklch(35% .015 20)",
+          "oklch(45% .015 20)",
+          "oklch(60% .015 20)",
+          "oklch(75% .015 20)",
+          "oklch(85% .015 20)",
+          "oklch(95% .008 20)"
+        ]
+      },
+      "border": {
+        "role": "neutral",
+        "displayName": "border",
+        "tonalRamp": [
+          "oklch(15% .008 20)",
+          "oklch(25% .015 20)",
+          "oklch(35% .015 20)",
+          "oklch(45% .015 20)",
+          "oklch(60% .015 20)",
+          "oklch(75% .015 20)",
+          "oklch(85% .015 20)",
+          "oklch(95% .008 20)"
+        ]
+      },
+      "soft": {
+        "role": "neutral",
+        "displayName": "soft",
+        "tonalRamp": [
+          "oklch(15% .008 20)",
+          "oklch(25% .015 20)",
+          "oklch(35% .015 20)",
+          "oklch(45% .015 20)",
+          "oklch(60% .015 20)",
+          "oklch(75% .015 20)",
+          "oklch(85% .015 20)",
+          "oklch(95% .008 20)"
+        ]
+      },
+      "cover-paper": {
+        "role": "neutral",
+        "displayName": "cover-paper",
+        "tonalRamp": [
+          "oklch(15% .008 20)",
+          "oklch(25% .015 20)",
+          "oklch(35% .015 20)",
+          "oklch(45% .015 20)",
+          "oklch(60% .015 20)",
+          "oklch(75% .015 20)",
+          "oklch(85% .015 20)",
+          "oklch(95% .008 20)"
+        ]
+      },
+      "input-focus-border": {
+        "role": "neutral",
+        "displayName": "input-focus-border",
+        "tonalRamp": [
+          "oklch(15% .008 20)",
+          "oklch(25% .045 20)",
+          "oklch(35% .045 20)",
+          "oklch(45% .045 20)",
+          "oklch(60% .045 20)",
+          "oklch(75% .045 20)",
+          "oklch(85% .045 20)",
+          "oklch(95% .008 20)"
+        ]
+      },
+      "input-focus-ring": {
+        "role": "neutral",
+        "displayName": "input-focus-ring",
+        "tonalRamp": [
+          "oklch(15% .008 20)",
+          "oklch(25% .045 20)",
+          "oklch(35% .045 20)",
+          "oklch(45% .045 20)",
+          "oklch(60% .045 20)",
+          "oklch(75% .045 20)",
+          "oklch(85% .045 20)",
+          "oklch(95% .008 20)"
+        ]
+      },
+      "danger": {
+        "role": "neutral",
+        "displayName": "danger",
+        "tonalRamp": [
+          "oklch(15% .008 15)",
+          "oklch(25% .045 15)",
+          "oklch(35% .045 15)",
+          "oklch(45% .045 15)",
+          "oklch(60% .045 15)",
+          "oklch(75% .045 15)",
+          "oklch(85% .045 15)",
+          "oklch(95% .008 15)"
+        ]
+      },
+      "input-error-background": {
+        "role": "neutral",
+        "displayName": "input-error-background",
+        "tonalRamp": [
+          "oklch(15% .008 20)",
+          "oklch(25% .015 20)",
+          "oklch(35% .015 20)",
+          "oklch(45% .015 20)",
+          "oklch(60% .015 20)",
+          "oklch(75% .015 20)",
+          "oklch(85% .015 20)",
+          "oklch(95% .008 20)"
+        ]
+      },
+      "input-error-border": {
+        "role": "neutral",
+        "displayName": "input-error-border",
+        "tonalRamp": [
+          "oklch(15% .008 15)",
+          "oklch(25% .045 15)",
+          "oklch(35% .045 15)",
+          "oklch(45% .045 15)",
+          "oklch(60% .045 15)",
+          "oklch(75% .045 15)",
+          "oklch(85% .045 15)",
+          "oklch(95% .008 15)"
+        ]
+      },
+      "input-error-ring": {
+        "role": "neutral",
+        "displayName": "input-error-ring",
+        "tonalRamp": [
+          "oklch(15% .008 20)",
+          "oklch(25% .045 20)",
+          "oklch(35% .045 20)",
+          "oklch(45% .045 20)",
+          "oklch(60% .045 20)",
+          "oklch(75% .045 20)",
+          "oklch(85% .045 20)",
+          "oklch(95% .008 20)"
+        ]
+      },
+      "backdrop": {
+        "role": "neutral",
+        "displayName": "backdrop",
+        "tonalRamp": [
+          "oklch(15% .008 20)",
+          "oklch(25% .015 20)",
+          "oklch(35% .015 20)",
+          "oklch(45% .015 20)",
+          "oklch(60% .015 20)",
+          "oklch(75% .015 20)",
+          "oklch(85% .015 20)",
+          "oklch(95% .008 20)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "headline": {
+        "displayName": "headline",
+        "purpose": "Главный заголовок каталога."
+      },
+      "dialog-title": {
+        "displayName": "dialog-title",
+        "purpose": "Заголовки модалок."
+      },
+      "entry-title": {
+        "displayName": "entry-title",
+        "purpose": "Названия записей."
+      },
+      "score": {
+        "displayName": "score",
+        "purpose": "Личные оценки с табличными цифрами."
+      },
+      "body": {
+        "displayName": "body",
+        "purpose": "Базовый браузерный размер."
+      },
+      "form": {
+        "displayName": "form",
+        "purpose": "Текст полей."
+      },
+      "button-label": {
+        "displayName": "button-label",
+        "purpose": "Действия и фильтры."
+      }
+    },
+    "shadows": [
+      {
+        "name": "button-hover",
+        "value": "0 3px 8px #2020240c",
+        "purpose": "Лёгкий подъём действия при наведении."
+      },
+      {
+        "name": "menu",
+        "value": "0 10px 24px #2020240c",
+        "purpose": "Наложенные меню."
+      },
+      {
+        "name": "modal",
+        "value": "0 24px 80px #20202426",
+        "purpose": "Отделение диалога от фона."
+      }
+    ],
+    "motion": [
+      {
+        "name": "button-state",
+        "value": "280ms ease",
+        "purpose": "Изменение цвета и тени кнопки."
+      },
+      {
+        "name": "button-lift",
+        "value": "220ms ease",
+        "purpose": "Подъём кнопки на 1px."
+      },
+      {
+        "name": "card-border",
+        "value": "180ms ease",
+        "purpose": "Наведение обводки карточки."
+      },
+      {
+        "name": "sheet-enter",
+        "value": "280ms ease-out",
+        "purpose": "Вход мобильной панели; отключается при reduced motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "mobile",
+        "value": "480px"
+      },
+      {
+        "name": "tablet",
+        "value": "768px"
+      },
+      {
+        "name": "laptop",
+        "value": "1024px"
+      },
+      {
+        "name": "desktop",
+        "value": "1440px"
+      },
+      {
+        "name": "wide",
+        "value": "1920px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Button primary",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Общий вариант BaseButton.",
+      "html": "<button class=\"ds-btn-primary\">Сохранить</button>",
+      "css": ".ds-btn-primary{font-family:Onest,Arial,sans-serif;font-size:12px;font-weight:500;line-height:1.4;padding:12px 18px;min-height:44px;border:1px solid #4f1718;background:#4f1718;color:#fff;border-radius:9px;cursor:pointer;transition:background 280ms ease,transform 220ms ease,box-shadow 280ms ease;}.ds-btn-primary:hover{background:#3b1011;transform:translateY(-1px);box-shadow:0 3px 8px #2020240c;}.ds-btn-primary:focus-visible{outline:2px solid #4f1718;outline-offset:4px;}.ds-btn-primary:active{transform:none;box-shadow:none;}@media(prefers-reduced-motion:reduce){.ds-btn-primary{transition:none;transform:none;}.ds-btn-primary:hover{transform:none;}}"
+    },
+    {
+      "name": "Button secondary",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Общий вариант BaseButton.",
+      "html": "<button class=\"ds-btn-secondary\">Сохранить</button>",
+      "css": ".ds-btn-secondary{font-family:Onest,Arial,sans-serif;font-size:12px;font-weight:500;line-height:1.4;padding:12px 18px;min-height:44px;border:1px solid #e1dcda;background:transparent;color:#28282b;border-radius:9px;cursor:pointer;transition:background 280ms ease,transform 220ms ease,box-shadow 280ms ease;}.ds-btn-secondary:hover{background:#f7f4f3;transform:translateY(-1px);box-shadow:0 3px 8px #2020240c;}.ds-btn-secondary:focus-visible{outline:2px solid #4f1718;outline-offset:4px;}.ds-btn-secondary:active{transform:none;box-shadow:none;}@media(prefers-reduced-motion:reduce){.ds-btn-secondary{transition:none;transform:none;}.ds-btn-secondary:hover{transform:none;}}"
+    },
+    {
+      "name": "Floating field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Заполненное поле с плавающей подписью.",
+      "html": "<label class=\"ds-field\"><span>Название</span><input value=\"Мастер и Маргарита\" aria-label=\"Название\"></label>",
+      "css": ".ds-field{display:block;position:relative;font-family:Onest,Arial,sans-serif;max-width:320px}.ds-field span{position:absolute;top:5px;left:12px;font-size:10px;line-height:12px;color:#756b6c}.ds-field input{font-family:Onest,Arial,sans-serif;width:100%;font-size:13px;line-height:20px;padding:17px 12px 5px;border:1px solid #e1dcda;border-radius:12px;color:#28282b;background:#fff;min-height:44px}.ds-field input:hover{border-color:#9e7778}.ds-field input:focus-visible{outline:none;border-color:#9e7778;box-shadow:0 0 0 2px #4f171812}"
+    },
+    {
+      "name": "Category filters",
+      "kind": "chip",
+      "refersTo": "button-compact",
+      "description": "Выбранная категория и соседний фильтр.",
+      "html": "<div class=\"ds-filters\"><button aria-pressed=\"true\">Все</button><button aria-pressed=\"false\">Книги</button></div>",
+      "css": ".ds-filters{display:flex;gap:10px}.ds-filters button{font-family:Onest,Arial,sans-serif;font-size:12px;font-weight:500;min-height:40px;padding:9px 15px;border:1px solid #e1dcda;border-radius:9px;background:transparent;color:#28282b;cursor:pointer}.ds-filters button[aria-pressed=true]{background:#4f1718;border-color:#4f1718;color:#fff}.ds-filters button:hover{box-shadow:0 3px 8px #2020240c}.ds-filters button:focus-visible{outline:2px solid #4f1718;outline-offset:4px;}.ds-filters button:active{box-shadow:none}"
+    },
+    {
+      "name": "Collection card",
+      "kind": "card",
+      "refersTo": "entry-card",
+      "description": "Контентная часть карточки с личной оценкой.",
+      "html": "<article class=\"ds-card\"><button>Мастер и Маргарита</button><p>Книга · 24 октября</p><strong>9<span>/10</span></strong></article>",
+      "css": ".ds-card{font-family:Onest,Arial,sans-serif;position:relative;max-width:330px;padding:13px 65px 15px 15px;border:1px solid #e1dcda;border-radius:12px;background:#fff;color:#28282b}.ds-card:hover{border-color:#9e7778}.ds-card button{font-family:Onest,Arial,sans-serif;padding:0;border:0;background:transparent;text-align:left;color:inherit;font-size:18px;font-weight:500;line-height:1.4;letter-spacing:-.2px;cursor:pointer}.ds-card button:focus-visible{outline:2px solid #4f1718;outline-offset:4px;}.ds-card button:active{color:#4f1718}.ds-card p{margin:4px 0 0;font-size:11px;color:#756b6c;line-height:1.5}.ds-card strong{position:absolute;right:15px;top:13px;font-size:24px;line-height:1.2;font-weight:500;color:#4f1718}.ds-card strong span{font-size:10px;font-weight:400}"
+    },
+    {
+      "name": "Brand navigation",
+      "kind": "nav",
+      "refersTo": "button-secondary",
+      "description": "Цветовая и типографическая роль шапки; растровый винил остаётся исходным asset в продукте.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Бренд\"><a href=\"#\">Aftertaste</a><span>Культурный дневник</span></nav>",
+      "css": ".ds-nav{font-family:Onest,Arial,sans-serif;display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:64px;padding:0 24px;background:#4f1718;color:#fff}.ds-nav a{font-size:25px;font-weight:500;line-height:1.2;letter-spacing:-.45px;color:inherit;text-decoration:none}.ds-nav a:hover{opacity:.85}.ds-nav a:focus-visible{outline:2px solid #fff;outline-offset:4px}.ds-nav a:active{opacity:1}.ds-nav span{font-size:11px;color:rgba(255,255,255,.78)}"
+    },
+    {
+      "name": "Rating choices",
+      "kind": "custom",
+      "refersTo": "rating-option",
+      "description": "Фрагмент шкалы из десяти значений.",
+      "html": "<div class=\"ds-rating\" role=\"group\" aria-label=\"Оценка\"><button aria-pressed=\"false\">8</button><button aria-pressed=\"true\">9</button><button aria-pressed=\"false\">10</button></div>",
+      "css": ".ds-rating{display:flex;gap:5px}.ds-rating button{font-family:Onest,Arial,sans-serif;width:36px;height:36px;font-size:12px;border:1px solid #e1dcda;border-radius:12px;background:#f5eeee;color:#28282b;cursor:pointer;transition:transform 180ms ease}.ds-rating button[aria-pressed=true]{background:#4f1718;border-color:#4f1718;color:#fff;font-weight:600}.ds-rating button:hover{transform:translateY(-2px)}.ds-rating button:focus-visible{outline:2px solid #4f1718;outline-offset:4px;}.ds-rating button:active{transform:none}@media(prefers-reduced-motion:reduce){.ds-rating button{transition:none}.ds-rating button:hover{transform:none}}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Культурный дневник",
+    "overview": "Культурный дневник с тёплым, тактильным характером личной коллекции стал сдержаннее и взрослее. Белая галерейная основа, глубокое вино и печатная краска оставляют главным изображение, название и личную оценку. Ретро-настроение задают небольшой объёмный винил и рисованная абстракция, а не декоративная фактура всей страницы.\n\nЭто рабочий интерфейс коллекции: найти запись, вспомнить впечатление, открыть детали или добавить новое. Onest выбран для текущей итерации; прежняя оливковая палитра и наклонённые карточки не входят в эту систему.",
+    "keyCharacteristics": [
+      "Личная культурная коллекция с ясной иерархией.",
+      "Белая основа, глубокое вино и графит.",
+      "Тонкая обводка карточек без теней и наклонов.",
+      "Маленький объёмный винил и авторская абстракция."
+    ],
+    "rules": [
+      {
+        "name": "The Collection Rule",
+        "body": "Винный выделяет бренд, действие и оценку; изображения и личное содержание остаются главным.",
+        "section": "colors"
+      },
+      {
+        "name": "The Quiet Card Rule",
+        "body": "Карточки отделяются тонкой обводкой; тени и наклоны не заменяют её.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do использовать Onest и нейтральную светлую основу текущей итерации.",
+      "Do отдавать приоритет главному пользовательскому фото перед иллюстрацией категории.",
+      "Do сохранять клавиатурный фокус, доступные подписи и уменьшение движения.",
+      "Do хранить полный отзыв и остальные фотографии в деталях записи."
+    ],
+    "donts": [
+      "Don't возвращать оливковые акценты и тяжёлый декоративный фон.",
+      "Don't добавлять карточкам тени, наклоны или повтор названия внутри заглушки.",
+      "Don't превращать многокатегорийный дневник в музыкальный сервис или маркетинговую посадочную страницу.",
+      "Don't добавлять декоративные надзаголовки; категория в деталях уже указана в метаданных."
+    ]
+  }
+}

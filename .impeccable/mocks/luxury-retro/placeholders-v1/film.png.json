@@ -1,0 +1,9 @@
+{
+  "key": "film",
+  "source": "/Users/yanocka/.codex/generated_images/01a16e0b-0609-7051-b98c-93115240c523/exec-11026fe5-9433-4eef-ba80-0d0e0bff9583.png",
+  "destination": ".impeccable/mocks/luxury-retro/placeholders-v1/film.png",
+  "tool": "built-in image_gen",
+  "prompt": "Use case: product-mockup. Generate a photographic category placeholder for the adult luxury-retro Aftertaste cultural diary, landscape 3:2. The input book photograph is a STYLE REFERENCE ONLY: match its near-white neutral surface, soft directional window light from upper left, precise real-world material detail, quiet analogue tonality and gentle dimensional shadow. Do not include a book in the new image. Subject: one large vintage silver-metal cinema film reel, with clear circular reel openings and a short loose curve of dark celluloid film showing authentic sprocket perforations. Polished-but-aged satin aluminium, charcoal celluloid, one discreet deep-burgundy reel centre. A quiet three-quarter overhead angle, carefully arranged as a premium archival cinema object. The object fills most of the frame while remaining entirely legible, centred and immediately recognisable in a tiny thumbnail. The image should be a sophisticated photographic still life of a real collectible object, not an illustration, cartoon, plastic 3D toy or vector art. Palette: deep cool burgundy, charcoal black, ivory and silver-grey only. Keep the background clean and almost white, not parchment, yellow or green. No text, letters, numbers, brands, logos, hands, extra props, watermark, frame border or UI. Match the reference's photographic angle and scale as closely as this object allows.",
+  "reference": ".impeccable/mocks/luxury-retro/placeholders-v1/book.png",
+  "approved": false
+}

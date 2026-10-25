@@ -1,0 +1,11 @@
+{
+  "key": "film",
+  "source": "/Users/yanocka/.codex/generated_images/01a16e0b-0609-7051-b98c-93115240c523/exec-76badf04-c571-4ec5-ace8-bb48eb822be9.png",
+  "file": "film.png",
+  "tool": "built-in image_gen",
+  "prompt": "Use case: illustration-story. Original sophisticated abstract artwork for a category placeholder in Aftertaste, an adult luxury-retro cultural diary. Landscape 3:2. Inspired by the formal experimentation of the Russian avant-garde, Malevich, Popova and Lissitzky, without quoting or reproducing any known work. This is a hand-rendered editorial drawing: precise but human graphite edges, restrained ink hatching, dry-brush marks and translucent pigment rubbed into a very pale near-white paper ground. Asymmetrical balance, generous breathing room, a few strong intersecting forms, subtle tension and painterly depth without photographic lighting. Colours limited to deep brown-burgundy #4F1718, charcoal, muted warm grey and near-white; no olive, yellow, bright primary red or gold. Refined and collected, never childish, cartoonish or a decorative vector icon. The category is only an abstract compositional suggestion, not a literal object or logo. No words, letters, numbers, signature, frame, border, watermark, photorealism, glossy 3D, aged parchment, famous black-square/red-circle composition or fake page of a historical painting. A slow charcoal arc crosses a diagonal rhythm of short uneven rectangular impressions; one substantial burgundy plane gives the movement a pause. Suggest sequence and cinematic movement without depicting a camera, reel, filmstrip, screen or vinyl record.",
+  "approved": true,
+  "approvedAt": "2026-10-25T13:26:07.114217+00:00",
+  "shippingFile": "frontend/public/category-covers/avant-garde-v1/film.jpg",
+  "derivation": "1200px JPEG for web delivery; original PNG preserved."
+}

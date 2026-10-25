@@ -1,0 +1,78 @@
+[
+  {
+    "width": 320,
+    "initial": {
+      "position": "fixed",
+      "button": [
+        151.9375,
+        40,
+        796,
+        836
+      ],
+      "overflow": false
+    },
+    "end": {
+      "actionTop": 787,
+      "lastCardBottom": 682.390625,
+      "footerTop": 726.390625
+    },
+    "formOpens": true
+  },
+  {
+    "width": 390,
+    "initial": {
+      "position": "fixed",
+      "button": [
+        151.9375,
+        40,
+        796,
+        836
+      ],
+      "overflow": false
+    },
+    "end": {
+      "actionTop": 787,
+      "lastCardBottom": 682.390625,
+      "footerTop": 726.390625
+    },
+    "formOpens": true
+  },
+  {
+    "width": 768,
+    "initial": {
+      "position": "fixed",
+      "button": [
+        157.9375,
+        42,
+        794,
+        836
+      ],
+      "overflow": false
+    },
+    "end": {
+      "actionTop": 785,
+      "lastCardBottom": 682.890625,
+      "footerTop": 726.890625
+    },
+    "formOpens": true
+  },
+  {
+    "width": 1440,
+    "initial": {
+      "position": "static",
+      "button": [
+        158.9375,
+        42,
+        127.75,
+        169.75
+      ],
+      "overflow": false
+    },
+    "end": {
+      "actionTop": -944.25,
+      "lastCardBottom": 686.1875,
+      "footerTop": 754.1875
+    },
+    "formOpens": true
+  }
+]

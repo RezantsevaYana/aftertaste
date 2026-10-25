@@ -1,0 +1,46 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.catalog-filter-fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 410px);
+  gap: 12px;
+  align-items: start;
+
+  &--stacked {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+
+  .search-field {
+    position: relative;
+    min-width: 0;
+
+    .search-icon {
+      position: absolute;
+      z-index: 1;
+      left: 13px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 17px;
+      height: 17px;
+      color: $color-muted;
+      pointer-events: none;
+    }
+
+    :deep(input) { padding-left: 39px; }
+    :deep(.field__label) { left: 39px; }
+  }
+
+  .date-fields {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 100px;
+    gap: 10px;
+    min-width: 0;
+
+    @include respond-below('mobile') {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 18px;
+    }
+  }
+}

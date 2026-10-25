@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Aftertaste — культурная картотека</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;450;500;600;650&display=swap" rel="stylesheet" />
+<style>
+:root{font-family:'Golos Text',Arial,sans-serif;color:#363439;background:#fff;font-synthesis:none;--wine:#7d2826;--muted:#706c70;--line:#e9e7e7}
+*{box-sizing:border-box}body{margin:0;width:1440px;height:900px;overflow:hidden}button,input,select{font:inherit}button,a{ -webkit-tap-highlight-color:transparent}button{cursor:pointer}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--wine);outline-offset:4px}::selection{background:#efdcda;color:#541b1a}a{color:inherit;text-decoration:none}button{color:inherit}input{caret-color:var(--wine)}
+.shell{width:1296px;height:900px;margin:auto;display:grid;grid-template-columns:216px 1fr;column-gap:48px}.rail{height:100%;border-right:1px solid var(--line);padding:35px 24px 28px 0;display:flex;flex-direction:column}.brand{display:flex;align-items:center;gap:9px;font-size:23px;font-weight:600;letter-spacing:-.7px;line-height:28px}.record{width:22px;height:22px;display:inline-grid;place-items:center;flex:none;border-radius:50%;background:repeating-radial-gradient(circle,#242225 0 2px,#514d50 2.3px 3px)}.record:after{content:'';width:7px;height:7px;background:#fff;border:2px solid var(--wine);border-radius:50%}.rail-description{font-size:12px;line-height:1.6;margin:13px 0 48px;color:var(--muted)}.nav{display:flex;flex-direction:column;gap:5px}.nav button{border:0;background:transparent;text-align:left;min-height:42px;padding:10px 11px;font-size:13px;border-radius:6px;display:flex;align-items:center;justify-content:space-between;gap:10px}.nav button:hover{background:#f7f7f5}.nav button[aria-pressed=true]{background:#7d2826;color:#fff;font-weight:500}.nav .count{font-size:11px;font-variant-numeric:tabular-nums;color:var(--muted)}.nav button[aria-pressed=true] .count{color:#efcfcc}.rail-foot{margin-top:auto;font-size:11px;line-height:1.8;color:var(--muted);max-width:170px}.rail-foot p{margin:0 0 8px}.rail-foot span{color:var(--wine)}
+.main{padding-top:33px;min-width:0}.topline{display:flex;align-items:center;justify-content:space-between;height:44px;margin-bottom:32px}.heading{display:flex;align-items:baseline;gap:12px}h1{font-size:26px;font-weight:500;letter-spacing:-.75px;margin:0;line-height:1.25}.total{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}.add{display:flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--wine);border-radius:9px;background:var(--wine);color:#fff;padding:12px 18px;min-height:44px;font-size:12px;font-weight:500}.add:hover{background:#65201f;border-color:#65201f}.add svg{width:15px;height:15px;stroke:currentColor;stroke-width:1.5;fill:none}
+.toolbar{display:grid;grid-template-columns:minmax(0,1fr) 225px 105px;gap:10px;margin-bottom:28px}.search{position:relative}.search svg{position:absolute;left:14px;top:14px;width:16px;height:16px;stroke:var(--muted);fill:none;stroke-width:1.5;pointer-events:none}.search input{width:100%;height:44px;border:1px solid #dedbdb;border-radius:8px;padding:0 14px 0 40px;font-size:13px;color:#363439;background:#fff}.search input::placeholder{color:var(--muted)}.select{position:relative}.select select{width:100%;height:44px;appearance:none;border:1px solid #dedbdb;border-radius:8px;padding:0 30px 0 13px;background:#fff;font-size:12px;color:#585358}.select:after{content:'';position:absolute;right:14px;top:17px;width:6px;height:6px;border-right:1px solid #706c70;border-bottom:1px solid #706c70;transform:rotate(45deg);pointer-events:none}
+.list-head{display:grid;grid-template-columns:minmax(0,1fr) 170px 84px;gap:16px;font-size:11px;color:var(--muted);border-bottom:1px solid #d5d1d1;padding:0 10px 12px}.list-head span:last-child{text-align:right}.month{display:flex;align-items:center;gap:9px;margin:25px 0 9px;padding-left:10px}.month h2{font-size:12px;font-weight:500;letter-spacing:.01em;margin:0}.month span{font-size:10px;color:var(--muted)}.entry{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 170px 84px;align-items:center;column-gap:16px;min-height:53px;padding:7px 10px;border-bottom:1px solid var(--line)}.entry:hover{background:#f8f5f4}.entry:focus-within{outline:2px solid var(--wine);outline-offset:1px}.title{margin:0;font-size:15px;font-weight:450;line-height:1.35;letter-spacing:-.14px}.open{font:inherit;letter-spacing:inherit;background:none;border:0;padding:0;text-align:left}.open:after{content:'';position:absolute;inset:0}.open:focus-visible{outline:none}.artist{display:inline-block;margin-left:10px;color:var(--muted);font-size:11px;font-weight:400;letter-spacing:0}.type{font-size:12px;color:var(--muted)}.score{font-size:17px;font-weight:500;color:var(--wine);text-align:right;font-variant-numeric:tabular-nums}.score small{font-size:10px;font-weight:400;color:var(--muted);margin-left:4px}.bottom{display:flex;justify-content:space-between;margin-top:25px;color:var(--muted);font-size:11px;line-height:1.5}.bottom p{margin:0}.bottom strong{font-weight:400;color:#585358}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+</style>
+</head>
+<body>
+<div class="shell">
+<aside class="rail">
+<a class="brand" href="#"><span class="record" aria-hidden="true"></span>aftertaste</a>
+<p class="rail-description">Личный культурный дневник</p>
+<nav class="nav" aria-label="Тип контента">
+<button type="button" aria-pressed="true">Все записи <span class="count">9</span></button>
+<button type="button" aria-pressed="false">Книги <span class="count">2</span></button>
+<button type="button" aria-pressed="false">Фильмы <span class="count">3</span></button>
+<button type="button" aria-pressed="false">Сериалы <span class="count">1</span></button>
+<button type="button" aria-pressed="false">Спектакли <span class="count">1</span></button>
+<button type="button" aria-pressed="false">Музыкальные альбомы <span class="count">1</span></button>
+<button type="button" aria-pressed="false">Выставки и музеи <span class="count">1</span></button>
+</nav>
+<div class="rail-foot"><p>Можно не соглашаться<br>с критиками.</p><span>Сколько по десятибалльной?</span></div>
+</aside>
+<main class="main">
+<header class="topline"><div class="heading"><h1>Мой каталог</h1><span class="total">9 записей</span></div><button type="button" class="add"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>Добавить запись</button></header>
+<form class="toolbar" role="search">
+<div class="search"><label class="sr-only" for="search">Поиск по названию</label><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="m16 16 4 4" /></svg><input id="search" type="search" placeholder="Найти запись по названию" /></div>
+<div class="select"><label class="sr-only" for="dates">Месяц, дата или период</label><select id="dates"><option>Месяц, дата или период</option></select></div>
+<div class="select"><label class="sr-only" for="year">Год</label><select id="year"><option>Все годы</option><option>2026</option></select></div>
+</form>
+<div class="list-head" aria-hidden="true"><span>Название</span><span>Тип</span><span>Оценка</span></div>
+<section aria-labelledby="sept"><div class="month"><h2 id="sept">Сентябрь 2026</h2><span>3 записи</span></div>
+<article class="entry"><h3 class="title"><button type="button" class="open">Нормальные люди</button></h3><span class="type">Книга</span><span class="score" aria-label="Оценка 9 из 10">9<small>/ 10</small></span></article>
+<article class="entry"><h3 class="title"><button type="button" class="open">Прошлые жизни</button></h3><span class="type">Фильм</span><span class="score" aria-label="Оценка 8 из 10">8<small>/ 10</small></span></article>
+<article class="entry"><h3 class="title"><button type="button" class="open">Идеальные дни</button></h3><span class="type">Фильм</span><span class="score" aria-label="Оценка 9 из 10">9<small>/ 10</small></span></article>
+</section>
+<section aria-labelledby="aug"><div class="month"><h2 id="aug">Август 2026</h2><span>3 записи</span></div>
+<article class="entry"><h3 class="title"><button type="button" class="open">Вишнёвый сад</button></h3><span class="type">Спектакль</span><span class="score" aria-label="Оценка 9 из 10">9<small>/ 10</small></span></article>
+<article class="entry"><h3 class="title"><button type="button" class="open">Медведь</button></h3><span class="type">Сериал</span><span class="score" aria-label="Оценка 8 из 10">8<small>/ 10</small></span></article>
+<article class="entry"><h3 class="title"><button type="button" class="open">In Rainbows</button><span class="artist">Radiohead</span></h3><span class="type">Музыкальный альбом</span><span class="score" aria-label="Оценка 9 из 10">9<small>/ 10</small></span></article>
+</section>
+<section aria-labelledby="july"><div class="month"><h2 id="july">Июль 2026</h2><span>3 записи</span></div>
+<article class="entry"><h3 class="title"><button type="button" class="open">Патерсон</button></h3><span class="type">Фильм</span><span class="score" aria-label="Оценка 8 из 10">8<small>/ 10</small></span></article>
+<article class="entry"><h3 class="title"><button type="button" class="open">Маленькая жизнь</button></h3><span class="type">Книга</span><span class="score" aria-label="Оценка 9 из 10">9<small>/ 10</small></span></article>
+<article class="entry"><h3 class="title"><button type="button" class="open">ГЭС-2</button></h3><span class="type">Выставка / музей</span><span class="score" aria-label="Оценка 8 из 10">8<small>/ 10</small></span></article>
+</section>
+<footer class="bottom"><p>Демонстрационные записи</p><p>Отзыв, фото и даты — внутри записи</p></footer>
+</main>
+</div>
+</body>
+</html>

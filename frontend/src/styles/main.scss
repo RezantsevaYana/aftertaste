@@ -9,12 +9,10 @@
   font-synthesis: none;
 }
 body {
-  background-color: $color-background;
-  background-image:
-    radial-gradient(circle at 25% 20%, rgb(40 40 43 / 0.035) 0 0.55px, transparent 0.7px),
-    radial-gradient(circle at 75% 65%, rgb(40 40 43 / 0.025) 0 0.45px, transparent 0.65px);
-  background-size: 9px 9px, 13px 13px;
+  background: $color-background;
+  line-height: 1.5;
 }
+
 * {
   box-sizing: border-box;
   scrollbar-width: thin;
@@ -99,6 +97,14 @@ select:focus-visible,
 textarea:focus-visible {
   outline: 3px solid $color-focus;
   outline-offset: 3px;
+}
+::selection {
+  background: $color-accent-soft;
+  color: $color-accent;
+}
+input,
+textarea {
+  caret-color: $color-accent;
 }
 a {
   color: inherit;

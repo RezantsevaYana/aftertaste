@@ -4,6 +4,15 @@
 .month-group {
   margin-bottom: 28px;
 
+  & + & {
+    border-top: 1px solid $color-border;
+    padding-top: 28px;
+
+    @include respond-below('tablet') {
+      padding-top: 20px;
+    }
+  }
+
   @include respond-below('tablet') {
     margin-bottom: 20px;
   }
@@ -12,7 +21,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 0 12px 6px;
+    padding: 0 0 16px;
 
     @include respond-below('mobile') {
       padding-left: 0;
@@ -20,14 +29,18 @@
 
     h2 {
       margin: 0;
-      font-size: 12px;
+      font-size: 22px;
       font-weight: 500;
       text-transform: capitalize;
-      color: $color-muted;
+      color: $color-text;
+
+      @include respond-below('tablet') {
+        font-size: 20px;
+      }
     }
 
     > span {
-      font-size: 10px;
+      font-size: 11px;
       color: $color-muted;
     }
   }
@@ -35,7 +48,7 @@
   .entry-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 16px;
+    gap: 22px;
 
     @include respond-above('desktop') {
       grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -44,7 +57,7 @@
     @include respond-below('tablet') {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 10px;
     }
   }
 }

@@ -2,6 +2,7 @@
 @use '@/styles/mixins' as *;
 
 .button {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -30,10 +31,37 @@
   }
 
   @include respond-below('mobile') {
-    min-height: 36px;
+    min-height: 38px;
     padding: 8px 10px;
     line-height: 1.35;
   }
+
+  .button__content {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: inherit;
+
+    &--hidden { visibility: hidden; }
+  }
+
+  .button__progress {
+    position: absolute;
+    inset: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: inherit;
+
+    :deep(.vinyl-loader) { font-size: 20px; }
+  }
+
+  &--loading:disabled {
+    opacity: 1;
+  }
+
+  &:disabled:not(.button--loading) { cursor: not-allowed; }
 
   &--primary {
     background: $color-accent;
@@ -77,12 +105,12 @@
   }
 
   &--compact {
-    min-height: 32px;
-    padding: 6px 10px;
-    gap: 4px;
+    min-height: 40px;
+    padding: 9px 15px;
 
-    @media (pointer: coarse) {
-      min-height: 36px;
+    @include respond-below('mobile') {
+      min-height: 38px;
+      padding: 8px 12px;
     }
   }
 }

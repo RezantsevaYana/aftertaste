@@ -1,3 +1,5 @@
+export { default as VinylLoader } from './feedback/VinylLoader.vue'
+export { default as BaseToast } from './feedback/BaseToast.vue'
 export { default as BaseButton } from './buttons/BaseButton.vue'
 export { default as BaseIcon } from './icons/BaseIcon.vue'
 export { default as BaseInput } from './form/BaseInput.vue'
