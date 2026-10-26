@@ -2,7 +2,7 @@
   <button
     :type="type"
     class="button"
-    :class="[`button--${variant}`, { 'button--compact': size === 'compact', 'button--loading': loading }]"
+    :class="[`button--${variant}`, { 'button--compact': size === 'compact', 'button--dense': size === 'dense', 'button--loading': loading }]"
     :disabled="disabled || loading"
     :aria-busy="loading"
   >
@@ -20,7 +20,7 @@ import VinylLoader from '@/shared/ui/feedback/VinylLoader.vue'
 withDefaults(
   defineProps<{
     variant?: 'primary' | 'secondary'
-    size?: 'default' | 'compact'
+    size?: 'default' | 'compact' | 'dense'
     type?: 'button' | 'submit'
     disabled?: boolean
     loading?: boolean

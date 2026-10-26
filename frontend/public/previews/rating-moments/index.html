@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Примерка оценок — Aftertaste</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&display=swap">
+  <style>
+    :root{--wine:#4f1718;--ink:#28282b;--muted:#756b6c;--line:#e1dcda;--soft:#f7f4f3;font-family:Onest,Arial,sans-serif;color:var(--ink);background:#fff;font-synthesis:none}
+    *{box-sizing:border-box}body{margin:0}button,input{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible{outline:3px solid var(--wine);outline-offset:4px}
+    .header{background:var(--wine);color:white}.container{width:90%;max-width:1700px;margin-inline:auto}.brand{display:inline-flex;align-items:center;gap:10px;min-height:64px;font-size:25px;font-weight:500;color:inherit;text-decoration:none}.brand img{width:34px;height:34px;transition:transform 650ms cubic-bezier(.16,1,.3,1)}.brand:hover img{transform:rotate(150deg)}
+    main{padding-block:32px 60px}h1{font-size:36px;line-height:1.2;font-weight:500;letter-spacing:-.8px;margin:0 0 12px}.intro{color:var(--muted);font-size:14px;line-height:1.6;margin:0 0 28px;max-width:64ch}
+    .rating-demo{max-width:550px;margin-bottom:40px}fieldset{border:0;padding:0;margin:0;min-width:0}legend{font-size:13px;font-weight:500;margin-bottom:16px}.muted{color:var(--muted);font-weight:400}.rating-options{display:flex;gap:8px;overflow:auto;padding:7px 4px;scrollbar-width:none}.rating-options::-webkit-scrollbar{display:none}
+    .rating-option{position:relative;flex:0 0 44px;height:44px;display:grid;place-items:center;border-radius:50%;background:var(--soft);font-size:13px;isolation:isolate;cursor:pointer}.rating-option input{position:absolute;inset:0;opacity:0;width:100%;height:100%;margin:0;cursor:pointer}.rating-option:has(input:focus-visible){outline:3px solid var(--wine);outline-offset:3px}.rating-option:has(input:checked){background:var(--wine);color:#fff;box-shadow:inset 0 0 0 3px var(--wine),inset 0 0 0 4px #ffffff55,inset 0 0 0 7px var(--wine),inset 0 0 0 8px #ffffff33}.rating-option span{pointer-events:none}
+    .rating-option[data-value="1"]:has(input:checked){background:#454549;box-shadow:inset 0 0 0 3px #454549,inset 0 0 0 4px #ffffff55,inset 0 0 0 7px #454549,inset 0 0 0 8px #ffffff33}
+    .rating-option::before,.rating-option::after{content:"";position:absolute;inset:-4px;border:1px solid var(--wine);border-radius:50%;opacity:0;pointer-events:none}
+    .rating-option.celebrate::before{animation:groove 700ms ease-out}.rating-option.celebrate::after{animation:groove 700ms 100ms ease-out}.rating-option.celebrate span{animation:replay 650ms cubic-bezier(.16,1,.3,1)}.rating-option.skip span{animation:stop-record 400ms cubic-bezier(.16,1,.3,1)}
+    .reaction{min-height:24px;margin:12px 0 0;font-size:14px;font-weight:500;display:flex;align-items:center;gap:8px;color:var(--wine)}.reaction[data-tone="low"]{color:#454549}.reaction[data-tone="normal"]{color:var(--muted);font-weight:400}.reaction svg{width:16px;height:16px}.hint{font-size:12px;line-height:1.6;color:var(--muted);margin:8px 0 0}
+    h2{font-size:22px;font-weight:500;margin:0 0 10px}.section-note{font-size:13px;color:var(--muted);margin:0 0 20px}.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}.entry-card{border:1px solid var(--line);border-radius:12px;overflow:hidden;min-width:0;background:white}.entry-card--high{border-color:var(--wine)}.entry-card--low{border-color:#858186}.cover{display:block;width:100%;aspect-ratio:3/2;object-fit:cover}.caption{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:13px 15px 15px}.title{font-size:18px;font-weight:500;line-height:1.4;margin:0;overflow-wrap:anywhere}.meta{font-size:11px;color:var(--muted);margin:4px 0 0}.score{font-size:24px;color:var(--wine);white-space:nowrap;font-variant-numeric:tabular-nums;line-height:1.2}.score small{font-size:10px;margin-left:2px}.score-group{display:flex;align-items:flex-end;flex-direction:column;gap:7px;flex-shrink:0}.distinction{display:flex;align-items:center;gap:4px;color:var(--wine);font-size:10px;white-space:nowrap}.distinction svg{height:12px;width:12px}.entry-card--low .score,.entry-card--low .distinction{color:#454549}
+    .footer-note{margin:30px 0 0;font-size:12px;line-height:1.6;color:var(--muted)}
+    @keyframes groove{0%{opacity:.4;transform:scale(.95)}100%{opacity:0;transform:scale(1.6)}}@keyframes replay{from{transform:rotate(-360deg)}to{transform:rotate(0)}}@keyframes stop-record{0%{transform:rotate(-25deg)}70%{transform:rotate(4deg)}100%{transform:rotate(0)}}
+    @media(max-width:768px){.brand{min-height:58px;font-size:23px}.brand img{width:30px;height:30px}main{padding-top:24px}h1{font-size:28px}.intro{font-size:13px;margin-bottom:22px}.rating-options{margin-inline:-5vw;padding-inline:5vw}.cards{display:flex;flex-direction:column;gap:12px}.entry-card{display:flex;align-items:center;gap:12px;padding:12px;overflow:visible}.cover{width:70px;height:94px;aspect-ratio:auto;border-radius:6px;flex-shrink:0}.caption{padding:0;flex:1;align-items:center;min-width:0}.title{font-size:15px}.score{font-size:21px}.rating-demo{margin-bottom:30px}.score-group{gap:6px}.distinction{font-size:9px}}
+    @media(max-width:480px){.entry-card{gap:10px;padding:11px}.cover{width:54px;height:72px}.title{font-size:14px}.score{font-size:20px}.caption{gap:8px}}
+
+    /* Новая примерка: выразительные коллекционные наклейки. */
+    .entry-card{position:relative}
+    .entry-card--high{border:2px solid var(--wine);background:#f8e9e7}
+    .entry-card--high .caption{background:var(--wine);color:white;min-height:115px;align-items:center}
+    .entry-card--high .meta{color:#e9c9c5}
+    .entry-card--high .score,.entry-card--high .distinction{color:white}
+    .entry-card--high .score{font-size:42px;letter-spacing:-1px;font-weight:500}
+    .entry-card--high .score small{font-size:12px;letter-spacing:0}
+    .entry-card--high .distinction{font-size:11px}
+    .collection-sticker{position:absolute;z-index:1;top:18px;left:16px;display:flex;align-items:center;gap:7px;padding:9px 12px;background:#f8e9e7;color:var(--wine);border:1px solid var(--wine);border-radius:6px;transform:rotate(-7deg);font-size:12px;font-weight:600;box-shadow:0 4px 9px #28282b20;pointer-events:none}
+    .collection-sticker svg{width:17px;height:17px;flex-shrink:0}
+    .entry-card--low{border:2px solid #454549;background:#eee8f2}
+    .entry-card--low .caption{background:#eee8f2;min-height:115px;align-items:center}
+    .entry-card--low .score{font-size:42px;letter-spacing:-1px;font-weight:500}
+    .entry-card--low .score small{font-size:12px;letter-spacing:0}
+    .entry-card--low .distinction{font-size:11px}
+    .entry-card--low .collection-sticker{left:auto;right:16px;transform:rotate(8deg);background:#454549;color:white;border-color:#454549;font-size:17px;letter-spacing:1px;padding:8px 16px}
+    @media(max-width:768px){
+      .entry-card--high,.entry-card--low{padding:14px 11px;min-height:112px;overflow:visible}
+      .entry-card--high{background:var(--wine)}
+      .entry-card--high .caption,.entry-card--low .caption{min-height:0;background:transparent}
+      .entry-card--high .score,.entry-card--low .score{font-size:32px}
+      .entry-card--high .score small,.entry-card--low .score small{font-size:10px}
+      .entry-card--high .distinction,.entry-card--low .distinction{font-size:9px}
+      .collection-sticker{top:-11px;left:12px;padding:4px 8px;font-size:10px;gap:4px;transform:rotate(-4deg)}
+      .collection-sticker svg{width:13px;height:13px}
+      .entry-card--low .collection-sticker{top:-10px;right:12px;padding:3px 10px;font-size:12px;transform:rotate(5deg)}
+      .cards{gap:24px}
+    }
+    .collection-sticker,.entry-card--low .collection-sticker{font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;font-size:25px;line-height:1;padding:8px 10px}
+    @media(max-width:768px){.collection-sticker,.entry-card--low .collection-sticker{font-size:22px;padding:5px 8px;top:-14px}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.brand:hover img{transform:none}}
+  </style>
+</head>
+<body>
+  <header class="header"><div class="container"><a class="brand" href="/"><img src="/brand/vinyl-mark-v1.png" alt="">aftertaste</a></div></header>
+  <main class="container">
+    <h1>Оценки с характером</h1>
+    <p class="intro">Примерка для Aftertaste. Нажми на 10 и 1: посмотри реакцию при выборе и оформление карточек ниже. Записи каталога не меняются.</p>
+    <section class="rating-demo" aria-label="Примерка выбора оценки">
+      <fieldset><legend>Твоя оценка <span class="muted">/ 10</span></legend><div class="rating-options" id="ratings"></div></fieldset>
+      <p class="reaction" id="reaction" role="status" aria-live="polite"></p>
+      <p class="hint">Повторное нажатие воспроизводит реакцию ещё раз. Промежуточные оценки остаются спокойными.</p>
+    </section>
+    <section aria-labelledby="cards-title"><h2 id="cards-title">Как это выглядит в коллекции</h2><p class="section-note">Более яркая примерка: любимое, обычная запись и совсем не твоё. Иллюстративные записи.</p><div class="cards" id="cards"></div></section>
+    <p class="footer-note">Анимация — только в момент выбора. В каталоге выделение остаётся неподвижным. При уменьшении движения анимация отключена.</p>
+  </main>
+  <script>
+    const icons={repeat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m17 2 4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4m14-1v2a3 3 0 0 1-3 3H3"/></svg>',skip:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 4 10 8L5 20V4Zm14 0v16"/></svg>'};
+    const ratings=document.getElementById('ratings'),reaction=document.getElementById('reaction');
+    for(let n=1;n<=10;n++){const label=document.createElement('label');label.className='rating-option';label.dataset.value=n;label.innerHTML=`<input type="radio" name="rating" value="${n}" aria-label="${n} из 10" ${n===7?'checked':''}><span>${n}</span>`;ratings.append(label)}
+    function react(value,animate=true){document.querySelectorAll('.rating-option').forEach(l=>l.classList.remove('celebrate','skip'));reaction.dataset.tone=value===1?'low':value===10?'high':'normal';reaction.innerHTML=value===10?icons.repeat+'Это — на повтор.':value===1?icons.skip+'Одного раза хватило.':`Твоя оценка — ${value} из 10.`;if(animate&&(value===1||value===10)){const label=ratings.querySelector(`[data-value="${value}"]`);void label.offsetWidth;label.classList.add(value===10?'celebrate':'skip')}}
+    ratings.addEventListener('click',e=>{if(e.target.matches('input'))react(Number(e.target.value))});ratings.addEventListener('change',e=>react(Number(e.target.value)));react(7,false);
+    const examples=[{title:'Любимая книга',type:'Книга',cover:'book',rating:10,tone:'high',sticker:'❤️',stickerLabel:'В самое сердце'},{title:'Хороший фильм',type:'Фильм',cover:'film',rating:8,tone:'normal'},{title:'Не мой спектакль',type:'Спектакль',cover:'theatre',rating:1,tone:'low',sticker:'💩',stickerLabel:'Совсем не понравилось'}];
+    document.getElementById('cards').innerHTML=examples.map(e=>`<article class="entry-card entry-card--${e.tone}">${e.sticker?`<span class="collection-sticker" role="img" aria-label="${e.stickerLabel}">${e.sticker}</span>`:''}<img class="cover" src="/category-covers/avant-garde-v1/${e.cover}.jpg" alt=""><div class="caption"><div><h3 class="title">${e.title}</h3><p class="meta">${e.type}</p></div><div class="score-group"><span class="score" aria-label="Оценка ${e.rating} из 10">${e.rating}<small>/ 10</small></span></div></div></article>`).join('');
+  </script>
+</body>
+</html>

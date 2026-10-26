@@ -1,3 +1,4 @@
+import { dismissModal } from '@/shared/lib/modal'
 import { computed, nextTick, ref } from 'vue'
 import type { ContentType, Entry, EntryDraft } from '@/entities/entry'
 import { matchesEntryDateFilter, getEntryFilterYears } from '@/entities/entry'
@@ -81,6 +82,7 @@ export function useCatalog() {
         ? entries.value.map((item) => (item.id === savedEntry.id ? savedEntry : item))
         : [savedEntry, ...entries.value]
       entries.value = updated
+      await dismissModal(document.querySelector<HTMLDialogElement>('dialog:has(.entry-form)'))
       formOpen.value = false
       if (!isEditing) resetFilters()
       await nextTick()
@@ -90,12 +92,12 @@ export function useCatalog() {
         card?.querySelector<HTMLButtonElement>('button')?.focus({ preventScroll: true })
       }
       toast.value = isEditing ? 'Изменения сохранены' : 'Запись добавлена в каталог'
-    } catch {
+    } catch (error) {
       notification.value = {
         status: 'error',
         title: 'Не удалось сохранить',
         message:
-          'Сервер не сохранил запись. Проверь подключение и повтори попытку. Все заполненные поля остались в форме.',
+          `${error instanceof Error ? error.message : 'Сервер не сохранил запись. Проверь подключение и повтори попытку.'} Все заполненные поля остались в форме.`,
       }
     } finally {
       isSaving.value = false
@@ -114,6 +116,7 @@ export function useCatalog() {
       await deleteCatalogEntry(entry.id)
       const updated = entries.value.filter((item) => item.id !== entry.id)
       entries.value = updated
+      await dismissModal(Array.from(document.querySelectorAll<HTMLDialogElement>('dialog[open]')).at(-1) ?? null)
       entryToDelete.value = undefined
       toast.value = `«${entry.title}» удалена из каталога`
     } catch {

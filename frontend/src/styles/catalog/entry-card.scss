@@ -3,6 +3,7 @@
 
 .entry-card {
   position: relative;
+  scroll-margin-block-start: 160px;
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -152,6 +153,89 @@
 
     @include respond-below('mobile') {
       font-size: 20px;
+    }
+  }
+
+  .entry-sticker {
+    position: absolute;
+    z-index: 1;
+    top: 18px;
+    left: 16px;
+    padding: 8px 10px;
+    border: 1px solid $color-accent;
+    border-radius: 6px;
+    background: $color-rating-favorite-paper;
+    box-shadow: 0 4px 9px rgba($color-text, 0.13);
+    font: 25px/1 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+    transform: rotate(-7deg);
+    pointer-events: none;
+
+    @include respond-below('tablet') {
+      top: -14px;
+      left: 12px;
+      padding: 5px 8px;
+      font-size: 22px;
+      transform: rotate(-4deg);
+    }
+  }
+
+  &--favorite,
+  &--low {
+    border-width: 2px;
+
+    .entry-caption {
+      min-height: 115px;
+      align-items: center;
+
+      @include respond-below('tablet') { min-height: 0; }
+    }
+
+    .entry-score {
+      font-size: 42px;
+      letter-spacing: -1px;
+
+      > span { font-size: 12px; letter-spacing: 0; }
+
+      @include respond-below('tablet') {
+        font-size: 32px;
+
+        > span { font-size: 10px; }
+      }
+    }
+
+    @include respond-below('tablet') {
+      min-height: 112px;
+      padding: 14px 11px;
+    }
+  }
+
+  &--favorite {
+    border-color: $color-accent;
+    background: $color-accent;
+
+    .entry-caption { background: $color-accent; color: $color-white; }
+    .entry-meta { color: $color-rating-favorite-muted; }
+    .entry-score { color: $color-white; }
+  }
+
+  &--low {
+    border-color: $color-rating-low;
+    background: $color-rating-low-surface;
+
+    .entry-score { color: $color-rating-low; }
+    .entry-meta { color: $color-rating-low; }
+
+    .entry-sticker {
+      left: auto;
+      right: 16px;
+      border-color: $color-rating-low;
+      background: $color-rating-low;
+      transform: rotate(8deg);
+
+      @include respond-below('tablet') {
+        right: 12px;
+        transform: rotate(5deg);
+      }
     }
   }
 }

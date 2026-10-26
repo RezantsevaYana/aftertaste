@@ -15,7 +15,6 @@ export function useBottomSheet(
   let pointerId: number | undefined
   let startY = 0
   let startTime = 0
-  let timer: ReturnType<typeof setTimeout> | undefined
 
   function reset() {
     dragging.value = false
@@ -32,14 +31,10 @@ export function useBottomSheet(
       reset()
       return
     }
-    if (!mobile.value || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      close()
-      return
-    }
     closing.value = true
     dragging.value = false
-    offset.value = (dialog.value?.getBoundingClientRect().height ?? window.innerHeight) + 32
-    timer = setTimeout(close, 240)
+    // Transition в BaseModal завершает удаление окна после анимации.
+    close()
   }
   function onPointerDown(event: PointerEvent) {
     if (!mobile.value || closing.value || !event.isPrimary || event.button !== 0) return
@@ -72,7 +67,6 @@ export function useBottomSheet(
     media.addEventListener('change', updateMedia)
   })
   onBeforeUnmount(() => {
-    clearTimeout(timer)
     media?.removeEventListener('change', updateMedia)
   })
   return { dragging, closing, style, requestClose, onPointerDown, onPointerMove, onPointerUp, onPointerCancel }

@@ -12,10 +12,12 @@
     </div>
   </section>
   <section class="catalog-section" aria-label="Каталог">
-    <div v-if="!isLoading && !loadError" class="catalog-toolbar">
+    <div v-if="!isLoading && !loadError" ref="controlsSentinel" class="catalog-controls-sentinel" aria-hidden="true" />
+    <div v-if="!isLoading && !loadError" class="catalog-controls" :class="{ 'catalog-controls--stuck': controlsStuck }">
+    <div class="catalog-toolbar">
       <div class="filters" role="group" aria-label="Тип контента">
         <BaseButton
-          size="compact"
+          :size="controlsStuck ? 'dense' : 'compact'"
           :variant="activeType === 'all' ? 'primary' : 'secondary'"
           :aria-pressed="activeType === 'all'"
           @click="activeType = 'all'"
@@ -24,13 +26,15 @@
         <BaseButton
           v-for="type in contentTypes"
           :key="type.value"
-          size="compact"
+          :size="controlsStuck ? 'dense' : 'compact'"
           :variant="activeType === type.value ? 'primary' : 'secondary'"
           :aria-pressed="activeType === type.value"
           @click="activeType = type.value"
           >{{ type.label }}</BaseButton
         >
       </div>
+    </div>
+    <div class="catalog-search-panel">
       <div class="desktop-filters">
         <CatalogFilters v-model:search="search" v-model:date="dateFilter" v-model:year="yearFilter" :year-options="yearOptions" id-prefix="catalog" />
       </div>
@@ -40,6 +44,7 @@
           <BaseIcon icon="lucide:sliders-horizontal" /> {{ filterButtonLabel }}
         </BaseButton>
       </div>
+    </div>
     </div>
     <div v-if="isLoading" class="catalog-status" role="status">
       <VinylLoader />
@@ -63,12 +68,12 @@
       />
     </template>
   </section>
-  <BaseModal v-if="filtersOpen" title="Фильтры" @close="filtersOpen = false">
+  <BaseModal ref="filterModal" v-if="filtersOpen" title="Фильтры" @close="filtersOpen = false">
     <CatalogFilters v-model:search="search" v-model:date="dateFilter" v-model:year="yearFilter" :year-options="yearOptions" id-prefix="mobile-catalog" stacked dates-only />
     <template #actions>
       <div class="modal__actions">
         <BaseButton variant="secondary" :disabled="!hasDateFilters" @click="resetDateFilters">Сбросить даты</BaseButton>
-        <BaseButton @click="filtersOpen = false">Показать записи · {{ visibleEntries.length }}</BaseButton>
+        <BaseButton @click="filterModal?.requestClose()">Показать записи · {{ visibleEntries.length }}</BaseButton>
       </div>
     </template>
   </BaseModal>
@@ -83,6 +88,7 @@
   <EntryFormModal
     v-if="formOpen"
     :entry="editingEntry"
+    :initial-type="newEntryType"
     :saving="isSaving"
     @close="formOpen = false"
     @save="save"
@@ -105,7 +111,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onBeforeUnmount, ref } from 'vue'
+import { computed, onMounted, onBeforeUnmount, ref, watch } from 'vue'
 import { contentTypes } from '@/entities/entry'
 import { BaseButton, BaseIcon, BaseInput, BaseModal, NotificationModal, ConfirmationModal, VinylLoader, BaseToast } from '@/shared/ui'
 import CatalogFilters from '@/pages/catalog/components/CatalogFilters.vue'
@@ -122,7 +128,23 @@ const {
   save, requestEntryDeletion, deleteEntry,
 } = useCatalog()
 
+const controlsSentinel = ref<HTMLElement>()
+const controlsStuck = ref(false)
+let controlsObserver: IntersectionObserver | undefined
+watch(controlsSentinel, (element) => {
+  controlsObserver?.disconnect()
+  controlsStuck.value = false
+  if (!element) return
+  controlsObserver = new IntersectionObserver(([entry]) => {
+    if (entry) controlsStuck.value = !entry.isIntersecting && entry.boundingClientRect.top < 0
+  })
+  controlsObserver.observe(element)
+}, { flush: 'post' })
+onBeforeUnmount(() => controlsObserver?.disconnect())
+
+const filterModal = ref<InstanceType<typeof BaseModal>>()
 const filtersOpen = ref(false)
+const newEntryType = computed(() => activeType.value === 'all' ? 'book' : activeType.value)
 const activeFilterCount = computed(() => Number(!!dateFilter.value.length) + Number(!!yearFilter.value))
 const hasDateFilters = computed(() => activeFilterCount.value > 0)
 function resetDateFilters() {

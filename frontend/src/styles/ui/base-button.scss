@@ -18,7 +18,10 @@
     background-color 280ms ease,
     border-color 280ms ease,
     transform 220ms ease,
-    box-shadow 280ms ease;
+    box-shadow 280ms ease,
+    padding 180ms ease,
+    min-height 180ms ease,
+    font-size 180ms ease;
 
   @media (prefers-reduced-motion: reduce) {
     transition: none;
@@ -112,5 +115,12 @@
       min-height: 38px;
       padding: 8px 12px;
     }
+  }
+
+  &--dense {
+    min-height: 32px;
+    padding: 6px 10px;
+    font-size: 11px;
+    line-height: 1.4;
   }
 }

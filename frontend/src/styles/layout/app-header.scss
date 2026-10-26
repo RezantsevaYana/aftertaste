@@ -35,18 +35,35 @@
     @include respond-below('tablet') {
       font-size: 23px;
     }
-  }
 
-  .brand-record {
-    display: block;
-    flex-shrink: 0;
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
+    @media (hover: hover) {
+      &:hover .brand-record {
+        transform: rotate(150deg);
+      }
+    }
 
-    @include respond-below('tablet') {
-      width: 30px;
-      height: 30px;
+    .brand-record {
+      display: block;
+      flex-shrink: 0;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      transition: transform 650ms cubic-bezier(0.16, 1, 0.3, 1);
+
+      @include respond-below('tablet') {
+        width: 30px;
+        height: 30px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .brand-record {
+        transition: none;
+      }
+
+      &:hover .brand-record {
+        transform: none;
+      }
     }
   }
 

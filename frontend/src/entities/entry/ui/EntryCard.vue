@@ -1,5 +1,6 @@
 <template>
-  <article :id="`entry-${entry.id}`" class="entry-card">
+  <article :id="`entry-${entry.id}`" class="entry-card" :class="cardClasses">
+    <span v-if="ratingSticker" class="entry-sticker" role="img" :aria-label="ratingSticker.label">{{ ratingSticker.emoji }}</span>
     <img
       v-if="coverPhoto"
       class="entry-photo"
@@ -45,6 +46,15 @@ const emit = defineEmits<{
 }>()
 
 const coverPhoto = computed(() => getPrimaryPhoto(props.entry))
+const cardClasses = computed(() => ({
+  'entry-card--favorite': props.entry.rating === RATING_MAX,
+  'entry-card--low': props.entry.rating === 1,
+}))
+const ratingSticker = computed(() => {
+  if (props.entry.rating === RATING_MAX) return { emoji: '❤️', label: 'В самое сердце' }
+  if (props.entry.rating === 1) return { emoji: '💩', label: 'Совсем не понравилось' }
+  return undefined
+})
 const ratingLabel = computed(() => `Оценка ${props.entry.rating} из ${RATING_MAX}`)
 const entryDescription = computed(() =>
   props.entry.type === 'album' && props.entry.artist

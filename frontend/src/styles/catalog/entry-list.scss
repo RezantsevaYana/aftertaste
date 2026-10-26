@@ -58,6 +58,8 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
+
+      &:has(.entry-card--favorite, .entry-card--low) { gap: 24px; }
     }
   }
 }

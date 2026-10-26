@@ -1,5 +1,6 @@
 <template>
   <BaseModal
+    ref="modal"
     :title="entry ? 'Редактировать запись' : 'Что добавим?'"
     :before-close="confirmCloseIfChanged"
     @close="emit('close')"
@@ -94,7 +95,7 @@
     confirm-label="Закрыть без сохранения"
     cancel-label="Продолжить редактирование"
     @close="closeConfirmationOpen = false"
-    @confirm="emit('close')"
+    @confirm="discardChanges"
   />
 </template>
 
@@ -102,8 +103,9 @@
 import { computed, nextTick, reactive, ref, watch, useId } from 'vue'
 import { useVuelidate } from '@vuelidate/core'
 import { helpers, required, maxLength } from '@vuelidate/validators'
-import type { Entry, EntryDraft, TheatreGenre } from '@/entities/entry'
+import type { ContentType, Entry, EntryDraft, TheatreGenre } from '@/entities/entry'
 import { getEntryPhotos, contentTypes, theatreGenres, RATING_MIN, RATING_MAX, RATING_DEFAULT } from '@/entities/entry'
+import { dismissModal } from '@/shared/lib/modal'
 import { currentMonth, currentDate, isCalendarDate } from '@/shared/lib/date'
 import { BaseModal, ConfirmationModal } from '@/shared/ui'
 import { BaseInput } from '@/shared/ui'
@@ -112,8 +114,10 @@ import { BaseTextarea } from '@/shared/ui'
 import { BaseButton } from '@/shared/ui'
 import { RatingInput } from '@/shared/ui'
 import { PhotoInput, DatePicker } from '@/shared/ui'
+const modal = ref<InstanceType<typeof BaseModal>>()
 const props = defineProps<{
   entry?: Entry
+  initialType?: ContentType
   saving?: boolean
 }>()
 const emit = defineEmits<{
@@ -123,7 +127,7 @@ const emit = defineEmits<{
 const draft = reactive<EntryDraft>(
   props.entry
     ? { ...props.entry }
-    : { type: 'book', title: '', rating: RATING_DEFAULT, review: '', month: currentMonth() },
+    : { type: props.initialType ?? 'book', title: '', rating: RATING_DEFAULT, review: '', month: currentMonth() },
 )
 const isDateRange = computed(() => draft.type === 'book' || draft.type === 'series')
 const initialDate = props.entry ? props.entry.date ?? props.entry.month : currentDate()
@@ -188,8 +192,12 @@ function confirmCloseIfChanged() {
   closeConfirmationOpen.value = true
   return false
 }
+async function discardChanges() {
+  await dismissModal(Array.from(document.querySelectorAll<HTMLDialogElement>('dialog[open]')).at(-1) ?? null)
+  modal.value?.finish()
+}
 function requestCancel() {
-  if (confirmCloseIfChanged()) emit('close')
+  modal.value?.requestClose()
 }
 
 const theatreGenreOptions = [

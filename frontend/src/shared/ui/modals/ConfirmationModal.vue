@@ -1,9 +1,9 @@
 <template>
-  <BaseModal :title="title" :before-close="canClose" @close="emit('close')">
+  <BaseModal ref="modal" :title="title" :before-close="canClose" @close="emit('close')">
     <p class="confirmation-message">{{ message }}</p>
     <template #actions>
     <div class="modal__actions">
-      <BaseButton variant="secondary" :disabled="loading" @click="emit('close')">{{
+      <BaseButton variant="secondary" :disabled="loading" @click="modal?.requestClose()">{{
         cancelLabel
       }}</BaseButton>
       <BaseButton :loading="loading" :loading-label="loadingLabel" @click="emit('confirm')">{{ confirmLabel }}</BaseButton>
@@ -14,6 +14,8 @@
 
 <script setup lang="ts">
 import BaseModal from './BaseModal.vue'
+import { ref } from 'vue'
+const modal = ref<InstanceType<typeof BaseModal>>()
 import BaseButton from '../buttons/BaseButton.vue'
 
 const props = withDefaults(

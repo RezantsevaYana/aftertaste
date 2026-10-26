@@ -1,5 +1,6 @@
 <template>
   <BaseModal
+    ref="modal"
     :title="entry.title"
     @close="emit('close')"
     ><div class="detail-meta">
@@ -34,22 +35,23 @@
     </p>
     <template #actions>
     <div class="modal__actions">
-      <BaseButton variant="secondary" @click="emit('requestDelete')"
+      <BaseButton variant="secondary" @click="modal?.finish(() => emit('requestDelete'))"
         >Удалить запись</BaseButton
       >
-      <BaseButton @click="emit('edit')">Редактировать</BaseButton>
+      <BaseButton @click="modal?.finish(() => emit('edit'))">Редактировать</BaseButton>
     </div>
     </template></BaseModal
   >
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import type { Entry } from '@/entities/entry'
 import { getEntryPhotos, contentTypes, theatreGenres, RATING_MAX } from '@/entities/entry'
 import { formatDate } from '@/shared/lib/date'
 import { BaseModal, PhotoGallery } from '@/shared/ui'
 import { BaseButton } from '@/shared/ui'
+const modal = ref<InstanceType<typeof BaseModal>>()
 const props = defineProps<{
   entry: Entry
 }>()

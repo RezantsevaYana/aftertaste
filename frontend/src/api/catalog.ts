@@ -12,6 +12,9 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
     headers: { 'Content-Type': 'application/json', ...options?.headers },
   })
   if (!response.ok) {
+    if (response.status === 413) {
+      throw new Error('Запись слишком большая. Удали часть фотографий или выбери файлы меньшего размера и попробуй снова.')
+    }
     const details = await response.json().catch(() => undefined) as { message?: string | string[] } | undefined
     const message = Array.isArray(details?.message) ? details.message.join(', ') : details?.message
     throw new Error(message || `Ошибка сервера (${response.status})`)
