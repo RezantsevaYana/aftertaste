@@ -11,7 +11,8 @@
 - [Vue](vue.md) — props, defineProps, передача данных от родителя к ребёнку.
 
 - [TypeScript](typescript.md) — интерфейсы, extends, структурная типизация,
-  получение типов из значений, typeof, as const.
+  получение типов из значений, typeof, as const, утилитарные типы,
+  дженерики, строгий режим и примеры для собеседования.
 
 - [Backend](backend.md) — HTTP API, NestJS, dependency injection, Prisma,
   миграции PostgreSQL и вопросы с ответами для собеседования.
