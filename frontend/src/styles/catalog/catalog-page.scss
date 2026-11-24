@@ -20,28 +20,6 @@
       width: 22px;
       height: 22px;
       border-radius: 50%;
-      transition: transform 650ms cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    @media (hover: hover) {
-      &:hover .add-record {
-        transform: rotate(150deg);
-      }
-    }
-
-    &:active .add-record {
-      transform: rotate(210deg);
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .add-record {
-        transition: none;
-      }
-
-      &:hover .add-record,
-      &:active .add-record {
-        transform: none;
-      }
     }
   }
 
@@ -137,6 +115,10 @@
     .catalog-search-panel {
       border-top: 0;
       padding-block: 2px 6px;
+
+      :deep(.field) {
+        @include compact-field;
+      }
     }
   }
 
@@ -207,6 +189,11 @@
   .mobile-search-row {
     display: none;
 
+    :deep(.field:not(.field--filled) .field__control:not(:focus-within) .field__label) {
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
     @include respond-below('tablet') {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
@@ -267,4 +254,18 @@
     color: $color-muted;
     font-size: 13px;
   }
+}
+
+.catalog-category-settings {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 40px;
+  min-height: 40px;
+  border: 1px solid $color-border;
+  border-radius: $radius-button;
+  background: transparent;
+  color: $color-muted;
+  &:hover { color: $color-accent; background: $color-soft; }
+  &:focus-visible { outline: 2px solid $color-focus; outline-offset: 3px; }
 }

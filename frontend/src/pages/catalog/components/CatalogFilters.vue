@@ -2,7 +2,7 @@
   <div class="catalog-filter-fields" :class="{ 'catalog-filter-fields--stacked': stacked }">
     <div v-if="!datesOnly" class="search-field">
       <BaseIcon class="search-icon" icon="lucide:search" />
-      <BaseInput :id="`${idPrefix}-search`" v-model="search" label="Поиск по названию" type="search" placeholder="Поиск по названию…" />
+      <BaseInput :id="`${idPrefix}-search`" v-model="search" label="Поиск по названию" type="search" />
     </div>
     <div class="date-fields">
       <DatePicker :id="`${idPrefix}-date-filter`" v-model="date" label="Месяц, дата или период" filter-modes min="1900-01-01" max="2100-12-31" />

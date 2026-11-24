@@ -3,6 +3,20 @@
 @include field;
 
 .field {
+  &:has(.password-toggle) input { padding-right: 48px; }
+
+  :deep(.password-toggle) {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 44px;
+    height: 100%;
+    color: $color-muted;
+    background: transparent;
+
+    &:focus-visible { outline-offset: -4px; }
+  }
+
   &.field--floating input[type='search'] {
     padding-right: 42px;
     appearance: none;

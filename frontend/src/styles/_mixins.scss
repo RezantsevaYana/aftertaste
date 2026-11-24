@@ -222,6 +222,43 @@
   }
 }
 
+// Плотное поле для закреплённых панелей; обычные формы сохраняют свои размеры.
+@mixin compact-field {
+  &.field--floating {
+    input,
+    .select-trigger {
+      min-height: 32px;
+      height: 32px;
+      padding-top: 12px;
+      padding-bottom: 2px;
+      line-height: 16px;
+    }
+
+    .field__label {
+      top: 8px;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    &.field--filled .field__label,
+    .field__control:focus-within .field__label {
+      top: 1px;
+      font-size: 9px;
+      line-height: 10px;
+    }
+  }
+
+  .select-chevron,
+  .date-trigger > .base-icon {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  &.field--open .select-chevron {
+    transform: translateY(-50%) rotate(180deg);
+  }
+}
+
 @mixin modal-actions {
   .modal__actions {
     display: flex;

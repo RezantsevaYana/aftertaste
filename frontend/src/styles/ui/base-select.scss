@@ -9,6 +9,8 @@
     justify-content: space-between;
     gap: 8px;
     text-align: left;
+
+    &--editable { padding-right: 42px; }
   }
 
   .select-value {
@@ -47,6 +49,20 @@
     transform: translateY(-50%);
   }
 
+  .select-toggle {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $color-muted;
+  }
+
+  .select-hint {
+    color: $color-muted;
+    font-size: 11px;
+    line-height: 1.5;
+  }
+
   &--open .select-chevron {
     transform: rotate(180deg);
   }
@@ -78,6 +94,8 @@
     border-radius: 7px;
     cursor: pointer;
     overflow-wrap: anywhere;
+
+    > span { min-width: 0; }
 
     &.is-selected {
       color: $color-accent;

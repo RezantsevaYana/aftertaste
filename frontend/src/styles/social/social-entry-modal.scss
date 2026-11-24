@@ -1,0 +1,65 @@
+@use "@/styles/variables" as *;
+@use "@/styles/mixins" as *;
+@include modal-actions;
+.social-modal-work {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0 0 12px;
+}
+.social-modal-note {
+  font-size: 13px;
+  color: $color-muted;
+  margin: 0 0 18px;
+}
+.social-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.social-error {
+  color: $color-danger;
+  font-size: 13px;
+  margin: 0;
+}
+.companion-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+  .companion-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding-left: 10px;
+    border: 1px solid $color-border;
+    border-radius: 7px;
+    font-size: 12px;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+}
+.companion-choice {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid $color-border;
+  cursor: pointer;
+  font-size: 13px;
+  small {
+    display: block;
+    color: $color-muted;
+    font-size: 11px;
+    overflow-wrap: anywhere;
+  }
+  > span:not(:first-child) {
+    min-width: 0;
+  }
+  input {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    margin-left: auto;
+    accent-color: $color-accent;
+  }
+}

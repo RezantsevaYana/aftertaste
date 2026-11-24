@@ -1,0 +1,23 @@
+@use "@/styles/variables" as *;
+@use "@/styles/mixins" as *;
+@include modal-actions;
+.public-entry-meta {
+  color: $color-muted;
+  font-size: 13px;
+}
+.public-review-note {
+  color: $color-muted;
+  font-size: 13px;
+  margin-top: 22px;
+}
+.public-review {
+  font-size: 14px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin-top: 22px;
+}
+.social-error {
+  color: $color-danger;
+  font-size: 13px;
+}

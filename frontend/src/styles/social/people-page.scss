@@ -1,0 +1,119 @@
+@use "./shared";
+@use "@/styles/variables" as *;
+@use "@/styles/mixins" as *;
+.people-page {
+  padding-top: 0;
+  .people-back { padding-top: 22px; }
+  .people-search {
+    max-width: 560px;
+  }
+  .people-list {
+    max-width: 1250px;
+  }
+  .person-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+    padding: 24px 0;
+    border-bottom: 1px solid $color-border;
+    @include respond-below("tablet") {
+      align-items: start;
+      flex-direction: column;
+      gap: 17px;
+      padding: 21px 0;
+    }
+  }
+  .person-identity {
+    display: inline-flex;
+    align-items: center;
+    gap: 15px;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+    color: $color-text;
+    > span {
+      min-width: 0;
+    }
+    strong {
+      display: block;
+      font-size: 15px;
+      font-weight: 500;
+    }
+    small {
+      display: block;
+      color: $color-muted;
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+    &:focus-visible {
+      outline: 2px solid $color-focus;
+      outline-offset: 4px;
+    }
+  }
+  .person-profile {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 25px 0 28px;
+    > div:not(.person-actions) {
+      flex: 1;
+      min-width: 0;
+    }
+    h1 {
+      font-size: 34px;
+      font-weight: 500;
+      margin: 0;
+      overflow-wrap: anywhere;
+    }
+    p {
+      color: $color-muted;
+      font-size: 13px;
+      margin: 6px 0 0;
+      overflow-wrap: anywhere;
+    }
+    :deep(.person-actions) {
+      margin-left: auto;
+    }
+    @include respond-below("laptop") {
+      flex-wrap: wrap;
+      :deep(.person-actions) {
+        width: 100%;
+        margin-left: 0;
+      }
+    }
+    @include respond-below("tablet") {
+      gap: 18px;
+      h1 {
+        font-size: 25px;
+      }
+    }
+  }
+  .public-privacy {
+    color: $color-muted;
+    font-size: 12px;
+    margin: 0 0 24px;
+  }
+  .public-entry-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px;
+    @include respond-above("desktop") {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    @include respond-below("tablet") {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+  }
+  .public-entry {
+    min-width: 0;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    gap: 10px;
+  }
+}

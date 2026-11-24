@@ -3,14 +3,14 @@
     <div class="intro-copy">
       <h1>Моя коллекция</h1>
       <p class="intro-description">
-        Книги, фильмы, сериалы, спектакли, музыка и выставки,<br class="intro-break" />
-        которые остаются со мной.
+        То, что осталось со мной. И то, что ещё впереди.
       </p>
     </div>
     <div class="catalog-add-action">
-      <BaseButton class="add-vinyl" size="compact" :disabled="isLoading || loadError" @click="addEntry"><img class="add-record" src="/brand/vinyl-mark-v1.png" alt="" /> Добавить запись</BaseButton>
+      <BaseButton class="add-vinyl" size="compact" :disabled="isLoading || loadError" @click="addEntry"><img class="add-record" src="/brand/vinyl-mark-v1.png" alt="" /> {{ addButtonLabel }}</BaseButton>
     </div>
   </section>
+  <CatalogSections :model-value="activeSection" :sections="sections" @update:model-value="changeSection" />
   <section class="catalog-section" aria-label="Каталог">
     <div v-if="!isLoading && !loadError" ref="controlsSentinel" class="catalog-controls-sentinel" aria-hidden="true" />
     <div v-if="!isLoading && !loadError" class="catalog-controls" :class="{ 'catalog-controls--stuck': controlsStuck }">
@@ -24,7 +24,7 @@
           >Все</BaseButton
         >
         <BaseButton
-          v-for="type in contentTypes"
+          v-for="type in preferences.categoryOptions"
           :key="type.value"
           :size="controlsStuck ? 'dense' : 'compact'"
           :variant="activeType === type.value ? 'primary' : 'secondary'"
@@ -32,6 +32,7 @@
           @click="activeType = type.value"
           >{{ type.label }}</BaseButton
         >
+        <button type="button" class="catalog-category-settings" aria-label="Настроить категории" @click="emit('categories')"><BaseIcon icon="lucide:plus" /></button>
       </div>
     </div>
     <div class="catalog-search-panel">
@@ -39,8 +40,8 @@
         <CatalogFilters v-model:search="search" v-model:date="dateFilter" v-model:year="yearFilter" :year-options="yearOptions" id-prefix="catalog" />
       </div>
       <div class="mobile-search-row">
-        <BaseInput id="mobile-catalog-search" v-model="search" label="Поиск по названию" type="search" placeholder="Поиск по названию…" />
-        <BaseButton size="compact" variant="secondary" :aria-pressed="hasDateFilters" aria-haspopup="dialog" @click="filtersOpen = true">
+        <BaseInput id="mobile-catalog-search" v-model="search" label="Поиск по названию" type="search" />
+        <BaseButton :size="controlsStuck ? 'dense' : 'compact'" variant="secondary" :aria-pressed="hasDateFilters" aria-haspopup="dialog" @click="filtersOpen = true">
           <BaseIcon icon="lucide:sliders-horizontal" /> {{ filterButtonLabel }}
         </BaseButton>
       </div>
@@ -62,7 +63,9 @@
       <EntryList
         :entries="visibleEntries"
         :filtered="hasFilters"
+        :section="activeSection"
         @open="selectedEntry = $event"
+        @complete="completeEntry"
         @add="addEntry"
         @reset="resetFilters"
       />
@@ -78,17 +81,32 @@
     </template>
   </BaseModal>
   <BaseToast v-if="toast" :message="toast" @close="toast = ''" />
+  <BaseToast v-if="completedPlan" :message="completionMessage" @close="completedPlan = undefined">
+    <template #actions>
+      <BaseButton size="dense" variant="secondary" :disabled="isUndoingCompletion" @click="showCompletedEntry">Посмотреть</BaseButton>
+      <BaseButton size="dense" variant="secondary" :loading="isUndoingCompletion" :disabled="isSaving || isDeleting" @click="undoCompletion">Отменить</BaseButton>
+    </template>
+  </BaseToast>
   <EntryDetailsModal
     v-if="selectedEntry"
+    ref="detailsModal"
     :entry="selectedEntry"
+    :saving-visibility="isSaving"
+    @visibility="changeReviewVisibility"
+    @companions="updateCompanions"
     @close="selectedEntry = undefined"
     @edit="editEntry"
+    @complete="completeEntry"
     @request-delete="requestEntryDeletion"
   />
   <EntryFormModal
     v-if="formOpen"
     :entry="editingEntry"
     :initial-type="newEntryType"
+    :initial-custom-category-id="newEntryCustomCategoryId"
+    :initial-status="activeSection"
+    :completing="completingPlan"
+    :genre-suggestions="genreSuggestions"
     :saving="isSaving"
     @close="formOpen = false"
     @save="save"
@@ -112,21 +130,44 @@
 
 <script setup lang="ts">
 import { computed, onMounted, onBeforeUnmount, ref, watch } from 'vue'
-import { contentTypes } from '@/entities/entry'
+import { getTypeForCategory } from '@/entities/entry'
+import { usePreferencesStore } from '@/stores/preferences'
+import type { EntryStatus } from '@/entities/entry'
 import { BaseButton, BaseIcon, BaseInput, BaseModal, NotificationModal, ConfirmationModal, VinylLoader, BaseToast } from '@/shared/ui'
+import CatalogSections from '@/pages/catalog/components/CatalogSections.vue'
 import CatalogFilters from '@/pages/catalog/components/CatalogFilters.vue'
 import EntryList from '@/pages/catalog/components/EntryList.vue'
 import EntryFormModal from '@/pages/catalog/components/EntryFormModal.vue'
 import EntryDetailsModal from '@/pages/catalog/components/EntryDetailsModal.vue'
+import { useSocialStore } from '@/stores/social'
+import type { Companion } from '@/api/social'
 import { useCatalog } from '@/pages/catalog/composables/useCatalog'
 
+const preferences = usePreferencesStore()
+const emit = defineEmits<{
+  categories: []
+}>()
+const section = defineModel<EntryStatus>('section', { default: 'done' })
 
 const {
   isLoading, loadError, isSaving, isDeleting, toast, reload, resetFilters,
   entries, notification, activeType, search, dateFilter, yearFilter, yearOptions, hasFilters, formOpen, editingEntry,
   selectedEntry, entryToDelete, visibleEntries, addEntry, editEntry,
-  save, requestEntryDeletion, deleteEntry,
-} = useCatalog()
+  genreSuggestions, activeSection, sections, changeSection, completingPlan, completeEntry, completedPlan,
+  isUndoingCompletion, showCompletedEntry, undoCompletion,
+  save, requestEntryDeletion, deleteEntry, changeReviewVisibility,
+} = useCatalog(section)
+
+const detailsModal = ref<InstanceType<typeof EntryDetailsModal>>()
+function updateCompanions(id: string, companions: Companion[]) {
+  entries.value = entries.value.map(entry => entry.id === id ? { ...entry, companions } : entry)
+  if (selectedEntry.value?.id === id) selectedEntry.value = { ...selectedEntry.value, companions }
+}
+defineExpose({ reload, canLeave: async () => await detailsModal.value?.canLeave() ?? true })
+const social = useSocialStore()
+watch(() => social.catalogRevision, () => void reload())
+const addButtonLabel = computed(() => activeSection.value === 'plan' ? 'Добавить в планы' : 'Добавить впечатление')
+const completionMessage = computed(() => `«${completedPlan.value?.title}» теперь во «Впечатлениях»`)
 
 const controlsSentinel = ref<HTMLElement>()
 const controlsStuck = ref(false)
@@ -144,7 +185,9 @@ onBeforeUnmount(() => controlsObserver?.disconnect())
 
 const filterModal = ref<InstanceType<typeof BaseModal>>()
 const filtersOpen = ref(false)
-const newEntryType = computed(() => activeType.value === 'all' ? 'book' : activeType.value)
+const newEntryCategory = computed(() => activeType.value === 'all' ? preferences.enabledCategories[0]?.key ?? 'book' : activeType.value)
+const newEntryType = computed(() => getTypeForCategory(newEntryCategory.value))
+const newEntryCustomCategoryId = computed(() => newEntryCategory.value.startsWith('custom:') ? newEntryCategory.value.slice(7) : undefined)
 const activeFilterCount = computed(() => Number(!!dateFilter.value.length) + Number(!!yearFilter.value))
 const hasDateFilters = computed(() => activeFilterCount.value > 0)
 function resetDateFilters() {

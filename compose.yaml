@@ -21,13 +21,25 @@ services:
     environment:
       PORT: 3000
       DATA_DIR: /app/data
-      FRONTEND_ORIGIN: http://localhost:8080
+      FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:-http://localhost:8080}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      TRUST_PROXY: "true"
       DATABASE_URL: postgresql://aftertaste:aftertaste-local@database:5432/aftertaste?schema=public
+      PUBLIC_APP_URL: ${PUBLIC_APP_URL:-http://localhost:8080}
+      SMTP_HOST: ${SMTP_HOST:-mailpit}
+      SMTP_PORT: ${SMTP_PORT:-1025}
+      SMTP_FROM: ${SMTP_FROM:-Aftertaste <no-reply@aftertaste.local>}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+      SMTP_REQUIRE_TLS: ${SMTP_REQUIRE_TLS:-false}
     volumes:
       - aftertaste-data:/app/data
     depends_on:
       database:
         condition: service_healthy
+      mailpit:
+        condition: service_started
     restart: unless-stopped
 
   frontend:
@@ -51,6 +63,13 @@ services:
     depends_on:
       database:
         condition: service_healthy
+    restart: unless-stopped
+
+  mailpit:
+    image: axllent/mailpit:v1.27.4
+    ports:
+      - "127.0.0.1:${MAILPIT_HTTP_PORT:-8026}:8025"
+      - "127.0.0.1:${MAILPIT_SMTP_PORT:-1026}:1025"
     restart: unless-stopped
 
 volumes:

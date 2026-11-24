@@ -12,8 +12,23 @@ enum ContentType {
   film
   series
   theatre
+  song
   album
   exhibition
+  concert
+  podcast
+  lecture
+  custom
+}
+
+enum ReviewVisibility {
+  private
+  friends
+}
+
+enum EntryStatus {
+  done
+  plan
 }
 
 enum TheatreGenre {
@@ -26,11 +41,15 @@ enum TheatreGenre {
 
 model Entry {
   id                String       @id
+  userId            String?
+  user              User?        @relation(fields: [userId], references: [id])
   type              ContentType
   title             String       @db.VarChar(200)
-  rating            Int
+  status            EntryStatus  @default(done)
+  plannedDate       String?      @db.VarChar(10)
+  rating            Int?
   review            String       @db.VarChar(10000)
-  month             String       @db.VarChar(7)
+  month             String?      @db.VarChar(7)
   date              String?      @db.VarChar(10)
   dateStart         String?      @db.VarChar(10)
   photo             String?
@@ -39,9 +58,131 @@ model Entry {
   theatreGenre      TheatreGenre?
   venue             String?      @db.VarChar(200)
   artist            String?      @db.VarChar(200)
+  author            String?      @db.VarChar(200)
+  director          String?      @db.VarChar(200)
+  genre             String?      @db.VarChar(200)
+  customCategoryId  String?
+  customCategory    CustomCategory? @relation(fields: [customCategoryId], references: [id])
+  reviewVisibility  ReviewVisibility?
+  companions        Json         @default("[]")
+  socialKey         String?
+  sourceUserId      String?
+  sourceUser        User?        @relation("EntrySource", fields: [sourceUserId], references: [id], onDelete: SetNull)
+  sourceKind        String?      @db.VarChar(20)
+  sourceEntryKey    String?
+  recommendations   Recommendation[]
   createdAt         DateTime     @default(now())
   updatedAt         DateTime     @updatedAt
 
+  @@unique([userId, socialKey])
+  @@index([userId])
   @@index([month])
   @@index([type])
+  @@index([status])
+  @@index([customCategoryId])
+}
+
+model User {
+  id           String    @id @default(uuid())
+  handle       String    @unique @default(cuid()) @db.VarChar(50)
+  email        String    @unique @db.VarChar(254)
+  firstName    String?   @db.VarChar(100)
+  lastName     String?   @db.VarChar(100)
+  avatar       String?
+  passwordHash String
+  createdAt    DateTime  @default(now())
+  entries      Entry[]
+  sessions     Session[]
+  plansVisible Boolean @default(false)
+  passwordResetRequestedAt DateTime?
+  categorySettings CategorySetting[]
+  customCategories CustomCategory[]
+  passwordResets PasswordReset[]
+  friendshipsLow Friendship[] @relation("FriendshipLow")
+  friendshipsHigh Friendship[] @relation("FriendshipHigh")
+  following Follow[] @relation("Follower")
+  followers Follow[] @relation("Following")
+  sentRecommendations Recommendation[] @relation("RecommendationSender")
+  receivedRecommendations Recommendation[] @relation("RecommendationRecipient")
+  sourcedEntries Entry[] @relation("EntrySource")
+}
+
+model CategorySetting {
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryKey String @db.VarChar(100)
+  enabled Boolean @default(true)
+  reviewVisibility ReviewVisibility @default(private)
+
+  @@id([userId, categoryKey])
+}
+
+model CustomCategory {
+  id String @id @default(uuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name String @db.VarChar(60)
+  normalizedName String @db.VarChar(60)
+  createdAt DateTime @default(now())
+  entries Entry[]
+
+  @@unique([userId, normalizedName])
+}
+
+model PasswordReset {
+  tokenHash String @id
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model Session {
+  tokenHash String   @id
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model Friendship {
+  lowId String
+  highId String
+  low User @relation("FriendshipLow", fields: [lowId], references: [id], onDelete: Cascade)
+  high User @relation("FriendshipHigh", fields: [highId], references: [id], onDelete: Cascade)
+  requestedById String
+  accepted Boolean @default(false)
+  createdAt DateTime @default(now())
+  @@id([lowId, highId])
+  @@index([highId])
+}
+model Follow {
+  followerId String
+  followingId String
+  follower User @relation("Follower", fields: [followerId], references: [id], onDelete: Cascade)
+  following User @relation("Following", fields: [followingId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  @@id([followerId, followingId])
+  @@index([followingId])
+}
+model Recommendation {
+  id String @id @default(uuid())
+  senderId String
+  recipientId String
+  sender User @relation("RecommendationSender", fields: [senderId], references: [id], onDelete: Cascade)
+  recipient User @relation("RecommendationRecipient", fields: [recipientId], references: [id], onDelete: Cascade)
+  entryId String?
+  entry Entry? @relation(fields: [entryId], references: [id], onDelete: SetNull)
+  sourceKey String
+  snapshot Json
+  note String @default("") @db.VarChar(500)
+  handledAt DateTime?
+  createdAt DateTime @default(now())
+  @@unique([senderId, recipientId, sourceKey])
+  @@index([recipientId, handledAt, createdAt])
 }

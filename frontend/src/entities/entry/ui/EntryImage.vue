@@ -18,7 +18,12 @@ const coverImages: Record<ContentType, string> = {
   series: '/category-covers/avant-garde-v1/series.jpg',
   theatre: '/category-covers/avant-garde-v1/theatre.jpg',
   exhibition: '/category-covers/avant-garde-v1/exhibition.jpg',
+  song: '/category-covers/avant-garde-v1/album.jpg',
   album: '/category-covers/avant-garde-v1/album.jpg',
+  concert: '/category-covers/avant-garde-v1/theatre.jpg',
+  podcast: '/category-covers/avant-garde-v1/exhibition.jpg',
+  lecture: '/category-covers/avant-garde-v1/book.jpg',
+  custom: '/category-covers/avant-garde-v1/exhibition.jpg',
 }
 
 const coverImage = computed(() => coverImages[props.type])

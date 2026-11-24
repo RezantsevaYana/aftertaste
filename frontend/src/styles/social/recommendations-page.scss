@@ -1,0 +1,107 @@
+@use "./shared";
+@use "@/styles/variables" as *;
+@use "@/styles/mixins" as *;
+.recommendations-page {
+  .recommendations-list {
+    max-width: 930px;
+  }
+  .recommendation {
+    border-bottom: 1px solid $color-border;
+    padding: 22px 0 28px;
+    &:first-child {
+      padding-top: 0;
+    }
+  }
+  .recommendation-person {
+    display: inline-flex;
+    align-items: center;
+    gap: 15px;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    padding: 0;
+    color: $color-text;
+    text-align: left;
+    margin-bottom: 20px;
+    strong {
+      display: block;
+      font-size: 15px;
+      font-weight: 500;
+    }
+    small {
+      display: block;
+      color: $color-muted;
+      font-size: 12px;
+    }
+    &:focus-visible {
+      outline: 2px solid $color-focus;
+      outline-offset: 4px;
+    }
+  }
+  .recommended-work {
+    display: flex;
+    gap: 20px;
+    > :deep(.entry-image) {
+      width: 82px;
+      height: 108px;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+    > div {
+      min-width: 0;
+      flex: 1;
+    }
+    h2 {
+      font-size: 20px;
+      line-height: 1.35;
+      font-weight: 500;
+      margin: 0;
+      overflow-wrap: anywhere;
+    }
+    p {
+      color: $color-muted;
+      font-size: 12px;
+      margin: 5px 0 0;
+    }
+    .recommendation-note {
+      color: $color-text;
+      margin-top: 14px;
+      font-size: 14px;
+      max-width: 65ch;
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
+    }
+    @include respond-below("mobile") {
+      gap: 14px;
+      > :deep(.entry-image) {
+        width: 62px;
+        height: 83px;
+      }
+      h2 {
+        font-size: 17px;
+      }
+      .recommendation-note {
+        font-size: 13px;
+      }
+    }
+  }
+  .recommendation-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+    margin-left: 102px;
+    @include respond-below("mobile") {
+      margin-left: 0;
+    }
+  }
+  .sent-status {
+    color: $color-muted;
+    font-size: 12px;
+    margin: 20px 0 0 102px;
+    @include respond-below("mobile") {
+      margin-left: 0;
+    }
+  }
+}

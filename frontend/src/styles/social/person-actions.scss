@@ -1,0 +1,14 @@
+@use "@/styles/variables" as *;
+.person-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  .friend-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: $color-muted;
+  }
+}

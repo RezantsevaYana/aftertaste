@@ -1,0 +1,83 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.avatar-input {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  margin-block: 4px 16px;
+
+  .avatar-input__preview {
+    position: relative;
+    border: 0;
+    padding: 0;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: transparent;
+    display: grid;
+    place-items: center;
+
+    &:focus-visible { outline: 2px solid $color-focus; outline-offset: 4px; }
+  }
+
+  .avatar-input__camera {
+    position: absolute;
+    bottom: 0;
+    right: -2px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: $color-background;
+    border: 1px solid $color-border;
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+
+    :deep(svg) { width: 14px; height: 14px; }
+  }
+
+  .avatar-input__controls {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    min-width: 0;
+    flex: 1;
+
+    small { color: $color-muted; font-size: 11px; line-height: 1.5; }
+  }
+
+  .avatar-input__label {
+    position: relative;
+    font-size: 13px;
+    font-weight: 500;
+    color: $color-accent;
+    cursor: pointer;
+    min-height: 32px;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+
+    &:focus-within { outline: 2px solid $color-focus; outline-offset: 4px; }
+    &:hover { color: $color-accent-hover; }
+    @include respond-below('tablet') { min-height: 44px; }
+    &--disabled { opacity: 0.6; cursor: wait; }
+
+    input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+    }
+  }
+
+  .avatar-input__error {
+    flex-basis: 100%;
+    margin: 0;
+    color: $color-danger;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+}

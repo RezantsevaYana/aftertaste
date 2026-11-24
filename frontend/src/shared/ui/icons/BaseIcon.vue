@@ -1,6 +1,6 @@
 <template>
   <Icon
-    :icon="icon"
+    :icon="resolvedIcon"
     class="base-icon"
     :role="label ? 'img' : undefined"
     :aria-label="label || undefined"
@@ -11,11 +11,14 @@
 
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
+import { computed } from 'vue'
+import { getAccountIcon } from '@/shared/ui/icons/account-icons'
 
-defineProps<{
+const props = defineProps<{
   icon: string
   label?: string
 }>()
+const resolvedIcon = computed(() => getAccountIcon(props.icon) ?? props.icon)
 </script>
 
 <style scoped lang="scss" src="@/styles/ui/base-icon.scss"></style>

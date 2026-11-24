@@ -6,8 +6,19 @@
         ref="input"
         v-model="model"
         v-bind="$attrs"
+        :type="inputType"
         :aria-invalid="!!error"
         :aria-describedby="describedBy"
+      />
+      <IconButton
+        v-if="type === 'password'"
+        class="password-toggle"
+        :icon="passwordVisible ? 'lucide:eye-off' : 'lucide:eye'"
+        :label="passwordVisible ? 'Скрыть пароль' : 'Показать пароль'"
+        :aria-controls="id"
+        :aria-pressed="passwordVisible"
+        :disabled="$attrs.disabled"
+        @click="togglePassword"
       />
       <IconButton
         v-if="showClear"
@@ -33,11 +44,17 @@ const props = defineProps<{
   label: string
   id: string
   hint?: string
+  type?: string
 }>()
 const model = defineModel<string | number>()
 const attrs = useAttrs()
 const input = ref<HTMLInputElement>()
-const showClear = computed(() => attrs.type === 'search' && hasValue.value && !attrs.disabled && !attrs.readonly)
+const passwordVisible = ref(false)
+const inputType = computed(() => props.type === 'password' && passwordVisible.value ? 'text' : props.type ?? 'text')
+const showClear = computed(() => props.type === 'search' && hasValue.value && !attrs.disabled && !attrs.readonly)
+function togglePassword() {
+  passwordVisible.value = !passwordVisible.value
+}
 const clearLabel = computed(() => `Очистить ${props.label.toLowerCase()}`)
 function clear() {
   model.value = ''

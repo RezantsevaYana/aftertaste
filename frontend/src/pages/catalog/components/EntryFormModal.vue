@@ -1,26 +1,35 @@
 <template>
   <BaseModal
     ref="modal"
-    :title="entry ? 'Редактировать запись' : 'Что добавим?'"
+    :title="modalTitle"
     :before-close="confirmCloseIfChanged"
     @close="emit('close')"
     ><form :id="formId" ref="formElement" class="entry-form" novalidate @submit.prevent="submit">
       <fieldset class="entry-form__fields" :disabled="saving" :aria-busy="saving">
+      <p v-if="completing" class="entry-form__completion">Добавь оценку и дату — запись перейдёт во «Впечатления».</p>
       <BaseSelect
         id="entry-type"
-        v-model="draft.type"
+        v-model="category"
         :error="fieldErrors.type"
         label="Тип контента"
-        :options="contentTypes"
+        :options="categoryOptions"
+      />
+      <BaseSelect
+        v-if="isMusic"
+        id="entry-music-format"
+        v-model="draft.type"
+        :error="fieldErrors.type"
+        label="Формат"
+        :options="musicFormats"
       />
       <BaseInput
-        v-if="draft.type === 'album'"
+        v-if="isMusic"
         id="entry-artist"
         v-model="draft.artist"
         :error="fieldErrors.artist"
         label="Исполнитель"
         placeholder="Имя исполнителя или название группы"
-        required
+        :required="!isPlan"
         maxlength="200"
       />
       <BaseInput
@@ -32,31 +41,60 @@
         required
         maxlength="200"
       />
+      <BaseInput
+        v-if="hasDirector"
+        id="entry-director"
+        v-model="draft.director"
+        :error="fieldErrors.director"
+        label="Режиссёр"
+        maxlength="200"
+      />
+      <BaseInput
+        v-if="draft.type === 'book'"
+        id="entry-author"
+        v-model="draft.author"
+        :error="fieldErrors.author"
+        label="Автор"
+        maxlength="200"
+      />
+      <BaseSelect
+        v-if="hasGenre"
+        id="entry-genre"
+        v-model="draft.genre"
+        :error="fieldErrors.genre"
+        label="Жанр"
+        :options="genreOptions"
+        allow-custom
+        clearable
+        maxlength="200"
+      />
       <template v-if="draft.type === 'theatre'">
         <BaseSelect
           id="entry-theatre-genre"
           v-model="theatreGenre"
           :error="fieldErrors.theatreGenre"
-          label="Жанр · необязательно"
+          label="Жанр"
           :options="theatreGenreOptions"
         />
         <BaseInput
           id="entry-venue"
           v-model="draft.venue"
         :error="fieldErrors.venue"
-          label="Место просмотра · необязательно"
+          label="Место просмотра"
           placeholder="Название театра или площадки"
           maxlength="200"
         />
       </template>
-      <RatingInput :error="fieldErrors.rating" v-model="draft.rating" :min="RATING_MIN" :max="RATING_MAX" /><BaseTextarea
+      <RatingInput v-if="!isPlan" :error="fieldErrors.rating" v-model="rating" :min="RATING_MIN" :max="RATING_MAX" /><BaseTextarea
         id="entry-review"
         v-model="draft.review"
         :error="fieldErrors.review"
-        label="Рецензия · необязательно"
-        placeholder="Что понравилось, а что нет? Чем запомнилось?"
+        :label="isPlan ? 'Заметка для себя' : 'Рецензия'"
+        :placeholder="isPlan ? 'Почему хочется вернуться к этому?' : 'Что понравилось, а что нет? Чем запомнилось?'"
         maxlength="10000"
-      /><DatePicker
+      />
+      <BaseSelect v-if="!isPlan" id="entry-review-visibility" v-model="draft.reviewVisibility" label="Кто видит рецензию" :options="visibilityOptions" />
+      <DatePicker
         id="entry-date"
         v-model="selectedDate"
         :range="isDateRange"
@@ -80,9 +118,11 @@
               {{
               photoBusy
                 ? 'Читаем фото…'
-                : entry
-                  ? 'Сохранить изменения'
-                  : 'Добавить в каталог'
+                : completing
+                  ? 'Сохранить впечатление'
+                  : entry
+                    ? 'Сохранить изменения'
+                    : isPlan ? 'Добавить в планы' : 'Добавить в каталог'
             }}
         </BaseButton>
       </div>
@@ -103,8 +143,9 @@
 import { computed, nextTick, reactive, ref, watch, useId } from 'vue'
 import { useVuelidate } from '@vuelidate/core'
 import { helpers, required, maxLength } from '@vuelidate/validators'
-import type { ContentType, Entry, EntryDraft, TheatreGenre } from '@/entities/entry'
-import { getEntryPhotos, contentTypes, theatreGenres, RATING_MIN, RATING_MAX, RATING_DEFAULT } from '@/entities/entry'
+import type { ContentType, Entry, EntryDraft, TheatreGenre, EntryStatus, CatalogCategory } from '@/entities/entry'
+import { getEntryPhotos, contentTypes, theatreGenres, supportsGenre, getGenreOptions, isMusicType, catalogCategories, musicFormats, getCatalogCategory, getTypeForCategory, RATING_MIN, RATING_MAX, RATING_DEFAULT } from '@/entities/entry'
+import { usePreferencesStore } from '@/stores/preferences'
 import { dismissModal } from '@/shared/lib/modal'
 import { currentMonth, currentDate, isCalendarDate } from '@/shared/lib/date'
 import { BaseModal, ConfirmationModal } from '@/shared/ui'
@@ -118,19 +159,62 @@ const modal = ref<InstanceType<typeof BaseModal>>()
 const props = defineProps<{
   entry?: Entry
   initialType?: ContentType
+  initialStatus?: EntryStatus
+  initialCustomCategoryId?: string
+  completing?: boolean
+  genreSuggestions?: Partial<Record<ContentType, string[]>>
   saving?: boolean
 }>()
 const emit = defineEmits<{
   close: []
   save: [draft: EntryDraft]
 }>()
+const preferences = usePreferencesStore()
 const draft = reactive<EntryDraft>(
   props.entry
     ? { ...props.entry }
-    : { type: props.initialType ?? 'book', title: '', rating: RATING_DEFAULT, review: '', month: currentMonth() },
+    : { type: props.initialType ?? 'book', customCategoryId: props.initialCustomCategoryId, reviewVisibility: 'inherit', title: '', rating: RATING_DEFAULT, review: '', month: currentMonth() },
 )
-const isDateRange = computed(() => draft.type === 'book' || draft.type === 'series')
-const initialDate = props.entry ? props.entry.date ?? props.entry.month : currentDate()
+const lastMusicType = ref<ContentType>(isMusicType(draft.type) ? draft.type : 'song')
+const category = computed<CatalogCategory>({
+  get: () => getCatalogCategory(draft.type, draft.customCategoryId),
+  set: value => {
+    if (isMusicType(draft.type)) lastMusicType.value = draft.type
+    draft.customCategoryId = value.startsWith('custom:') ? value.slice(7) : undefined
+    draft.type = value === 'music' ? lastMusicType.value : getTypeForCategory(value)
+  },
+})
+const categoryOptions = computed(() => {
+  const options = preferences.ready ? [...preferences.categoryOptions] : [...catalogCategories]
+  if (!options.some(option => option.value === category.value)) {
+    const current = preferences.categories.find(item => item.key === category.value)
+    if (current) options.push({ value: current.key, label: current.name })
+  }
+  return options
+})
+const visibilityOptions = computed(() => [
+  { value: 'inherit', label: `Как в категории: ${preferences.reviewVisibility(category.value) === 'private' ? 'только мне' : 'друзьям'}` },
+  { value: 'private', label: 'Только мне' },
+  { value: 'friends', label: 'Друзьям' },
+])
+const isMusic = computed(() => isMusicType(draft.type))
+const hasDirector = computed(() => ['film', 'series', 'theatre'].includes(draft.type))
+const hasGenre = computed(() => supportsGenre(draft.type))
+const genreOptions = computed(() => {
+  const suggestions = props.genreSuggestions ?? {}
+  const savedGenres = isMusic.value
+    ? [...(suggestions.song ?? []), ...(suggestions.album ?? [])]
+    : suggestions[draft.type]
+  return getGenreOptions(draft.type, savedGenres)
+})
+watch(() => draft.type, (type, previousType) => {
+  if (!isMusicType(type) || !isMusicType(previousType)) draft.genre = undefined
+})
+const isPlan = computed(() => !props.completing && (props.entry?.status ?? props.initialStatus) === 'plan')
+const modalTitle = computed(() => props.completing ? 'Как впечатления?' : props.entry ? 'Редактировать запись' : isPlan.value ? 'Добавить в планы' : 'Что добавим?')
+const rating = ref(props.completing ? 0 : props.entry?.rating ?? RATING_DEFAULT)
+const isDateRange = computed(() => !isPlan.value && (draft.type === 'book' || draft.type === 'series'))
+const initialDate = props.completing ? currentDate() : isPlan.value ? props.entry?.plannedDate ?? '' : props.entry?.date ?? props.entry?.month ?? currentDate()
 const selectedDate = ref<string | string[]>(
   isDateRange.value && initialDate.length === 10
     ? [props.entry?.dateStart ?? initialDate, initialDate]
@@ -152,14 +236,26 @@ const primaryPhotoIndex = ref(draft.primaryPhotoIndex ?? 0)
 const photoBusy = ref(false)
 const validating = ref(false)
 const monthLabel = computed(() => {
+  if (isPlan.value) return 'Планируемая дата'
   if (draft.type === 'book') return 'Период чтения'
   if (draft.type === 'series') return 'Период просмотра'
-  if (draft.type === 'theatre' || draft.type === 'exhibition') return 'Когда посетила'
-  if (draft.type === 'album') return 'Когда послушала'
+  if (['theatre', 'exhibition', 'concert', 'lecture'].includes(draft.type)) return 'Когда посетила'
+  if (draft.type === 'custom') return 'Когда это было'
+  if (isMusic.value || draft.type === 'podcast') return 'Когда послушала'
   return 'Когда посмотрела'
 })
 const titleField = computed(() => {
   switch (draft.type) {
+    case 'concert':
+      return { label: 'Название концерта', placeholder: 'Концерт или выступление' }
+    case 'podcast':
+      return { label: 'Название подкаста', placeholder: 'Подкаст или выпуск' }
+    case 'lecture':
+      return { label: 'Название лекции', placeholder: 'Тема или название лекции' }
+    case 'custom':
+      return { label: 'Название', placeholder: 'Что хочется сохранить?' }
+    case 'song':
+      return { label: 'Название трека', placeholder: 'Например, «Кукушка»' }
     case 'album':
       return { label: 'Название альбома', placeholder: 'Например, «Кино»' }
     case 'exhibition':
@@ -173,10 +269,15 @@ const closeConfirmationOpen = ref(false)
 // Сравниваем значения, а не факт касания полей: возврат исходных данных снимает предупреждение.
 const formSnapshot = computed(() => JSON.stringify({
   type: draft.type,
+  customCategoryId: draft.customCategoryId,
+  reviewVisibility: draft.reviewVisibility ?? 'inherit',
   title: draft.title,
   artist: draft.artist ?? '',
+  author: draft.author ?? '',
+  director: draft.director ?? '',
+  genre: draft.genre ?? '',
   venue: draft.venue ?? '',
-  rating: draft.rating,
+  rating: rating.value,
   review: draft.review,
   date: selectedDate.value,
   theatreGenre: theatreGenre.value,
@@ -211,22 +312,25 @@ const shortText = helpers.withMessage('Не больше 200 символов.',
 const rules = computed(() => ({
   type: {
     category: helpers.withMessage('Выбери тип контента.', (value: unknown) =>
-      contentTypes.some((type) => type.value === value)),
+      contentTypes.some((type) => type.value === value) && (value !== 'custom' || !!draft.customCategoryId)),
   },
   title: {
     required: helpers.withMessage('Укажи название.', nonBlank),
     maxLength: shortText,
   },
-  artist: draft.type === 'album' ? {
-    required: helpers.withMessage('Укажи исполнителя.', nonBlank),
+  artist: isMusic.value ? {
+    ...(isPlan.value ? {} : { required: helpers.withMessage('Укажи исполнителя.', nonBlank) }),
     maxLength: shortText,
   } : {},
+  author: draft.type === 'book' ? { maxLength: shortText } : {},
+  director: hasDirector.value ? { maxLength: shortText } : {},
+  genre: hasGenre.value ? { maxLength: shortText } : {},
   venue: draft.type === 'theatre' ? { maxLength: shortText } : {},
   theatreGenre: draft.type === 'theatre' ? {
     genre: helpers.withMessage('Выбери жанр из списка.', (value: unknown) =>
       value === '' || theatreGenres.some((genre) => genre.value === value)),
   } : {},
-  rating: {
+  rating: isPlan.value ? {} : {
     range: helpers.withMessage(`Оценка: целое число от ${RATING_MIN} до ${RATING_MAX}.`,
       (value: number) => Number.isInteger(value) && value >= RATING_MIN && value <= RATING_MAX),
   },
@@ -234,7 +338,7 @@ const rules = computed(() => ({
     maxLength: helpers.withMessage('Не больше 10 000 символов.', maxLength(10000)),
   },
   month: {
-    required: helpers.withMessage('Укажи дату.', required),
+    ...(isPlan.value ? {} : { required: helpers.withMessage('Укажи дату.', required) }),
     format: helpers.withMessage('Выбери дату или полный период от 01.01.1900 до 31.12.2100.',
       (value: string | string[]) => {
         const validDate = (date: string) => isCalendarDate(date) &&
@@ -242,14 +346,18 @@ const rules = computed(() => ({
         if (Array.isArray(value)) {
           return isDateRange.value && value.length === 2 && value.every(validDate) && value[0]! <= value[1]!
         }
-        return !value || value === props.entry?.month || validDate(value)
+        return !value || (!isPlan.value && value === props.entry?.month) || validDate(value)
       }),
   },
 }))
 const validationState = computed(() => ({
   ...draft,
+  rating: rating.value,
   month: selectedDate.value,
   artist: draft.artist ?? '',
+  author: draft.author ?? '',
+  director: draft.director ?? '',
+  genre: draft.genre ?? '',
   venue: draft.venue ?? '',
   theatreGenre: theatreGenre.value,
 }))
@@ -258,6 +366,9 @@ const fieldErrors = computed(() => ({
   type: String(validation.value.type.$errors[0]?.$message ?? ''),
   title: String(validation.value.title.$errors[0]?.$message ?? ''),
   artist: String(validation.value.artist.$errors[0]?.$message ?? ''),
+  author: String(validation.value.author.$errors[0]?.$message ?? ''),
+  director: String(validation.value.director.$errors[0]?.$message ?? ''),
+  genre: String(validation.value.genre.$errors[0]?.$message ?? ''),
   venue: String(validation.value.venue.$errors[0]?.$message ?? ''),
   theatreGenre: String(validation.value.theatreGenre.$errors[0]?.$message ?? ''),
   rating: String(validation.value.rating.$errors[0]?.$message ?? ''),
@@ -281,14 +392,20 @@ async function submit() {
       photo: undefined,
       photos: [...photos.value],
       primaryPhotoIndex: photos.value.length ? primaryPhotoIndex.value : undefined,
-      month: endDate.value.slice(0, 7),
-      date: isCalendarDate(endDate.value) ? endDate.value : undefined,
+      status: isPlan.value ? 'plan' : 'done',
+      plannedDate: isPlan.value ? endDate.value || undefined : props.entry?.plannedDate,
+      rating: isPlan.value ? null : rating.value,
+      month: isPlan.value ? null : endDate.value.slice(0, 7),
+      date: !isPlan.value && isCalendarDate(endDate.value) ? endDate.value : undefined,
       dateStart: isDateRange.value && Array.isArray(selectedDate.value) ? selectedDate.value[0] : undefined,
       title: draft.title.trim(),
       review: draft.review.trim(),
       theatreGenre: draft.type === 'theatre' ? theatreGenre.value || undefined : undefined,
       venue: draft.type === 'theatre' ? draft.venue?.trim() || undefined : undefined,
-      artist: draft.type === 'album' ? draft.artist?.trim() : undefined,
+      artist: isMusic.value ? draft.artist?.trim() || undefined : undefined,
+      author: draft.type === 'book' ? draft.author?.trim() || undefined : undefined,
+      director: hasDirector.value ? draft.director?.trim() || undefined : undefined,
+      genre: hasGenre.value ? draft.genre?.trim() || undefined : undefined,
     })
     await nextTick()
   } finally {

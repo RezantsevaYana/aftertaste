@@ -5,7 +5,33 @@
     :class="{ 'field--validated': error !== undefined, 'field--invalid': error, 'field--filled': hasValue, 'field--open': isOpen }"
   >
     <div class="field__control">
+      <input
+        v-if="allowCustom"
+        :id="id"
+        ref="trigger"
+        v-bind="$attrs"
+        class="select-trigger select-trigger--editable"
+        type="text"
+        role="combobox"
+        :value="model ?? ''"
+        :disabled="disabled"
+        autocomplete="off"
+        aria-autocomplete="list"
+        aria-haspopup="listbox"
+        :aria-expanded="isOpen"
+        :aria-controls="listId"
+        :aria-labelledby="labelId"
+        :aria-activedescendant="activeOptionId"
+        :aria-invalid="!!error"
+        :aria-describedby="describedBy"
+        @input="onInput"
+        @focus="open"
+        @click="open"
+        @keydown="onKeydown"
+        @blur="onBlur"
+      />
       <button
+        v-else
         :id="id"
         ref="trigger"
         v-bind="$attrs"
@@ -28,17 +54,27 @@
         <BaseIcon v-if="!showClear" class="select-chevron" icon="lucide:chevron-down" />
       </button>
       <IconButton
+        v-if="allowCustom && !showClear"
+        class="select-toggle"
+        icon="lucide:chevron-down"
+        :label="`Показать варианты: ${label.toLowerCase()}`"
+        :disabled="disabled"
+        @mousedown.prevent
+        @click="toggleEditable"
+      />
+      <IconButton
         v-if="showClear"
         class="select-clear"
         icon="lucide:x"
         :label="clearLabel"
+        @mousedown.prevent
         @click.stop="clear"
       />
       <label :id="labelId" class="field__label" :for="id">{{ label }}</label>
       <Teleport :to="popupTarget">
       <ul v-if="isOpen" ref="dropdown" :style="floatingStyles" :id="listId" class="select-dropdown" role="listbox" :aria-labelledby="labelId">
         <li
-          v-for="(option, index) in options"
+          v-for="(option, index) in displayedOptions"
           :id="optionId(index)"
           :key="option.value"
           class="select-option"
@@ -56,6 +92,7 @@
       </Teleport>
       <small v-if="error" :id="errorId" class="field__error" role="alert">{{ error }}</small>
     </div>
+    <small v-if="allowCustom" :id="hintId" class="select-hint">Выбери из списка или напиши свой вариант.</small>
   </div>
 </template>
 
@@ -73,6 +110,7 @@ const props = defineProps<{
   id: string
   disabled?: boolean
   clearable?: boolean
+  allowCustom?: boolean
   options: readonly {
     value: string
     label: string
@@ -80,7 +118,7 @@ const props = defineProps<{
 }>()
 const model = defineModel<string>()
 const root = ref<HTMLElement>()
-const trigger = ref<HTMLButtonElement>()
+const trigger = ref<HTMLButtonElement | HTMLInputElement>()
 const dropdown = ref<HTMLElement>()
 const popupTarget = usePopupTarget(root)
 const { floatingStyles } = useFloating(trigger, dropdown, {
@@ -104,6 +142,17 @@ const { floatingStyles } = useFloating(trigger, dropdown, {
 })
 const isOpen = ref(false)
 const activeIndex = ref(-1)
+const query = ref('')
+const displayedOptions = computed(() => {
+  if (!props.allowCustom) return props.options
+  const text = query.value.trim()
+  const needle = text.toLocaleLowerCase('ru')
+  const matches = props.options.filter(option => option.label.toLocaleLowerCase('ru').includes(needle))
+  const exactMatch = props.options.some(option => option.value.toLocaleLowerCase('ru') === needle)
+  return text && !exactMatch
+    ? [...matches, { value: text, label: `Использовать «${text}»` }]
+    : matches
+})
 const hasValue = computed(() => model.value !== undefined && model.value !== '')
 const showClear = computed(() => props.clearable && hasValue.value && !props.disabled)
 const clearLabel = computed(() => `Очистить ${props.label.toLowerCase()}`)
@@ -111,7 +160,8 @@ const selectedLabel = computed(() => props.options.find((option) => option.value
 const labelId = computed(() => `${props.id}-label`)
 const listId = computed(() => `${props.id}-options`)
 const errorId = computed(() => `${props.id}-error`)
-const describedBy = computed(() => props.error ? errorId.value : undefined)
+const hintId = computed(() => `${props.id}-hint`)
+const describedBy = computed(() => [props.error ? errorId.value : '', props.allowCustom ? hintId.value : ''].filter(Boolean).join(' ') || undefined)
 const activeOptionId = computed(() => isOpen.value && activeIndex.value >= 0 ? optionId(activeIndex.value) : undefined)
 let search = ''
 let lastKeyTime = 0
@@ -132,16 +182,42 @@ async function revealActive() {
 }
 
 function open() {
-  if (props.disabled || !props.options.length) return
+  if (props.disabled || (!props.allowCustom && !props.options.length)) return
+  if (isOpen.value) return
+  query.value = ''
   isOpen.value = true
-  const selectedIndex = props.options.findIndex((option) => option.value === model.value)
-  activeIndex.value = Math.max(0, selectedIndex)
+  const selectedIndex = displayedOptions.value.findIndex((option) => option.value === model.value)
+  activeIndex.value = props.allowCustom ? selectedIndex : Math.max(0, selectedIndex)
   void revealActive()
 }
 
 function close() {
   isOpen.value = false
   search = ''
+  query.value = ''
+}
+
+function onInput(event: Event) {
+  const value = (event.target as HTMLInputElement).value
+  model.value = value
+  isOpen.value = true
+  query.value = value
+  activeIndex.value = -1
+}
+
+function onBlur() {
+  const value = (model.value ?? '').trim()
+  const known = props.options.find(option => option.value.toLocaleLowerCase('ru') === value.toLocaleLowerCase('ru'))
+  model.value = known?.value ?? value
+  close()
+}
+
+function toggleEditable() {
+  if (isOpen.value) close()
+  else {
+    trigger.value?.focus()
+    open()
+  }
 }
 
 function toggle() {
@@ -151,18 +227,18 @@ function toggle() {
 
 function select(value: string) {
   model.value = value
-  close()
   trigger.value?.focus()
+  close()
 }
 
 function clear() {
   model.value = ''
-  close()
   trigger.value?.focus()
+  close()
 }
 
 function onKeydown(event: KeyboardEvent) {
-  if (props.disabled) return
+  if (props.disabled || event.isComposing) return
   if (event.key === 'Escape' && isOpen.value) {
     event.preventDefault()
     event.stopPropagation()
@@ -174,19 +250,24 @@ function onKeydown(event: KeyboardEvent) {
     if (!isOpen.value) open()
     else {
       const step = event.key === 'ArrowDown' ? 1 : -1
-      activeIndex.value = Math.max(0, Math.min(props.options.length - 1, activeIndex.value + step))
+      activeIndex.value = activeIndex.value < 0
+        ? step > 0 ? 0 : displayedOptions.value.length - 1
+        : Math.max(0, Math.min(displayedOptions.value.length - 1, activeIndex.value + step))
       void revealActive()
     }
-  } else if (event.key === 'Enter' || event.key === ' ') {
+  } else if (event.key === 'Enter' || (!props.allowCustom && event.key === ' ')) {
     event.preventDefault()
-    const option = props.options[activeIndex.value]
+    const option = displayedOptions.value[activeIndex.value]
     if (isOpen.value && option) select(option.value)
+    else if (props.allowCustom) {
+      onBlur()
+    }
     else open()
-  } else if (isOpen.value && (event.key === 'Home' || event.key === 'End')) {
+  } else if (!props.allowCustom && isOpen.value && (event.key === 'Home' || event.key === 'End')) {
     event.preventDefault()
-    activeIndex.value = event.key === 'Home' ? 0 : props.options.length - 1
+    activeIndex.value = event.key === 'Home' ? 0 : displayedOptions.value.length - 1
     void revealActive()
-  } else if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
+  } else if (!props.allowCustom && event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
     event.preventDefault()
     if (!isOpen.value) open()
     const now = Date.now()

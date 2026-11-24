@@ -1,16 +1,22 @@
+import { isPlannedEntry } from '@/entities/entry/model/entry'
 import type { Entry } from '@/entities/entry/model/entry'
 
 export function matchesEntryDate(entry: Entry, start: string, end: string): boolean {
+  if (isPlannedEntry(entry)) return !!entry.plannedDate && entry.plannedDate >= start && entry.plannedDate <= end
   // У старых записей известен только месяц: включаем их при пересечении месяцев.
-  if (!entry.date) return entry.month >= start.slice(0, 7) && entry.month <= end.slice(0, 7)
+  if (!entry.date) return !!entry.month && entry.month >= start.slice(0, 7) && entry.month <= end.slice(0, 7)
   const entryStart = entry.dateStart ?? entry.date
   return entryStart <= end && entry.date >= start
 }
 
 // Месяц без года повторяется ежегодно; остальные ограничения пересекаются.
 export function matchesEntryDateFilter(entry: Entry, value: string | string[], year: string): boolean {
-  let start = entry.dateStart ?? entry.date ?? `${entry.month}-01`
-  let end = entry.date ?? `${entry.month}-31`
+  const planned = isPlannedEntry(entry)
+  const date = planned ? entry.plannedDate : entry.date
+  const month = planned ? date?.slice(0, 7) : entry.month
+  if (!date && !month) return !value.length && !year
+  let start = (!planned ? entry.dateStart : undefined) ?? date ?? `${month}-01`
+  let end = date ?? `${month}-31`
   if (year) {
     start = start > `${year}-01-01` ? start : `${year}-01-01`
     end = end < `${year}-12-31` ? end : `${year}-12-31`
@@ -38,8 +44,11 @@ export function matchesEntryDateFilter(entry: Entry, value: string | string[], y
 export function getEntryFilterYears(entries: Entry[]): string[] {
   const years = new Set<string>()
   for (const entry of entries) {
-    const first = Number((entry.dateStart ?? entry.date ?? entry.month).slice(0, 4))
-    const last = Number((entry.date ?? entry.month).slice(0, 4))
+    const start = isPlannedEntry(entry) ? entry.plannedDate : entry.dateStart ?? entry.date ?? entry.month
+    const end = isPlannedEntry(entry) ? entry.plannedDate : entry.date ?? entry.month
+    if (!start || !end) continue
+    const first = Number(start.slice(0, 4))
+    const last = Number(end.slice(0, 4))
     for (let year = first; year <= last; year++) years.add(String(year))
   }
   return [...years].sort((a, b) => Number(b) - Number(a))

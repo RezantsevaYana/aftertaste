@@ -17,8 +17,6 @@
   transition:
     background-color 280ms ease,
     border-color 280ms ease,
-    transform 220ms ease,
-    box-shadow 280ms ease,
     padding 180ms ease,
     min-height 180ms ease,
     font-size 180ms ease;
@@ -89,22 +87,6 @@
   &:focus-visible {
     outline: 2px solid $color-focus;
     outline-offset: 4px;
-  }
-
-  &:hover:not(:disabled) {
-    @media (hover: hover) {
-      transform: translateY(-1px);
-      box-shadow: 0 3px 8px $color-card-shadow;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      transform: none;
-    }
-  }
-
-  &:active:not(:disabled) {
-    transform: translateY(0);
-    box-shadow: none;
   }
 
   &--compact {

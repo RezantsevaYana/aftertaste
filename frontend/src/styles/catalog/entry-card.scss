@@ -82,6 +82,7 @@
   }
 
   .entry-content {
+    flex: 1;
     min-width: 0;
   }
 
@@ -128,6 +129,27 @@
     font-size: 11px;
     line-height: 1.5;
     overflow-wrap: anywhere;
+  }
+
+  .entry-complete {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    margin-top: 12px;
+    padding: 10px 0 0;
+    border: 0;
+    border-top: 1px solid $color-border;
+    background: transparent;
+    color: $color-accent;
+    font-size: 12px;
+    text-align: left;
+    min-height: 36px;
+
+    &:focus-visible { outline: 2px solid $color-focus; outline-offset: 3px; }
   }
 
   .entry-score {

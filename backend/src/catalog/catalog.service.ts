@@ -1,36 +1,27 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
-  OnModuleInit,
 } from '@nestjs/common';
 import { Prisma, type Entry as DatabaseEntry } from '@prisma/client';
-import { readFile } from 'node:fs/promises';
-import { resolve } from 'node:path';
 import { PrismaService } from '../prisma/prisma.service.js';
-import { validateEntry, type Entry } from './entry.js';
+import { readCompanions, personName, publicUserSelect, type PublicUser } from '../social/social-data.js';
+import { type Entry } from './entry.js';
 
 @Injectable()
-export class CatalogService implements OnModuleInit {
-  private readonly legacyFilePath = resolve(
-    process.env.DATA_DIR ?? resolve(process.cwd(), 'data'),
-    'entries.json',
-  );
-
+export class CatalogService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async onModuleInit(): Promise<void> {
-    await this.importLegacyFileIfNeeded();
-  }
-
-  async findAll(): Promise<Entry[]> {
-    const rows = await this.prisma.entry.findMany({ orderBy: { createdAt: 'desc' } });
+  async findAll(userId: string): Promise<Entry[]> {
+    const rows = await this.prisma.entry.findMany({ where: { userId }, orderBy: { createdAt: 'desc' }, include: { customCategory: true, sourceUser: { select: publicUserSelect } } });
     return rows.map((row) => this.toEntry(row));
   }
 
-  async create(entry: Entry): Promise<Entry> {
+  async create(entry: Entry, userId: string): Promise<Entry> {
+    await this.assertCategory(entry, userId);
     try {
-      const row = await this.prisma.entry.create({ data: this.toCreateData(entry) });
+      const row = await this.prisma.entry.create({ data: { ...this.toCreateData(entry), userId }, include: { customCategory: true, sourceUser: { select: publicUserSelect } } });
       return this.toEntry(row);
     } catch (error) {
       if (this.isPrismaError(error, 'P2002')) {
@@ -40,11 +31,13 @@ export class CatalogService implements OnModuleInit {
     }
   }
 
-  async update(id: string, entry: Entry): Promise<Entry> {
+  async update(id: string, entry: Entry, userId: string): Promise<Entry> {
+    await this.assertCategory(entry, userId);
     try {
       const row = await this.prisma.entry.update({
-        where: { id },
+        where: { id, userId },
         data: this.toUpdateData(entry),
+        include: { customCategory: true, sourceUser: { select: publicUserSelect } },
       });
       return this.toEntry(row);
     } catch (error) {
@@ -55,9 +48,9 @@ export class CatalogService implements OnModuleInit {
     }
   }
 
-  async remove(id: string): Promise<void> {
+  async remove(id: string, userId: string): Promise<void> {
     try {
-      await this.prisma.entry.delete({ where: { id } });
+      await this.prisma.entry.delete({ where: { id, userId } });
     } catch (error) {
       if (this.isPrismaError(error, 'P2025')) {
         throw new NotFoundException('Запись не найдена');
@@ -66,42 +59,18 @@ export class CatalogService implements OnModuleInit {
     }
   }
 
-  async import(entries: Entry[]): Promise<Entry[]> {
-    const existingCount = await this.prisma.entry.count();
-    if (existingCount > 0) return this.findAll();
+  async import(entries: Entry[], userId: string): Promise<Entry[]> {
+    for (const entry of entries) await this.assertCategory(entry, userId);
+    const existingCount = await this.prisma.entry.count({ where: { userId } });
+    if (existingCount > 0) return this.findAll(userId);
 
     const uniqueEntries = [...new Map(entries.map((entry) => [entry.id, entry])).values()];
     if (uniqueEntries.length > 0) {
       await this.prisma.entry.createMany({
-        data: uniqueEntries.map((entry) => this.toCreateData(entry)),
+        data: uniqueEntries.map((entry) => ({ ...this.toCreateData(entry), userId })),
       });
     }
-    return this.findAll();
-  }
-
-  private async importLegacyFileIfNeeded(): Promise<void> {
-    if (await this.prisma.entry.count() > 0) return;
-
-    let contents: string;
-    try {
-      contents = await readFile(this.legacyFilePath, 'utf8');
-    } catch (error) {
-      if ((error as NodeJS.ErrnoException).code === 'ENOENT') return;
-      throw error;
-    }
-
-    const legacyEntries: unknown = JSON.parse(contents);
-    if (!Array.isArray(legacyEntries) || !legacyEntries.every(validateEntry)) {
-      throw new Error(`Некорректный файл старого каталога: ${this.legacyFilePath}`);
-    }
-
-    const uniqueEntries = [...new Map(legacyEntries.map((entry) => [entry.id, entry])).values()];
-    if (uniqueEntries.length === 0) return;
-
-    await this.prisma.entry.createMany({
-      data: uniqueEntries.map((entry) => this.toCreateData(entry)),
-    });
-    console.info(`Каталог перенесён в PostgreSQL: ${uniqueEntries.length} записей`);
+    return this.findAll(userId);
   }
 
   private toCreateData(entry: Entry): Prisma.EntryUncheckedCreateInput {
@@ -109,6 +78,8 @@ export class CatalogService implements OnModuleInit {
       id: entry.id,
       type: entry.type,
       title: entry.title,
+      status: entry.status ?? 'done',
+      plannedDate: entry.plannedDate ?? null,
       rating: entry.rating,
       review: entry.review,
       month: entry.month,
@@ -120,6 +91,11 @@ export class CatalogService implements OnModuleInit {
       theatreGenre: entry.theatreGenre ?? null,
       venue: entry.venue ?? null,
       artist: entry.artist ?? null,
+      author: entry.author ?? null,
+      director: entry.director ?? null,
+      genre: entry.genre ?? null,
+      customCategoryId: entry.type === 'custom' ? entry.customCategoryId ?? null : null,
+      reviewVisibility: entry.reviewVisibility === 'friends' || entry.reviewVisibility === 'private' ? entry.reviewVisibility : null,
     };
   }
 
@@ -127,6 +103,8 @@ export class CatalogService implements OnModuleInit {
     return {
       type: entry.type,
       title: entry.title,
+      status: entry.status ?? 'done',
+      plannedDate: entry.plannedDate ?? null,
       rating: entry.rating,
       review: entry.review,
       month: entry.month,
@@ -138,14 +116,25 @@ export class CatalogService implements OnModuleInit {
       theatreGenre: entry.theatreGenre ?? null,
       venue: entry.venue ?? null,
       artist: entry.artist ?? null,
+      author: entry.author ?? null,
+      director: entry.director ?? null,
+      genre: entry.genre ?? null,
+      customCategoryId: entry.type === 'custom' ? entry.customCategoryId ?? null : null,
+      reviewVisibility: entry.reviewVisibility === 'friends' || entry.reviewVisibility === 'private' ? entry.reviewVisibility : null,
     };
   }
 
-  private toEntry(row: DatabaseEntry): Entry {
+  private toEntry(row: DatabaseEntry & { customCategory?: { name: string } | null; sourceUser?: PublicUser | null }): Entry {
     return {
       id: row.id,
+      companions: readCompanions(row.companions),
+      ...(row.sourceKind ? { source: { userId: row.sourceUserId, name: row.sourceUser ? personName(row.sourceUser) : 'Пользователь удалён', kind: row.sourceKind } } : {}),
+      ...(row.customCategoryId ? { customCategoryId: row.customCategoryId, customCategoryName: row.customCategory?.name } : {}),
+      reviewVisibility: row.reviewVisibility ?? 'inherit',
       type: row.type,
       title: row.title,
+      status: row.status,
+      ...(row.plannedDate ? { plannedDate: row.plannedDate } : {}),
       rating: row.rating,
       review: row.review,
       month: row.month,
@@ -157,7 +146,16 @@ export class CatalogService implements OnModuleInit {
       ...(row.theatreGenre ? { theatreGenre: row.theatreGenre } : {}),
       ...(row.venue ? { venue: row.venue } : {}),
       ...(row.artist ? { artist: row.artist } : {}),
+      ...(row.author ? { author: row.author } : {}),
+      ...(row.director ? { director: row.director } : {}),
+      ...(row.genre ? { genre: row.genre } : {}),
     };
+  }
+
+  private async assertCategory(entry: Entry, userId: string) {
+    if (entry.type !== 'custom') return;
+    const category = await this.prisma.customCategory.findFirst({ where: { id: entry.customCategoryId, userId } });
+    if (!category) throw new BadRequestException('Эта категория не принадлежит твоему аккаунту');
   }
 
   private isPrismaError(error: unknown, code: string): error is Prisma.PrismaClientKnownRequestError {

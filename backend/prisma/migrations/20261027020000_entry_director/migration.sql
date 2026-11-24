@@ -1,0 +1,1 @@
+ALTER TABLE "Entry" ADD COLUMN "director" VARCHAR(200);

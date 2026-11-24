@@ -63,3 +63,17 @@
     line-height: 1.6;
   }
 }
+
+.detail-visibility {
+  margin-top: 24px;
+  p { font-size: 12px; line-height: 1.6; color: $color-muted; margin-bottom: 0; }
+}
+
+.detail-social {
+  border-top: 1px solid $color-border;
+  padding-top: 20px;
+  margin-block: 22px;
+  h3 { font-size: 16px; font-weight: 500; margin: 0 0 8px; }
+  p { margin: 0 0 6px; font-size: 13px; }
+  small { display: block; color: $color-muted; font-size: 12px; margin-bottom: 15px; }
+}

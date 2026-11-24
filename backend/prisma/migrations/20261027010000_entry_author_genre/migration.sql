@@ -1,0 +1,3 @@
+ALTER TABLE "Entry"
+  ADD COLUMN "author" VARCHAR(200),
+  ADD COLUMN "genre" VARCHAR(200);

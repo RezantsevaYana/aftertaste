@@ -14,9 +14,7 @@
     justify-content: space-between;
     gap: 24px;
 
-    @include respond-below('tablet') {
-      min-height: 58px;
-    }
+    @include respond-below('tablet') { min-height: 58px; gap: 0 14px; flex-wrap: wrap; }
   }
 
   .brand {
@@ -34,6 +32,7 @@
 
     @include respond-below('tablet') {
       font-size: 23px;
+      margin-block: 7px;
     }
 
     @media (hover: hover) {
@@ -64,6 +63,83 @@
       &:hover .brand-record {
         transform: none;
       }
+    }
+  }
+
+  .header-navigation {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    margin-left: auto;
+    button {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 44px;
+      padding: 8px 0;
+      border: 0;
+      border-bottom: 2px solid transparent;
+      background: transparent;
+      color: $color-header-muted;
+      font-size: 13px;
+      cursor: pointer;
+      white-space: nowrap;
+      &[aria-current='page'] { color: $color-header-text; border-bottom-color: $color-header-text; }
+      &:hover { color: $color-header-text; }
+      &:focus-visible { outline: 2px solid $color-header-text; outline-offset: 3px; }
+      @include respond-below('mobile') { font-size: 11px; gap: 5px; }
+    }
+    .header-counter { min-width: 20px; padding: 0 5px; border-radius: 5px; background: $color-header-text; color: $color-accent; font-size: 10px; text-align: center; }
+    @include respond-below('laptop') { gap: 22px; }
+    @include respond-below('tablet') { order: 3; width: 100%; justify-content: space-between; gap: 12px; border-top: 1px solid rgba($color-white,.15); margin-left: 0; padding-top: 2px; button { font-size: 12px; } }
+    @include respond-below('mobile') { gap: 9px; button { font-size: 11px; } }
+  }
+
+  .header-account {
+    position: relative;
+    min-width: 0;
+    max-width: 220px;
+    @include respond-below('tablet') { order: 2; margin-left: auto; margin-block: 7px; }
+
+
+    @include respond-below('mobile') { max-width: 120px; }
+
+    :deep(.user-avatar) { background: rgba($color-white, 0.13); color: $color-header-text; }
+
+    .account-name {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .account-identity {
+      padding: 8px 10px 14px;
+      margin-bottom: 6px;
+      border-bottom: 1px solid $color-border;
+      overflow-wrap: anywhere;
+
+      strong { display: block; font-size: 13px; font-weight: 500; }
+      small { display: block; margin-top: 4px; color: $color-muted; font-size: 11px; }
+    }
+
+    .account-menu {
+      nav { display: grid; }
+      .account-logout { color: $color-accent; }
+    }
+
+    .account-error {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 12px);
+      z-index: 31;
+      width: 260px;
+      padding: 12px;
+      color: $color-danger;
+      background: $color-background;
+      border-radius: $radius-control;
+      box-shadow: $shadow-modal;
+      font-size: 12px;
     }
   }
 

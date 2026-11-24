@@ -1,6 +1,7 @@
 <template>
   <div class="toast">
     <p role="status">{{ message }}</p>
+    <div v-if="$slots.actions" class="toast__actions"><slot name="actions" /></div>
     <IconButton icon="lucide:x" label="Закрыть уведомление" @click="emit('close')" />
   </div>
 </template>

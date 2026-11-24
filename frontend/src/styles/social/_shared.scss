@@ -1,0 +1,105 @@
+@use "@/styles/variables" as *;
+@use "@/styles/mixins" as *;
+.social-heading {
+  margin: 32px 0 28px;
+  h1 {
+    font: 500 42px/1.2 $font-body;
+    letter-spacing: -0.9px;
+    margin: 0;
+  }
+  p {
+    font-size: 14px;
+    color: $color-muted;
+    margin: 12px 0 0;
+    max-width: 65ch;
+  }
+  @include respond-below("tablet") {
+    margin: 24px 0;
+    h1 {
+      font-size: 32px;
+      letter-spacing: -0.7px;
+    }
+    p {
+      font-size: 13px;
+    }
+  }
+}
+.social-tabs {
+  display: flex;
+  gap: 28px;
+  border-bottom: 1px solid $color-border;
+  margin-bottom: 24px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 9px 0 12px;
+    color: $color-muted;
+    background: transparent;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    font-size: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    span {
+      font-size: 11px;
+    }
+    &[aria-current="page"] {
+      color: $color-accent;
+      border-bottom-color: $color-accent;
+    }
+    &:focus-visible {
+      outline: 2px solid $color-focus;
+      outline-offset: -2px;
+    }
+  }
+  @include respond-below("tablet") {
+    gap: 23px;
+    button {
+      font-size: 12px;
+    }
+  }
+}
+.social-error {
+  color: $color-danger;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+  button {
+    font: inherit;
+    color: inherit;
+    border: 0;
+    background: transparent;
+    padding: 6px;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+}
+.social-loading {
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  color: $color-muted;
+  :deep(.vinyl-loader) {
+    font-size: 45px;
+  }
+}
+.social-empty {
+  padding: 50px 0 65px;
+  text-align: center;
+  h2 {
+    font-size: 24px;
+    font-weight: 500;
+  }
+  p {
+    margin: 12px auto 22px;
+    color: $color-muted;
+    max-width: 45ch;
+    font-size: 13px;
+  }
+}

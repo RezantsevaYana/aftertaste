@@ -62,7 +62,12 @@ const ratingOptions = computed(() =>
 
 const model = defineModel<number>({ required: true })
 const reactionVersion = ref(0)
-const reactionText = computed(() => model.value === 10 ? 'Это — на повтор.' : model.value === 1 ? 'Одного раза хватило.' : `Твоя оценка — ${model.value} из ${props.max}.`)
+const reactionText = computed(() => {
+  if (model.value < props.min) return 'Выбери свою оценку.'
+  if (model.value === 10) return 'Это — на повтор.'
+  if (model.value === 1) return 'Одного раза хватило.'
+  return `Твоя оценка — ${model.value} из ${props.max}.`
+})
 const reactionIcon = computed(() => model.value === 10 ? 'lucide:repeat' : model.value === 1 ? 'lucide:skip-forward' : undefined)
 const optionsElement = ref<HTMLElement>()
 

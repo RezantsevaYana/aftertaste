@@ -1,0 +1,57 @@
+@use '@/styles/variables' as *;
+
+.dropdown {
+  position: relative;
+  min-width: 0;
+
+  .dropdown-trigger {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    max-width: 100%;
+    padding: 4px 0;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: inherit;
+    font-size: 13px;
+
+    &:focus-visible { outline-color: currentColor; }
+    :deep(.dropdown-chevron) { width: 14px; height: 14px; flex-shrink: 0; }
+  }
+
+  .dropdown-panel {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: 30;
+    width: min(260px, 90vw);
+    padding: 10px;
+    color: $color-text;
+    background: $color-background;
+    border-radius: $radius-control;
+    box-shadow: 0 10px 35px $color-modal-shadow;
+
+    &--start { right: auto; left: 0; }
+
+    :deep(button) {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      min-height: 44px;
+      padding: 11px 10px;
+      border: 0;
+      border-radius: 7px;
+      background: transparent;
+      color: $color-text;
+      text-align: left;
+      font-size: 13px;
+
+      &:hover { background: $color-soft; }
+      &[aria-current] { background: $color-accent-soft; color: $color-accent; }
+      svg { width: 17px; height: 17px; }
+    }
+  }
+}
