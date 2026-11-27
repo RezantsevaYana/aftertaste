@@ -6,15 +6,18 @@
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 90px;
   max-width: 1040px;
-  min-height: 620px;
-  margin: 65px auto;
+  width: 100%;
+  min-height: 0;
+  margin: 0 auto;
+  padding-block: 20px;
 
   @include respond-below('laptop') { gap: 45px; }
   @include respond-below('tablet') {
     display: block;
     max-width: 420px;
     min-height: 0;
-    margin: 24px auto 36px;
+    margin: 0 auto;
+    padding-block: 12px;
   }
 
   .auth-story {
@@ -22,19 +25,19 @@
     flex-direction: column;
     justify-content: space-between;
     color: $color-accent;
-    padding-block: 30px;
+    padding-block: 12px;
 
     @include respond-below('tablet') { display: none; }
 
     h2 {
       max-width: 9ch;
-      font-size: 58px;
+      font-size: clamp(36px, 6dvh, 52px);
       font-weight: 500;
       line-height: 1.15;
       letter-spacing: -1px;
-      margin: 0 0 48px;
+      margin: 0 0 16px;
 
-      @include respond-below('laptop') { font-size: 48px; }
+      @include respond-below('laptop') { font-size: clamp(36px, 6dvh, 48px); }
     }
 
     p { max-width: 28ch; font-size: 13px; line-height: 1.6; color: $color-muted; margin: 0; }
@@ -45,15 +48,15 @@
     align-items: flex-end;
     gap: 12px;
     max-width: 350px;
-    margin-top: 30px;
+    margin-top: 16px;
 
     img {
       width: 46%;
-      height: 190px;
+      height: clamp(90px, 18dvh, 160px);
       object-fit: cover;
       border-radius: 7px;
 
-      &:nth-child(2) { height: 155px; margin-bottom: 24px; }
+      &:nth-child(2) { height: clamp(72px, 14dvh, 128px); margin-bottom: 16px; }
     }
   }
 
@@ -61,7 +64,7 @@
     display: flex;
     align-items: center;
     gap: 9px;
-    margin-top: 30px;
+    margin-top: 16px;
     font-size: 11px;
     color: $color-muted;
 
@@ -73,25 +76,16 @@
     max-width: 370px;
     align-self: center;
     justify-self: center;
-    padding-block: 32px;
+    padding-block: 0;
 
     @include respond-below('tablet') { max-width: none; padding: 0; }
   }
 
   .auth-intro {
-    margin-bottom: 28px;
+    margin-bottom: $space-form-section;
 
-    @include respond-below('tablet') { margin-bottom: 24px; }
 
-    h1 {
-      font-size: 32px;
-      font-weight: 600;
-      line-height: 1.2;
-      letter-spacing: -0.6px;
-      margin: 0 0 12px;
-
-      @include respond-below('tablet') { font-size: 26px; }
-    }
+    h1 { @include form-title; }
 
     p {
       color: $color-muted;
@@ -113,19 +107,33 @@
     gap: 8px 20px;
     list-style: none;
     padding: 0;
-    margin: 24px 0 0;
+    margin: 16px 0 0;
     font-size: 11px;
     color: $color-muted;
 
-    @include respond-below('tablet') { margin-top: 20px; }
+    @include respond-below('tablet') { margin-top: 12px; }
 
     li[aria-current='step'] { color: $color-accent; font-weight: 600; }
   }
 
-  .auth-forgot { align-self: flex-end; min-height: 44px; padding: 8px 0; border: 0; background: transparent; color: $color-accent; font-size: 12px; text-decoration: underline; text-underline-offset: 4px; }
+  .auth-forgot {
+    align-self: flex-start;
+    width: max-content;
+    max-width: 100%;
+    min-height: 32px;
+    margin-block: -8px -4px;
+    padding: 2px 0;
+    border: 0;
+    background: transparent;
+    color: $color-accent;
+    font-size: 12px;
+    text-align: left;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
 
-  .auth-form { display: flex; flex-direction: column; gap: 12px; }
-  .auth-name-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+  .auth-form { @include form-stack; }
+  .auth-name-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: $space-form-gap; }
   .auth-error { color: $color-danger; font-size: 13px; line-height: 1.5; margin: 0 0 8px; }
 
   .auth-switch {
@@ -136,6 +144,6 @@
     gap: 8px 12px;
     font-size: 12px;
     color: $color-muted;
-    margin-top: 12px;
+    margin-top: 4px;
   }
 }

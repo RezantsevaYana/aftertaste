@@ -41,9 +41,22 @@
     position: relative;
   }
 
-  .field--validated .field__control {
-    margin-bottom: 12px;
+  // Невидимая копия резервирует ровно столько места, сколько занимает ошибка.
+  // Видимое сообщение остаётся абсолютно расположенным под контролом.
+  .field__error-space {
+    visibility: hidden;
+    display: none;
+    margin-top: -2px;
+    min-height: 17px;
+    font-size: $font-size-meta;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+    pointer-events: none;
+    user-select: none;
   }
+
+  .field--invalid .field__error-space { display: block; }
 
   .field__error {
     position: absolute;
@@ -59,7 +72,7 @@
   .field {
     display: flex;
     flex-direction: column;
-    gap: 9px;
+    gap: 4px;
     width: 100%;
     font-size: 13px;
   }
@@ -97,7 +110,8 @@
 
   // Размер текста предотвращает автоматическое приближение полей в iOS.
   .field input,
-  .field textarea {
+  .field textarea,
+  .field .select-trigger {
     @media (pointer: coarse) {
       font-size: 16px;
     }
@@ -181,7 +195,7 @@
     .field__control:has(input:is([type='month'], [type='date'], [type='time'], [type='datetime-local'])) .field__label,
     .field__control:has(input:autofill) .field__label {
       top: 5px;
-      font-size: 10px;
+      font-size: $font-size-label;
       line-height: 12px;
 
       @include respond-below('tablet') {
@@ -229,8 +243,8 @@
     .select-trigger {
       min-height: 32px;
       height: 32px;
-      padding-top: 12px;
-      padding-bottom: 2px;
+      padding-top: 14px;
+      padding-bottom: 0;
       line-height: 16px;
     }
 
@@ -243,8 +257,8 @@
     &.field--filled .field__label,
     .field__control:focus-within .field__label {
       top: 1px;
-      font-size: 9px;
-      line-height: 10px;
+      font-size: $font-size-label;
+      line-height: 12px;
     }
   }
 
@@ -264,8 +278,8 @@
     display: flex;
     justify-content: flex-end;
     gap: 10px;
-    padding-top: 20px;
-    margin-top: 6px;
+    padding-top: $space-form-gap;
+    margin-top: $space-form-gap;
     border-top: 1px solid $color-border;
 
     @include respond-below('mobile') {
@@ -273,4 +287,110 @@
       align-items: stretch;
     }
   }
+}
+
+
+@mixin page-heading {
+  h1 {
+    margin: 0;
+    font: 500 #{$font-size-page-title}/1.2 $font-body;
+    letter-spacing: -0.9px;
+    overflow-wrap: anywhere;
+
+    @include respond-below('tablet') {
+      font-size: $font-size-page-title-mobile;
+      letter-spacing: -0.7px;
+    }
+  }
+
+  p {
+    margin: 12px 0 0;
+    max-width: 65ch;
+    color: $color-muted;
+    font-size: $font-size-body;
+    line-height: 1.6;
+
+    @include respond-below('tablet') { font-size: 13px; }
+  }
+}
+
+@mixin section-heading {
+  border-bottom: 1px solid $color-border;
+  padding-bottom: $space-form-gap;
+  margin-bottom: $space-form-section;
+
+  h2 {
+    margin: 0 0 8px;
+    font-size: 23px;
+    font-weight: 600;
+    line-height: 1.3;
+
+    @include respond-below('tablet') { font-size: 20px; }
+  }
+
+  p {
+    margin: 0;
+    color: $color-muted;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  @include respond-below('tablet') {
+    padding-bottom: $space-form-gap;
+    margin-bottom: $space-form-section;
+  }
+}
+
+@mixin section-tabs {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid $color-border;
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar { display: none; }
+
+  button {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 10px 0 12px;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    color: $color-muted;
+    font-size: $font-size-body;
+    font-weight: 500;
+    white-space: nowrap;
+
+    span { font-size: $font-size-meta; font-weight: 400; }
+    &[aria-current='page'] { color: $color-accent; }
+    &:hover { color: $color-accent; }
+    &:focus-visible { outline: 2px solid $color-focus; outline-offset: -2px; }
+
+    @include respond-below('tablet') { font-size: 13px; }
+  }
+
+  @include respond-below('tablet') { gap: 20px; margin-bottom: 16px; }
+}
+
+
+// Единый ритм для всех форм, независимо от страницы и способа открытия.
+@mixin form-stack {
+  display: flex;
+  flex-direction: column;
+  gap: $space-form-gap;
+}
+
+@mixin form-title {
+  margin: 0 0 $space-form-related;
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.6px;
+
+  @include respond-below('tablet') { font-size: 26px; }
 }

@@ -3,14 +3,10 @@
 @include modal-actions;
 
 .entry-form {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  @include form-stack;
 
   .entry-form__fields {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+    @include form-stack;
     min-width: 0;
     padding: 0;
     margin: 0;

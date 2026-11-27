@@ -70,7 +70,7 @@ describe('Authentication and ownership', () => {
     const prisma = prismaMock();
     prisma.user.create.mockResolvedValue({ id: 'user-a', email: 'a@example.com' });
     const auth = new AuthService(prisma as unknown as PrismaService);
-    expect(await auth.register({ email: ' A@Example.com ', password: 'long password', firstName: ' Анна ', lastName: 'Иванова' })).toEqual({ id: 'user-a', email: 'a@example.com' });
+    expect(await auth.register({ handle: ' Anna.Ivanova ', email: ' A@Example.com ', password: 'long password', firstName: ' Анна ', lastName: 'Иванова' })).toEqual({ id: 'user-a', email: 'a@example.com' });
     const data = prisma.user.create.mock.calls[0]![0].data;
     expect(data.email).toBe('a@example.com');
     expect(data.passwordHash).not.toBe('long password');

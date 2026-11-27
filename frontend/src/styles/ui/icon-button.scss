@@ -1,4 +1,5 @@
 @use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
 
 .icon-button {
   display: inline-grid;
@@ -12,6 +13,24 @@
   color: $color-text;
   transition: background-color 180ms ease, color 180ms ease;
 
+  &--compact,
+  &--dense {
+    flex-shrink: 0;
+    border: 1px solid $color-border;
+    border-radius: $radius-button;
+    background: transparent;
+    color: $color-muted;
+  }
+
+  &--compact {
+    width: 40px;
+    height: 40px;
+
+    @include respond-below('mobile') { width: 38px; height: 38px; }
+  }
+
+  &--dense { width: 32px; height: 32px; }
+
   :deep(.base-icon) {
     width: 15px;
     height: 15px;
@@ -22,6 +41,9 @@
       background: $color-white;
       color: $color-accent;
     }
+
+    &--compact:hover:not(:disabled),
+    &--dense:hover:not(:disabled) { background: $color-soft; }
   }
 
   @media (prefers-reduced-motion: reduce) {

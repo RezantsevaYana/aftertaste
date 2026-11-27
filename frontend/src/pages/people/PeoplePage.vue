@@ -2,7 +2,7 @@
   <section class="people-page">
     <template v-if="!selectedId">
       <div class="social-heading"><h1>Люди</h1><p>Находи знакомых и тех, чей вкус тебе интересен.</p></div>
-      <nav class="social-tabs" aria-label="Люди"><button v-for="item in tabs" :key="item.value" type="button" :aria-current="tab === item.value ? 'page' : undefined" @click="tab = item.value; query = ''">{{ item.label }}<span v-if="item.count !== undefined">{{ item.count }}</span></button></nav>
+      <nav v-sliding-tabs class="social-tabs" aria-label="Люди"><button v-for="item in tabs" :key="item.value" type="button" :aria-current="tab === item.value ? 'page' : undefined" @click="tab = item.value; query = ''">{{ item.label }}<span v-if="item.count !== undefined">{{ item.count }}</span></button></nav>
       <div class="people-search"><BaseInput id="people-search" v-model="query" type="search" label="Имя или ник" maxlength="100" /></div>
       <p v-if="error" class="social-error" role="alert">{{ error }} <button type="button" @click="load()">Попробовать снова</button></p>
       <div v-if="loading" class="social-loading" role="status"><VinylLoader />Ищем людей…</div>
@@ -21,9 +21,9 @@
       <p v-if="error" class="social-error" role="alert">{{ error }} <button type="button" @click="loadProfile()">Попробовать снова</button></p>
       <template v-if="collection && !profileLoading">
         <section class="person-profile"><UserAvatar :avatar="collection.person.avatar" :first-name="collection.person.firstName" :last-name="collection.person.lastName" size="large" /><div><h1>{{ personName(collection.person) }}</h1><p>@{{ collection.person.handle }}</p></div><PersonActions :person="collection.person" allow-remove :busy="busy" :loading-action="busyPersonId === collection.person.id ? busyAction : ''" @action="act(collection.person, $event)" /></section>
-        <nav class="social-tabs" aria-label="Коллекция пользователя"><button type="button" :aria-current="shelf === 'done' ? 'page' : undefined" @click="shelf = 'done'">Впечатления</button><button v-if="collection.canViewPlans" type="button" :aria-current="shelf === 'plan' ? 'page' : undefined" @click="shelf = 'plan'">Планы</button></nav>
+        <nav v-sliding-tabs class="social-tabs" aria-label="Коллекция пользователя"><button type="button" :aria-current="shelf === 'done' ? 'page' : undefined" @click="shelf = 'done'">Впечатления</button><button v-if="collection.canViewPlans" type="button" :aria-current="shelf === 'plan' ? 'page' : undefined" @click="shelf = 'plan'">Планы</button></nav>
         <p v-if="!collection.canViewPlans" class="public-privacy">Планы доступны друзьям, если владелец разрешил их просмотр. Оценки впечатлений доступны всем.</p>
-        <div class="public-entry-grid"><div v-for="entry in visibleEntries" :key="entry.id" class="public-entry"><EntryCard :entry="entry" readonly @open="selectedEntry = entry" /><BaseButton size="compact" :loading="copyingId === entry.id" :disabled="busy || copiedIds.has(entry.id)" @click="copy(entry)">{{ copiedIds.has(entry.id) ? 'Уже в твоей коллекции' : 'Добавить в планы' }}</BaseButton></div></div>
+        <div class="public-entry-grid"><div v-for="entry in visibleEntries" :key="entry.id" class="public-entry"><EntryCard :entry="entry" readonly @open="selectedEntry = entry" /><BaseButton size="compact" variant="secondary" :loading="copyingId === entry.id" :disabled="busy || copiedIds.has(entry.id)" @click="copy(entry)">{{ copiedIds.has(entry.id) ? 'Уже в твоей коллекции' : 'Добавить в планы' }}</BaseButton></div></div>
         <div v-if="!visibleEntries.length" class="social-empty"><h2>Здесь пока нет записей</h2></div>
       </template>
     </template>
@@ -32,6 +32,7 @@
   </section>
 </template>
 <script setup lang="ts">
+import { vSlidingTabs } from '@/shared/directives/sliding-tabs'
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { findPeople, loadPerson, requestFriend, acceptFriend, removeFriend, setFollowing, copyToPlans, type PersonCollection, type RemoteEntry } from '@/api/social'
 import { personName, type SocialPerson } from '@/entities/person'

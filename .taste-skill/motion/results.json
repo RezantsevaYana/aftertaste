@@ -1,0 +1,68 @@
+[
+  {
+    "width": 1440,
+    "initial": {
+      "width": 1440,
+      "scrollWidth": 1429,
+      "header": 71.453125,
+      "scrollY": 0,
+      "scrollHeight": 1437
+    },
+    "final": {
+      "width": 1440,
+      "scrollWidth": 1429,
+      "header": 71.453125,
+      "scrollY": 0,
+      "scrollHeight": 900
+    },
+    "slidingIndicator": true,
+    "stableSwitch": true,
+    "rollback": true,
+    "toastAutoClose": true,
+    "pause": true
+  },
+  {
+    "width": 768,
+    "initial": {
+      "width": 768,
+      "scrollWidth": 758,
+      "header": 37.84375,
+      "scrollY": 0,
+      "scrollHeight": 1226
+    },
+    "final": {
+      "width": 768,
+      "scrollWidth": 758,
+      "header": 37.84375,
+      "scrollY": 0,
+      "scrollHeight": 902
+    },
+    "slidingIndicator": true,
+    "stableSwitch": true,
+    "rollback": true,
+    "toastAutoClose": true,
+    "pause": true
+  },
+  {
+    "width": 390,
+    "initial": {
+      "width": 390,
+      "scrollWidth": 390,
+      "header": 19.5,
+      "scrollY": 0,
+      "scrollHeight": 1165
+    },
+    "final": {
+      "width": 390,
+      "scrollWidth": 390,
+      "header": 19.5,
+      "scrollY": 0,
+      "scrollHeight": 932
+    },
+    "slidingIndicator": true,
+    "stableSwitch": true,
+    "rollback": true,
+    "toastAutoClose": true,
+    "pause": true
+  }
+]

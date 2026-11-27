@@ -1,7 +1,19 @@
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
 
+.site-header-shell {
+  position: relative;
+  flex-shrink: 0;
+  height: 65px;
+  z-index: 40;
+  @include respond-below('tablet') { height: 59px; }
+  &--sticky { @include respond-below('tablet') { height: 106px; } }
+  &--sticky { position: sticky; top: 0; }
+}
+
 .site-header {
+  position: absolute;
+  inset: 0 0 auto;
   background: $color-header-background;
   color: $color-header-text;
   border-bottom: 1px solid $color-accent-hover;
@@ -9,6 +21,7 @@
   .header-content {
     @include container;
     min-height: 64px;
+    transition: min-height 260ms ease, gap 260ms ease;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -22,6 +35,7 @@
     align-items: center;
     gap: 10px;
     font-size: 25px;
+    transition: font-size 260ms ease, gap 260ms ease, margin 260ms ease;
     font-weight: 500;
     line-height: 1.2;
     letter-spacing: -0.45px;
@@ -47,7 +61,7 @@
       width: 34px;
       height: 34px;
       border-radius: 50%;
-      transition: transform 650ms cubic-bezier(0.16, 1, 0.3, 1);
+      transition: transform 650ms cubic-bezier(0.16, 1, 0.3, 1), width 260ms ease, height 260ms ease;
 
       @include respond-below('tablet') {
         width: 30px;
@@ -67,6 +81,7 @@
   }
 
   .header-navigation {
+    --tab-indicator-color: #{$color-header-text};
     display: flex;
     align-items: center;
     gap: 28px;
@@ -84,12 +99,12 @@
       font-size: 13px;
       cursor: pointer;
       white-space: nowrap;
-      &[aria-current='page'] { color: $color-header-text; border-bottom-color: $color-header-text; }
+      &[aria-current='page'] { color: $color-header-text; }
       &:hover { color: $color-header-text; }
       &:focus-visible { outline: 2px solid $color-header-text; outline-offset: 3px; }
       @include respond-below('mobile') { font-size: 11px; gap: 5px; }
     }
-    .header-counter { min-width: 20px; padding: 0 5px; border-radius: 5px; background: $color-header-text; color: $color-accent; font-size: 10px; text-align: center; }
+    .header-counter { min-width: 20px; padding: 0 5px; border-radius: 5px; background: $color-header-text; color: $color-accent; font-size: $font-size-label; text-align: center; }
     @include respond-below('laptop') { gap: 22px; }
     @include respond-below('tablet') { order: 3; width: 100%; justify-content: space-between; gap: 12px; border-top: 1px solid rgba($color-white,.15); margin-left: 0; padding-top: 2px; button { font-size: 12px; } }
     @include respond-below('mobile') { gap: 9px; button { font-size: 11px; } }
@@ -141,6 +156,35 @@
       box-shadow: $shadow-modal;
       font-size: 12px;
     }
+  }
+
+  &--compact {
+    border-bottom: 0;
+    position: absolute;
+    inset: 0 0 auto;
+    box-shadow: 0 3px 12px rgba($color-text, 0.12);
+
+    .header-content { min-height: 44px; flex-wrap: nowrap; gap: 16px; }
+    .brand {
+      font-size: 19px;
+      gap: 7px;
+      margin: 0;
+      .brand-record { width: 26px; height: 26px; }
+      @include respond-below('tablet') { .brand-name { display: none; } }
+    }
+    .header-account { display: none; }
+    .header-navigation {
+      order: initial;
+      width: auto;
+      margin-left: auto;
+      padding-top: 0;
+      border-top: 0;
+      gap: 24px;
+      button { min-height: 44px; font-size: 12px; }
+      @include respond-below('tablet') { gap: 14px; button { font-size: 11px; } }
+      @include respond-below('mobile') { gap: 10px; }
+    }
+    @media (prefers-reduced-motion: reduce) { animation: none; }
   }
 
   .header-note {

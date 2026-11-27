@@ -3,7 +3,7 @@
 @use "@/styles/mixins" as *;
 .recommendations-page {
   .recommendations-list {
-    max-width: 930px;
+    width: 100%;
   }
   .recommendation {
     border-bottom: 1px solid $color-border;

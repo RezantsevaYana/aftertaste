@@ -46,10 +46,32 @@ export const usePreferencesStore = defineStore('preferences', () => {
       saving.value = false
     }
   }
-  const setCategoryEnabled = (key: CatalogCategory, enabled: boolean) => save(() => updateCategory(key, { enabled }))
+  async function setCategoryEnabled(key: CatalogCategory, enabled: boolean) {
+    if (saving.value) return
+    const category = categories.value.find(category => category.key === key)
+    if (!category) return
+    const previous = category.enabled
+    const version = generation
+    category.enabled = enabled
+    try { await save(() => updateCategory(key, { enabled })) }
+    catch (cause) {
+      if (version === generation) category.enabled = previous
+      throw cause
+    }
+  }
   const setReviewVisibility = (key: CatalogCategory, reviewVisibility: ReviewVisibility) => save(() => updateCategory(key, { reviewVisibility }))
   const addCategory = (name: string) => save(() => createCategory(name))
-  const setPlansVisible = (visible: boolean) => save(() => updatePrivacy(visible))
+  async function setPlansVisible(visible: boolean) {
+    if (saving.value) return
+    const previous = settings.value.plansVisible
+    const version = generation
+    settings.value.plansVisible = visible
+    try { await save(() => updatePrivacy(visible)) }
+    catch (cause) {
+      if (version === generation) settings.value.plansVisible = previous
+      throw cause
+    }
+  }
   function isEnabled(key: CatalogCategory) { return categories.value.some(category => category.key === key && category.enabled) }
   function reviewVisibility(key: CatalogCategory): ReviewVisibility { return categories.value.find(category => category.key === key)?.reviewVisibility ?? 'private' }
 

@@ -10,7 +10,7 @@
         <BaseInput id="profile-first-name" v-model="form.firstName" label="Имя" autocomplete="given-name" maxlength="100" :disabled="saving" :error="firstNameError" />
         <BaseInput id="profile-last-name" v-model="form.lastName" label="Фамилия" autocomplete="family-name" maxlength="100" :disabled="saving" :error="lastNameError" />
       </div>
-      <BaseInput id="profile-handle" v-model="form.handle" label="Ник" maxlength="50" :disabled="saving" :error="handleError" hint="От 3 до 50 латинских букв, цифр, точек, дефисов или подчёркиваний" />
+      <BaseInput id="profile-handle" v-model="form.handle" label="Ник" autocomplete="nickname" :spellcheck="false" autocapitalize="none" maxlength="50" :disabled="saving" :error="handleError" hint="От 3 до 50 латинских букв, цифр, точек, дефисов или подчёркиваний" />
       <div class="profile-email">
         <span>Email для входа</span>
         <p>{{ auth.user?.email }}</p>
@@ -35,9 +35,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, reactive, ref } from 'vue'
+import { computed, nextTick, reactive, ref, watch } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { helpers, maxLength, required } from '@vuelidate/validators'
+import { ApiError } from '@/api/http'
 import { useAuthStore } from '@/stores/auth'
 import { useUnsavedChanges } from '@/shared/composables/useUnsavedChanges'
 import BaseInput from '@/shared/ui/form/BaseInput.vue'
@@ -55,11 +56,13 @@ const saving = ref(false)
 const avatarBusy = ref(false)
 const error = ref('')
 const saved = ref(false)
+const handleServerError = ref('')
+watch(() => form.handle, () => { handleServerError.value = '' })
 const busy = computed(() => saving.value || avatarBusy.value)
 const { canLeave, confirmLeave, resolveLeave } = useUnsavedChanges(dirty, busy)
 const rules = { handle: { required, valid: helpers.regex(/^[a-zA-Z0-9][a-zA-Z0-9._-]{2,49}$/) }, firstName: { required, maxLength: maxLength(100) }, lastName: { required, maxLength: maxLength(100) } }
 const v$ = useVuelidate(rules, form)
-const handleError = computed(() => attempted.value && v$.value.handle.$invalid ? 'Укажи ник от 3 до 50 допустимых символов' : '')
+const handleError = computed(() => attempted.value && v$.value.handle.$invalid ? 'Укажи ник от 3 до 50 допустимых символов' : handleServerError.value)
 const firstNameError = computed(() => attempted.value && v$.value.firstName.$invalid ? 'Укажи имя' : '')
 const lastNameError = computed(() => attempted.value && v$.value.lastName.$invalid ? 'Укажи фамилию' : '')
 
@@ -68,6 +71,7 @@ async function save() {
   attempted.value = true
   error.value = ''
   saved.value = false
+  handleServerError.value = ''
   if (!await v$.value.$validate()) {
     await nextTick()
     document.querySelector<HTMLInputElement>('.profile-form input[aria-invalid="true"]')?.focus()
@@ -82,6 +86,12 @@ async function save() {
     snapshot.value = JSON.stringify(form)
     saved.value = true
   } catch (cause) {
+    if (cause instanceof ApiError && cause.field === 'handle') {
+      handleServerError.value = cause.message
+      await nextTick()
+      document.getElementById('profile-handle')?.focus()
+      return
+    }
     error.value = cause instanceof Error ? cause.message : 'Не удалось сохранить профиль. Попробуй снова.'
   } finally {
     saving.value = false

@@ -32,7 +32,7 @@
           @click="activeType = type.value"
           >{{ type.label }}</BaseButton
         >
-        <button type="button" class="catalog-category-settings" aria-label="Настроить категории" @click="emit('categories')"><BaseIcon icon="lucide:plus" /></button>
+        <IconButton icon="lucide:plus" label="Настроить категории" :size="controlsStuck ? 'dense' : 'compact'" @click="emit('categories')" />
       </div>
     </div>
     <div class="catalog-search-panel">
@@ -133,7 +133,7 @@ import { computed, onMounted, onBeforeUnmount, ref, watch } from 'vue'
 import { getTypeForCategory } from '@/entities/entry'
 import { usePreferencesStore } from '@/stores/preferences'
 import type { EntryStatus } from '@/entities/entry'
-import { BaseButton, BaseIcon, BaseInput, BaseModal, NotificationModal, ConfirmationModal, VinylLoader, BaseToast } from '@/shared/ui'
+import { BaseButton, BaseIcon, BaseInput, BaseModal, NotificationModal, ConfirmationModal, VinylLoader, BaseToast, IconButton } from '@/shared/ui'
 import CatalogSections from '@/pages/catalog/components/CatalogSections.vue'
 import CatalogFilters from '@/pages/catalog/components/CatalogFilters.vue'
 import EntryList from '@/pages/catalog/components/EntryList.vue'

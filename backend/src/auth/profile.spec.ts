@@ -36,8 +36,8 @@ describe('Account profile', () => {
   it('accepts an eight-character password and rejects a shorter one during registration', async () => {
     const create = vi.fn().mockResolvedValue({ id: 'user' });
     const auth = new AuthService({ user: { create } } as unknown as PrismaService);
-    await expect(auth.register({ ...profile, email: 'valid@example.com', password: '1234567' })).rejects.toThrow();
-    await auth.register({ ...profile, email: 'valid@example.com', password: 'aB123456' });
+    await expect(auth.register({ ...profile, handle: 'anna', email: 'valid@example.com', password: '1234567' })).rejects.toThrow();
+    await auth.register({ ...profile, handle: 'anna', email: 'valid@example.com', password: 'aB123456' });
     expect(create).toHaveBeenCalledOnce();
   });
 });

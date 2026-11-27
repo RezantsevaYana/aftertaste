@@ -13,7 +13,7 @@
     <p>
       {{ emptyDescription }}
     </p>
-    <BaseButton v-if="!filtered" class="empty-add-record" @click="emit('add')"><BaseIcon icon="lucide:disc-3" /> {{ section === 'plan' ? 'Добавить в планы' : 'Добавить запись' }}</BaseButton>
+    <BaseButton v-if="!filtered" class="empty-add-record" size="compact" variant="secondary" @click="emit('add')"><img src="/brand/vinyl-mark-v1.png" alt="" width="22" height="22" /> {{ section === 'plan' ? 'Добавить в планы' : 'Добавить впечатление' }}</BaseButton>
   </div>
   <section v-for="group in groups" :key="group.key" class="month-group">
     <div class="month-heading">

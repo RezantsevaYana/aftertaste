@@ -2,15 +2,9 @@
 @use '@/styles/mixins' as *;
 
 .account-settings {
-  .settings-heading {
-    margin-bottom: 24px;
-    padding-bottom: 18px;
-    border-bottom: 1px solid $color-border;
-    h2 { margin: 0 0 8px; font-size: 23px; font-weight: 600; }
-    p { margin: 0; color: $color-muted; font-size: 13px; line-height: 1.6; }
-  }
-  .settings-note { color: $color-muted; font-size: 12px; line-height: 1.7; margin: 0 0 18px; }
-  h3 { margin: 30px 0 10px; font-size: 16px; font-weight: 600; }
+  .settings-heading { @include section-heading; }
+  .settings-note { color: $color-muted; font-size: 12px; line-height: 1.7; margin: 0 0 $space-form-gap; }
+  h3 { margin: $space-form-section 0 $space-form-related; font-size: 16px; font-weight: 600; }
   .category-row {
     display: flex;
     align-items: center;
@@ -28,9 +22,9 @@
   }
   .add-category-form {
     display: flex;
-    gap: 12px;
+    gap: $space-form-gap;
     align-items: flex-start;
-    margin-top: 18px;
+    margin-top: $space-form-gap;
     :deep(.field) { flex: 1; min-width: 0; }
     @include respond-below('tablet') { flex-direction: column; align-items: stretch; }
   }
@@ -38,17 +32,17 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 24px;
-    padding-block: 18px;
+    gap: $space-form-gap;
+    padding-block: $space-form-gap;
     border-bottom: 1px solid $color-border;
     strong { font-size: 13px; font-weight: 500; overflow-wrap: anywhere; }
     p { color: $color-muted; font-size: 12px; line-height: 1.6; margin: 6px 0 0; }
     &--select {
       :deep(.field) { width: 240px; flex-shrink: 0; }
-      @include respond-below('tablet') { align-items: stretch; flex-direction: column; gap: 12px;
+      @include respond-below('tablet') { align-items: stretch; flex-direction: column; gap: $space-form-gap;
         :deep(.field) { width: 100%; }
       }
     }
   }
-  .settings-error { color: $color-danger; font-size: 13px; line-height: 1.6; margin-top: 18px; }
+  .settings-error { color: $color-danger; font-size: 13px; line-height: 1.6; margin-top: $space-form-gap; }
 }

@@ -92,6 +92,7 @@
       </Teleport>
       <small v-if="error" :id="errorId" class="field__error" role="alert">{{ error }}</small>
     </div>
+    <span v-if="error !== undefined" class="field__error-space" aria-hidden="true">{{ error || ' ' }}</span>
     <small v-if="allowCustom" :id="hintId" class="select-hint">Выбери из списка или напиши свой вариант.</small>
   </div>
 </template>

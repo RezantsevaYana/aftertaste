@@ -1,0 +1,22 @@
+.collection-return-button {
+  .collection-return-button__arrow {
+    display: inline-flex;
+    overflow: hidden;
+    flex-shrink: 0;
+
+    :deep(.base-icon) { display: block; }
+  }
+
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    &:hover .collection-return-button__arrow :deep(.base-icon) {
+      animation: collection-return-arrow 450ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+  }
+}
+
+@keyframes collection-return-arrow {
+  0% { transform: translateX(0); opacity: 1; }
+  40% { transform: translateX(-140%); opacity: 0; }
+  41% { transform: translateX(140%); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}

@@ -1,0 +1,22 @@
+[
+  {
+    "width": 1440,
+    "stableContainer": true,
+    "sharedWidth": true
+  },
+  {
+    "width": 1024,
+    "stableContainer": true,
+    "sharedWidth": true
+  },
+  {
+    "width": 768,
+    "stableContainer": true,
+    "sharedWidth": true
+  },
+  {
+    "width": 390,
+    "stableContainer": true,
+    "sharedWidth": true
+  }
+]

@@ -13,7 +13,7 @@
       <h3>Не нашлось нужной?</h3><p>Создай свою категорию — она появится только в твоей коллекции.</p>
       <form class="add-category-form" novalidate @submit.prevent="add">
         <BaseInput id="custom-category-name" v-model="name" label="Название категории" hint="Например, «Фестивали»" maxlength="60" :disabled="preferences.saving || preferences.loading" :error="nameError" />
-        <BaseButton type="submit" :disabled="preferences.loading" :loading="preferences.saving" loading-label="Сохраняем…">Добавить категорию</BaseButton>
+        <BaseButton type="submit" :disabled="preferences.loading || preferences.saving" :loading="adding" loading-label="Сохраняем…">Добавить категорию</BaseButton>
       </form>
     </div>
     <p v-if="preferences.error" class="settings-error" role="alert">{{ preferences.error }}</p>
@@ -49,6 +49,7 @@ const name = ref('')
 const attempted = ref(false)
 const error = ref('')
 const message = ref('')
+const adding = ref(false)
 const rules = { name: { required, maxLength: maxLength(60) } }
 const v$ = useVuelidate(rules, { name })
 const nameError = computed(() => attempted.value && v$.value.name.$invalid ? 'Укажи название, до 60 символов' : '')
@@ -64,10 +65,12 @@ async function add() {
   attempted.value = true
   error.value = ''
   if (!await v$.value.$validate()) { await nextTick(); document.getElementById('custom-category-name')?.focus(); return }
+  adding.value = true
   try {
     await preferences.addCategory(name.value.trim())
     name.value = ''; attempted.value = false; v$.value.$reset(); message.value = 'Своя категория добавлена'
   } catch (cause) { error.value = cause instanceof Error ? cause.message : 'Не удалось добавить категорию' }
+  finally { adding.value = false }
 }
 defineExpose({ canLeave })
 </script>

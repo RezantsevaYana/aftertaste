@@ -14,6 +14,7 @@
       <label class="field__label" :for="id">{{ label }}</label>
       <small v-if="error" :id="`${id}-error`" class="field__error" role="alert">{{ error }}</small>
     </div>
+    <span v-if="error !== undefined" class="field__error-space" aria-hidden="true">{{ error || ' ' }}</span>
   </div>
 </template>
 

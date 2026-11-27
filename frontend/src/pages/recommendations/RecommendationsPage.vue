@@ -1,7 +1,7 @@
 <template>
   <section class="recommendations-page">
     <div class="social-heading"><h1>Мне советуют</h1><p>Личные рекомендации от друзей. Добавляй в планы то, что тебе интересно.</p></div>
-    <nav class="social-tabs" aria-label="Рекомендации"><button type="button" :aria-current="tab === 'incoming' ? 'page' : undefined" @click="tab = 'incoming'">Входящие<span>{{ social.incoming.length }}</span></button><button type="button" :aria-current="tab === 'sent' ? 'page' : undefined" @click="tab = 'sent'">Отправленные<span>{{ social.sent.length }}</span></button></nav>
+    <nav v-sliding-tabs class="social-tabs" aria-label="Рекомендации"><button type="button" :aria-current="tab === 'incoming' ? 'page' : undefined" @click="tab = 'incoming'">Входящие<span>{{ social.incoming.length }}</span></button><button type="button" :aria-current="tab === 'sent' ? 'page' : undefined" @click="tab = 'sent'">Отправленные<span>{{ social.sent.length }}</span></button></nav>
     <div v-if="social.loading && !social.ready" class="social-loading" role="status"><VinylLoader />Загружаем рекомендации…</div>
     <p v-if="social.error || error" class="social-error" role="alert">{{ error || social.error }} <button type="button" @click="social.load()">Попробовать снова</button></p>
     <div v-if="social.ready" class="recommendations-list">
@@ -17,6 +17,7 @@
   </section>
 </template>
 <script setup lang="ts">
+import { vSlidingTabs } from '@/shared/directives/sliding-tabs'
 import { computed, onMounted, ref } from 'vue'
 import { useSocialStore } from '@/stores/social'
 import { acceptRecommendation, dismissRecommendation } from '@/api/social'

@@ -2,18 +2,40 @@
 @use '@/styles/mixins' as *;
 
 .profile-page {
+  --profile-sidebar-width: 220px;
+  position: relative;
   display: grid;
-  grid-template-columns: 220px minmax(0, 1fr);
+  grid-template-columns: var(--profile-sidebar-width) minmax(0, 1fr);
   gap: 54px;
-  max-width: 1080px;
-  margin: 44px auto 64px;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding-block: 20px 24px;
 
-  @include respond-below('laptop') { grid-template-columns: 185px minmax(0, 1fr); gap: 32px; }
-  @include respond-below('tablet') { display: block; margin-top: 22px; }
+  @include respond-below('laptop') { --profile-sidebar-width: 185px; gap: 32px; }
+  @include respond-below('tablet') { display: block; padding-top: 16px; }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    bottom: 0;
+    left: calc(var(--profile-sidebar-width) - 1px);
+    width: 1px;
+    background: $color-border;
+    pointer-events: none;
+    @include respond-below('tablet') { display: none; }
+  }
 
   .profile-sidebar {
+    position: sticky;
+    transition: top 260ms ease;
+    top: calc(20px + var(--sticky-header-height, 0px));
+    align-self: start;
+    max-height: calc(100dvh - 40px - var(--sticky-header-height, 0px));
+    min-height: 0;
+    overflow-y: auto;
     padding-right: 24px;
-    border-right: 1px solid $color-border;
 
     @include respond-below('tablet') { display: none; }
   }
@@ -26,7 +48,7 @@
     overflow-wrap: anywhere;
 
     strong { font-size: 13px; font-weight: 500; }
-    small { display: block; margin-top: 4px; font-size: 10px; color: $color-muted; }
+    small { display: block; margin-top: 4px; font-size: $font-size-meta; color: $color-muted; }
   }
 
   .profile-navigation {
@@ -59,7 +81,7 @@
     gap: 10px;
     width: 100%;
     min-height: 44px;
-    margin-top: 35px;
+    margin-top: 8px;
     padding: 12px;
     border: 0;
     background: transparent;
@@ -67,75 +89,56 @@
     font-size: 13px;
     text-align: left;
 
+    border-radius: 8px;
+    transition: background-color 180ms ease, color 180ms ease;
+    &:hover { color: $color-accent-hover; background: $color-accent-soft; }
     :deep(svg) { width: 17px; height: 17px; }
   }
 
-  .profile-main { min-width: 0; max-width: 720px; }
+  .profile-main {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    width: 100%;
+  }
+
+  .profile-panel {
+    min-width: 0;
+    min-height: 0;
+    width: 100%;
+
+    :deep(.profile-form),
+    :deep(.password-form) {
+      width: 50%;
+      @include respond-below('tablet') { width: 100%; }
+    }
+  }
 
   .profile-page-heading {
-    margin-bottom: 32px;
+    @include page-heading;
+    flex-shrink: 0;
+    margin-bottom: 24px;
 
-    @include respond-below('tablet') { margin-bottom: 16px; }
-
-    h1 {
-      margin: 0 0 10px;
-      font-size: 32px;
-      font-weight: 600;
-      line-height: 1.2;
-      letter-spacing: -0.6px;
-
-      &:focus { outline: none; }
-      @include respond-below('tablet') { font-size: 26px; margin: 0; }
-    }
-
-    p {
-      color: $color-muted;
-      font-size: 13px;
-      margin: 0;
-
-      @include respond-below('tablet') { display: none; }
-    }
+    h1:focus { outline: none; }
+    @include respond-below('tablet') { margin-bottom: 18px; }
   }
 
   .profile-tabs {
+    @include section-tabs;
+    flex-shrink: 0;
     display: none;
 
-    @include respond-below('tablet') {
-      display: flex;
-      gap: 12px;
-      overflow-x: auto;
-      border-bottom: 1px solid $color-border;
-      margin-bottom: 22px;
-    }
-
-    button {
-      flex-shrink: 0;
-      min-height: 44px;
-      padding: 10px 0;
-      border: 0;
-      border-bottom: 2px solid transparent;
-      background: transparent;
-      color: $color-muted;
-      font-size: 11px;
-
-      &[aria-current] { color: $color-accent; border-bottom-color: $color-accent; }
-      &:focus-visible { outline-offset: -3px; }
-    }
+    @include respond-below('tablet') { display: flex; }
   }
 
-  .profile-back {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    min-height: 44px;
-    margin-top: 28px;
-    padding: 8px 0;
-    border: 0;
-    background: transparent;
-    color: $color-muted;
-    font-size: 12px;
+  .profile-collection-action {
+    display: grid;
+    margin-top: 24px;
+  }
 
-    &:hover { color: $color-accent; }
-    :deep(svg) { width: 15px; height: 15px; }
+  .profile-mobile-collection-action {
+    display: none;
+    @include respond-below('tablet') { display: block; margin-bottom: 16px; }
   }
 }

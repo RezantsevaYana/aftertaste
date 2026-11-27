@@ -1,4 +1,4 @@
-import { BadRequestException, GoneException, Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, GoneException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { createHash, randomBytes } from 'node:crypto';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { hashPassword } from './password.js';
@@ -17,31 +17,30 @@ export class PasswordResetService {
     if (!body || typeof body !== 'object') throw new BadRequestException('Укажи email');
     const { email } = body as Record<string, unknown>;
     if (typeof email !== 'string' || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) throw new BadRequestException('Укажи корректный email');
-    // Configuration failure has the same response for existing and unknown addresses.
+    const address = email.trim().toLowerCase();
+    const user = await this.prisma.user.findUnique({ where: { email: address }, select: { id: true } });
+    if (!user) throw new NotFoundException('Аккаунт с такой почтой не найден. Проверь адрес или зарегистрируйся.');
     this.mailer.assertConfigured();
-    // Acknowledge before looking up the address or waiting for SMTP to avoid exposing accounts through response times.
-    void this.deliver(email.trim().toLowerCase()).catch(() => this.logger.error('Не удалось обработать восстановление пароля'));
+    void this.deliver(user.id, address).catch(() => this.logger.error('Не удалось обработать восстановление пароля'));
   }
 
-  private async deliver(email: string) {
-    const user = await this.prisma.user.findUnique({ where: { email }, select: { id: true } });
-    if (!user) return;
+  private async deliver(userId: string, email: string) {
     const claimed = await this.prisma.user.updateMany({
-      where: { id: user.id, OR: [{ passwordResetRequestedAt: null }, { passwordResetRequestedAt: { lt: new Date(Date.now() - 60_000) } }] },
+      where: { id: userId, OR: [{ passwordResetRequestedAt: null }, { passwordResetRequestedAt: { lt: new Date(Date.now() - 60_000) } }] },
       data: { passwordResetRequestedAt: new Date() },
     });
     if (claimed.count !== 1) return;
     const token = randomBytes(32).toString('hex');
     const tokenHash = digest(token);
     await this.prisma.passwordReset.deleteMany({ where: { expiresAt: { lte: new Date() } } });
-    await this.prisma.passwordReset.create({ data: { tokenHash, userId: user.id, expiresAt: new Date(Date.now() + RESET_MAX_AGE) } });
+    await this.prisma.passwordReset.create({ data: { tokenHash, userId, expiresAt: new Date(Date.now() + RESET_MAX_AGE) } });
     try {
       await this.mailer.sendPasswordReset(email, token);
-      await this.prisma.passwordReset.deleteMany({ where: { userId: user.id, tokenHash: { not: tokenHash } } });
+      await this.prisma.passwordReset.deleteMany({ where: { userId, tokenHash: { not: tokenHash } } });
     } catch {
       await this.prisma.passwordReset.deleteMany({ where: { tokenHash } });
       this.logger.error('Не удалось отправить письмо восстановления пароля');
-      // Never reveal whether an account exists or expose the token in logs/responses.
+      // Never expose the token in logs/responses.
     }
   }
 

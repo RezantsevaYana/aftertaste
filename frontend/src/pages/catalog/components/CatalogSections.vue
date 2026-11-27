@@ -1,5 +1,5 @@
 <template>
-  <nav class="catalog-sections" aria-label="Раздел коллекции">
+  <nav v-sliding-tabs class="catalog-sections" aria-label="Раздел коллекции">
     <button
       v-for="section in sections"
       :key="section.value"
@@ -11,6 +11,7 @@
 </template>
 
 <script setup lang="ts">
+import { vSlidingTabs } from '@/shared/directives/sliding-tabs'
 import type { EntryStatus } from '@/entities/entry'
 
 defineProps<{

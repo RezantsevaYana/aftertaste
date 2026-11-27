@@ -12,7 +12,7 @@ export class AuthController {
   @HttpCode(202)
   async requestPasswordReset(@Body() body: unknown) {
     await this.passwordReset.request(body);
-    return { message: 'Если аккаунт с такой почтой есть, мы отправим ссылку для восстановления.' };
+    return { message: 'Запрос принят. Мы отправим ссылку для восстановления.' };
   }
 
   @Post('password-reset/check')

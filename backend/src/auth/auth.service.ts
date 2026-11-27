@@ -3,6 +3,7 @@ import { createHash, randomBytes } from 'node:crypto';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { validateProfile } from './profile.js';
+import { validateHandle } from './handle.js';
 import { hashPassword, verifyPassword } from './password.js';
 
 export const SESSION_COOKIE = 'aftertaste_session';
@@ -41,12 +42,14 @@ export class AuthService implements OnModuleInit {
   async register(body: unknown): Promise<AuthUser> {
     const { email, password } = this.credentials(body);
     const profile = validateProfile(body);
+    const handle = validateHandle((body as Record<string, unknown>).handle);
     const passwordHash = await hashPassword(password);
     try {
-      return await this.prisma.user.create({ data: { email, passwordHash, ...profile }, select: userSelect });
+      return await this.prisma.user.create({ data: { email, passwordHash, handle, ...profile }, select: userSelect });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-        throw new ConflictException('Этот email уже зарегистрирован. Войди в аккаунт.');
+        const field = String(error.meta?.target).includes('handle') ? 'handle' : 'email';
+        throw new ConflictException({ field, message: field === 'handle' ? 'Этот ник уже занят. Придумай другой.' : 'Этот email уже зарегистрирован. Войди в аккаунт.' });
       }
       throw error;
     }
@@ -63,11 +66,10 @@ export class AuthService implements OnModuleInit {
   async updateProfile(userId: string, body: unknown): Promise<AuthUser> {
     const profile = validateProfile(body);
     const handleValue = (body as Record<string, unknown>).handle;
-    const handle = typeof handleValue === 'string' ? handleValue.trim().toLowerCase() : undefined;
-    if (handleValue !== undefined && (!handle || !/^[a-z0-9][a-z0-9._-]{2,49}$/.test(handle))) throw new BadRequestException('Ник: от 3 до 50 латинских букв, цифр, точек, дефисов или подчёркиваний');
+    const handle = handleValue === undefined ? undefined : validateHandle(handleValue);
     try { return await this.prisma.user.update({ where: { id: userId }, data: { ...profile, ...(handle ? { handle } : {}) }, select: userSelect }); }
     catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') throw new ConflictException('Этот ник уже занят');
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') throw new ConflictException({ field: 'handle', message: 'Этот ник уже занят. Придумай другой.' });
       throw error;
     }
   }

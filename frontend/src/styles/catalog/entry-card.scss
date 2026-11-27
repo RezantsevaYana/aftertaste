@@ -165,7 +165,7 @@
     white-space: nowrap;
 
     > span {
-      font-size: 10px;
+      font-size: $font-size-label;
       font-weight: 400;
     }
 
@@ -221,7 +221,7 @@
       @include respond-below('tablet') {
         font-size: 32px;
 
-        > span { font-size: 10px; }
+        > span { font-size: $font-size-label; }
       }
     }
 

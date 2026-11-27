@@ -40,32 +40,7 @@
     min-width: 0;
   }
 
-  h1 {
-    margin: 0;
-    font: 500 50px/1.15 $font-body;
-    letter-spacing: -1.1px;
-
-    @include respond-below('tablet') {
-      font-size: 34px;
-      letter-spacing: -0.7px;
-    }
-
-    @include respond-below('mobile') {
-      font-size: 32px;
-    }
-  }
-
-  .intro-description {
-    max-width: 760px;
-    margin: 12px 0 0;
-    color: $color-muted;
-    font-size: 15px;
-    line-height: 1.6;
-
-    @include respond-below('tablet') {
-      font-size: 13px;
-    }
-  }
+  @include page-heading;
 
   .intro-break {
     @include respond-below('tablet') {
@@ -81,7 +56,8 @@
 
 .catalog-controls {
   position: sticky;
-  top: 0;
+  transition: top 260ms ease;
+  top: var(--sticky-header-height, 0px);
   z-index: 10;
   margin-bottom: 16px;
   isolation: isolate;
@@ -91,8 +67,10 @@
     position: absolute;
     z-index: -1;
     inset-block: 0;
-    left: calc((100% - 100vw) / 2);
-    right: calc((100% - 100vw) / 2);
+    left: 0;
+    right: 0;
+    // Extend paint to the viewport edges without adding scrollable width.
+    border-image: linear-gradient($color-background, $color-background) fill 1 / 1 / 0 100vw;
     background: $color-background;
     transition: box-shadow 180ms ease;
     pointer-events: none;
@@ -254,18 +232,4 @@
     color: $color-muted;
     font-size: 13px;
   }
-}
-
-.catalog-category-settings {
-  display: inline-grid;
-  place-items: center;
-  flex-shrink: 0;
-  width: 40px;
-  min-height: 40px;
-  border: 1px solid $color-border;
-  border-radius: $radius-button;
-  background: transparent;
-  color: $color-muted;
-  &:hover { color: $color-accent; background: $color-soft; }
-  &:focus-visible { outline: 2px solid $color-focus; outline-offset: 3px; }
 }

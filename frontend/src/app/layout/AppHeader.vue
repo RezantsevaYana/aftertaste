@@ -1,12 +1,13 @@
 <template>
-  <header class="site-header">
+  <div class="site-header-shell" :class="{ 'site-header-shell--sticky': auth.user }">
+  <header class="site-header" :class="{ 'site-header--compact': compact }">
     <div class="header-content">
       <a class="brand" href="./" aria-label="Aftertaste — моя коллекция" @click.prevent="emit('catalog', 'done')">
         <img class="brand-record" src="/brand/vinyl-mark-v1.png" alt="" width="34" height="34" />
-        aftertaste
+        <span class="brand-name">aftertaste</span>
       </a>
       <template v-if="auth.user">
-        <nav class="header-navigation" aria-label="Основные разделы">
+        <nav v-sliding-tabs class="header-navigation" aria-label="Основные разделы">
           <button type="button" :aria-current="activePage === 'catalog' ? 'page' : undefined" @click="emit('catalog')">Моя коллекция</button>
           <button type="button" :aria-current="activePage === 'people' ? 'page' : undefined" @click="emit('navigate', 'people')">Люди</button>
           <button type="button" :aria-current="activePage === 'recommendations' ? 'page' : undefined" @click="emit('navigate', 'recommendations')">Мне советуют<span v-if="social.count" class="header-counter">{{ social.count }}</span></button>
@@ -39,11 +40,13 @@
       <span v-else class="header-note">Личный культурный дневник</span>
     </div>
   </header>
+  </div>
 </template>
 
 <script setup lang="ts">
+import { vSlidingTabs } from '@/shared/directives/sliding-tabs'
 import { useSocialStore } from '@/stores/social'
-import { computed } from 'vue'
+import { computed, onMounted, onBeforeUnmount, ref, watch } from 'vue'
 import type { EntryStatus } from '@/entities/entry'
 import BaseIcon from '@/shared/ui/icons/BaseIcon.vue'
 import BaseDropdown from '@/shared/ui/navigation/BaseDropdown.vue'
@@ -59,9 +62,32 @@ const emit = defineEmits<{
   profile: []
   catalog: [section?: EntryStatus]
   logout: []
+  compact: [value: boolean]
 }>()
 const social = useSocialStore()
 const auth = useAuthStore()
+const compact = ref(false)
+let scrollFrame = 0
+function updateCompact() {
+  if (!auth.user) { compact.value = false; return }
+  // Different entry/exit thresholds prevent toggling around a single scroll position.
+  if (!compact.value && window.scrollY > 80) compact.value = true
+  else if (compact.value && window.scrollY < 32) compact.value = false
+}
+function onScroll() {
+  cancelAnimationFrame(scrollFrame)
+  scrollFrame = requestAnimationFrame(updateCompact)
+}
+watch(compact, value => emit('compact', value), { flush: 'sync' })
+watch(() => auth.user, updateCompact)
+onMounted(() => {
+  window.addEventListener('scroll', onScroll, { passive: true })
+  updateCompact()
+})
+onBeforeUnmount(() => {
+  cancelAnimationFrame(scrollFrame)
+  window.removeEventListener('scroll', onScroll)
+})
 const firstName = computed(() => auth.user?.firstName || 'Аккаунт')
 const accountLabel = computed(() => [auth.user?.firstName, auth.user?.lastName].filter(Boolean).join(' ') || 'Твой аккаунт')
 const accountMenuLabel = computed(() => `${firstName.value} — меню аккаунта`)

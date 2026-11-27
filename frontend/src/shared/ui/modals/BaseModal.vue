@@ -73,6 +73,8 @@ useModalScrollLock()
 onMounted(() => {
   previousFocus = document.activeElement as HTMLElement | null
   dialog.value?.showModal()
+  // Capture the visible initial state before Vue removes the enter classes.
+  if (dialog.value) getComputedStyle(dialog.value).opacity
   dialog.value?.addEventListener('aftertaste:close-modal', onCloseFromAction)
 })
 function onCloseFromAction(event: Event) {

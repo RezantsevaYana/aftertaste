@@ -10,6 +10,7 @@ export interface User {
 }
 
 export interface RegistrationData {
+  handle: string
   email: string
   password: string
   firstName: string

@@ -10,6 +10,7 @@
           <BaseIcon :icon="item.icon" />{{ item.label }}
         </button>
       </nav>
+      <div class="profile-collection-action"><CollectionReturnButton @click="emit('back')" /></div>
       <button class="profile-logout" type="button" :disabled="auth.loading" @click="emit('logout')"><BaseIcon icon="lucide:log-out" />Выйти из аккаунта</button>
     </aside>
     <div class="profile-main">
@@ -17,23 +18,27 @@
         <h1 id="profile-title" ref="heading" tabindex="-1">Личный кабинет</h1>
         <p>Твой профиль и твои правила коллекции.</p>
       </div>
-      <nav class="profile-tabs" aria-label="Разделы кабинета">
+      <div class="profile-mobile-collection-action"><CollectionReturnButton @click="emit('back')" /></div>
+      <nav v-sliding-tabs class="profile-tabs" aria-label="Разделы кабинета">
         <button v-for="item in tabs" :key="item.id" type="button" :aria-current="tab === item.id ? 'page' : undefined" @click="selectTab(item.id)">{{ item.mobileLabel }}</button>
       </nav>
-      <ProfileForm v-if="tab === 'profile'" ref="profileForm" />
-      <PasswordChangeForm v-else-if="tab === 'security'" ref="passwordForm" />
-      <CategoriesSettings v-else-if="tab === 'categories'" ref="categoriesForm" />
-      <PrivacySettings v-else ref="privacyForm" />
-      <button type="button" class="profile-back" @click="emit('back')"><BaseIcon icon="lucide:arrow-left" />К коллекции</button>
+      <div class="profile-panel">
+        <ProfileForm v-if="tab === 'profile'" ref="profileForm" />
+        <PasswordChangeForm v-else-if="tab === 'security'" ref="passwordForm" />
+        <CategoriesSettings v-else-if="tab === 'categories'" ref="categoriesForm" />
+        <PrivacySettings v-else ref="privacyForm" />
+      </div>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
+import { vSlidingTabs } from '@/shared/directives/sliding-tabs'
 import { nextTick, ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import UserAvatar from '@/shared/ui/avatar/UserAvatar.vue'
 import BaseIcon from '@/shared/ui/icons/BaseIcon.vue'
+import CollectionReturnButton from '@/shared/ui/navigation/CollectionReturnButton.vue'
 import ProfileForm from '@/pages/profile/components/ProfileForm.vue'
 import PasswordChangeForm from '@/pages/profile/components/PasswordChangeForm.vue'
 import CategoriesSettings from '@/pages/profile/components/CategoriesSettings.vue'
@@ -69,6 +74,9 @@ async function selectTab(value: typeof tab.value) {
   if (value === tab.value || !await canLeave()) return
   tab.value = value
   await nextTick()
+  if (heading.value && heading.value.getBoundingClientRect().top < 0) {
+    heading.value.scrollIntoView({ block: 'start', behavior: 'instant' })
+  }
   heading.value?.focus({ preventScroll: true })
 }
 

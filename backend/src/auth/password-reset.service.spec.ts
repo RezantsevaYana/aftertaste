@@ -31,11 +31,17 @@ describe('Password recovery', () => {
     expect(stored.userId).toBe('owner');
   });
 
-  it('does not reveal unknown accounts or resend during cooldown', async () => {
+  it('returns 404 for unknown accounts without creating a token or sending mail', async () => {
     const first = setup(); first.prisma.user.findUnique.mockResolvedValue(null);
-    await expect(first.service.request({ email: 'nobody@example.com' })).resolves.toBeUndefined();
-    await vi.waitFor(() => expect(first.prisma.user.findUnique).toHaveBeenCalled());
+    await expect(first.service.request({ email: 'nobody@example.com' })).rejects.toMatchObject({
+      status: 404,
+      message: 'Аккаунт с такой почтой не найден. Проверь адрес или зарегистрируйся.',
+    });
+    expect(first.prisma.passwordReset.create).not.toHaveBeenCalled();
     expect(first.mailer.sendPasswordReset).not.toHaveBeenCalled();
+  });
+
+  it('does not resend during cooldown', async () => {
     const second = setup(); second.prisma.user.updateMany.mockResolvedValue({ count: 0 });
     await second.service.request({ email: 'anna@example.com' });
     await vi.waitFor(() => expect(second.prisma.user.updateMany).toHaveBeenCalled());

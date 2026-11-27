@@ -2,6 +2,8 @@
 @use './mixins' as *;
 
 :root {
+  scrollbar-gutter: stable;
+  overflow-x: clip;
   font-family: $font-body;
   font-optical-sizing: auto;
   color: $color-text;
@@ -111,14 +113,14 @@ a {
   text-decoration: none;
 }
 .eyebrow {
-  font-size: 10px;
+  font-size: $font-size-label;
   letter-spacing: 0.18em;
   color: $color-accent;
   font-weight: 600;
   margin: 0 0 20px;
 }
 small {
-  font-size: 10px;
+  font-size: $font-size-meta;
   line-height: 1.5;
   color: $color-subtle;
 }
@@ -145,4 +147,28 @@ small {
   * {
     transition: none !important;
   }
+}
+
+.sliding-tabs {
+  position: relative;
+  --tab-indicator-color: #{$color-accent};
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: var(--tab-width, 0px);
+    transform: translateX(var(--tab-left, 0px));
+    background: var(--tab-indicator-color);
+    border-radius: 2px;
+    pointer-events: none;
+  }
+
+  &--ready::after {
+    transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1), width 280ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  button[aria-current='page'] { border-bottom-color: transparent; }
 }

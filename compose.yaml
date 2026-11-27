@@ -1,14 +1,17 @@
 services:
   database:
     image: postgres:17-alpine
+    container_name: ${DOCKER_NAME:-aftertaste}_database
     environment:
-      POSTGRES_DB: aftertaste
-      POSTGRES_USER: aftertaste
-      POSTGRES_PASSWORD: aftertaste-local
+      POSTGRES_DB: ${POSTGRES_DB:-aftertaste}
+      POSTGRES_USER: ${POSTGRES_USER:-aftertaste}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-aftertaste-local}
+    ports:
+      - "127.0.0.1:${DOCKER_POSTGRES_PORT:-5433}:5432"
     volumes:
       - aftertaste-db:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U aftertaste -d aftertaste"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-aftertaste} -d ${POSTGRES_DB:-aftertaste}"]
       interval: 5s
       timeout: 3s
       retries: 10
@@ -18,13 +21,14 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    container_name: ${DOCKER_NAME:-aftertaste}_backend
     environment:
       PORT: 3000
       DATA_DIR: /app/data
       FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:-http://localhost:8080}
       COOKIE_SECURE: ${COOKIE_SECURE:-false}
       TRUST_PROXY: "true"
-      DATABASE_URL: postgresql://aftertaste:aftertaste-local@database:5432/aftertaste?schema=public
+      DATABASE_URL: postgresql://${POSTGRES_USER:-aftertaste}:${POSTGRES_PASSWORD:-aftertaste-local}@database:5432/${POSTGRES_DB:-aftertaste}?schema=public
       PUBLIC_APP_URL: ${PUBLIC_APP_URL:-http://localhost:8080}
       SMTP_HOST: ${SMTP_HOST:-mailpit}
       SMTP_PORT: ${SMTP_PORT:-1025}
@@ -48,18 +52,20 @@ services:
       dockerfile: Dockerfile
       args:
         VITE_API_URL: ""
+    container_name: ${DOCKER_NAME:-aftertaste}_frontend
     ports:
-      - "127.0.0.1:8080:80"
+      - "127.0.0.1:${APP_DOCKER_PORT:-8080}:80"
     depends_on:
       - backend
     restart: unless-stopped
 
   database-viewer:
     image: adminer:4
+    container_name: ${DOCKER_NAME:-aftertaste}_adminer
     environment:
       ADMINER_DEFAULT_SERVER: database
     ports:
-      - "127.0.0.1:8081:8080"
+      - "127.0.0.1:${DOCKER_ADMINER_PORT:-8081}:8080"
     depends_on:
       database:
         condition: service_healthy
@@ -67,9 +73,10 @@ services:
 
   mailpit:
     image: axllent/mailpit:v1.27.4
+    container_name: ${DOCKER_NAME:-aftertaste}_mailpit
     ports:
-      - "127.0.0.1:${MAILPIT_HTTP_PORT:-8026}:8025"
-      - "127.0.0.1:${MAILPIT_SMTP_PORT:-1026}:1025"
+      - "127.0.0.1:${DOCKER_MAILPIT_UI_PORT:-8026}:8025"
+      - "127.0.0.1:${DOCKER_MAILPIT_SMTP_PORT:-1026}:1025"
     restart: unless-stopped
 
 volumes:

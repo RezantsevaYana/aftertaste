@@ -108,18 +108,5 @@
 }
 
 .empty-add-record {
-  :deep(.base-icon) {
-    transition: transform 450ms cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  &:is(:hover, :focus-visible) :deep(.base-icon) {
-    transform: rotate(120deg);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    :deep(.base-icon) {
-      transition: none;
-      transform: none;
-    }
-  }
+  img { display: block; border-radius: 50%; }
 }

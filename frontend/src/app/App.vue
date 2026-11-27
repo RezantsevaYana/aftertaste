@@ -1,5 +1,5 @@
 <template>
-  <AppLayout :active-page="page" :active-section="activeSection" @navigate="openSocialPage" @profile="openProfile()" @catalog="openCatalog" @logout="logout">
+  <AppLayout :auth-screen="!auth.user || !!resetToken" :active-page="page" :active-section="activeSection" @navigate="openSocialPage" @profile="openProfile()" @catalog="openCatalog" @logout="logout">
     <div v-if="!auth.ready" class="auth-status" role="status"><VinylLoader /> Проверяем сессию…</div>
     <div v-else-if="auth.error && !auth.user" class="auth-status" role="alert">
       <p>{{ auth.error }}</p>
@@ -10,14 +10,25 @@
       <template v-if="preferences.error"><p role="alert">{{ preferences.error }}</p><BaseButton @click="preferences.load">Попробовать снова</BaseButton></template>
       <template v-else><VinylLoader /> Загружаем настройки…</template>
     </div>
-    <template v-else-if="auth.user">
-      <div v-show="page === 'catalog'" :key="`catalog-${auth.user.id}`"><CatalogPage ref="catalogPage" v-model:section="activeSection" @categories="openProfile('categories')" /></div>
-      <PeoplePage v-if="page === 'people'" ref="peoplePage" :key="`people-${auth.user.id}`" />
-      <RecommendationsPage v-if="page === 'recommendations'" ref="recommendationsPage" :key="`recommendations-${auth.user.id}`" @people="openSocialPage('people')" @person="openPerson" @catalog="openCatalog" />
-      <ProfilePage v-if="showProfile" ref="profilePage" :key="`profile-${auth.user.id}`" :initial-tab="profileTab" @back="openCatalog" @logout="logout" />
-    </template>
+    <div v-else-if="auth.user" class="page-stage">
+      <Transition name="page-motion"><div class="page-screen" v-show="page === 'catalog'" :key="`catalog-${auth.user.id}`"><CatalogPage ref="catalogPage" v-model:section="activeSection" @categories="openProfile('categories')" /></div></Transition>
+      <Transition name="page-motion"><PeoplePage class="page-screen" v-if="page === 'people'" ref="peoplePage" :key="`people-${auth.user.id}`" /></Transition>
+      <Transition name="page-motion"><RecommendationsPage class="page-screen" v-if="page === 'recommendations'" ref="recommendationsPage" :key="`recommendations-${auth.user.id}`" @people="openSocialPage('people')" @person="openPerson" @catalog="openCatalog" /></Transition>
+      <Transition name="page-motion"><ProfilePage class="page-screen" v-if="showProfile" ref="profilePage" :key="`profile-${auth.user.id}`" :initial-tab="profileTab" @back="openCatalog" @logout="logout" /></Transition>
+    </div>
     <AuthPage v-else />
   </AppLayout>
+  <ConfirmationModal
+    v-if="logoutConfirmation"
+    title="Выйти из аккаунта?"
+    message="Чтобы вернуться к коллекции, нужно будет войти снова."
+    confirm-label="Выйти"
+    cancel-label="Остаться"
+    :loading="auth.loading"
+    loading-label="Выходим…"
+    @confirm="confirmLogout"
+    @close="logoutConfirmation = false"
+  />
 </template>
 
 <script setup lang="ts">
@@ -26,6 +37,8 @@ import PeoplePage from '@/pages/people/PeoplePage.vue'
 import RecommendationsPage from '@/pages/recommendations/RecommendationsPage.vue'
 import { useSocialStore } from '@/stores/social'
 import AppLayout from './layout/AppLayout.vue'
+import ConfirmationModal from '@/shared/ui/modals/ConfirmationModal.vue'
+import { dismissModal } from '@/shared/lib/modal'
 import { CatalogPage } from '@/pages/catalog'
 import ProfilePage from '@/pages/profile/ProfilePage.vue'
 import AuthPage from '@/pages/auth/AuthPage.vue'
@@ -39,9 +52,16 @@ const auth = useAuthStore()
 const preferences = usePreferencesStore()
 const profileTab = ref<'profile' | 'security' | 'categories' | 'privacy'>('profile')
 const resetToken = ref('')
+const logoutConfirmation = ref(false)
 const page = ref<'catalog' | 'people' | 'recommendations' | 'profile'>('catalog')
 const showProfile = computed({ get: () => page.value === 'profile', set: value => { page.value = value ? 'profile' : 'catalog' } })
 const social = useSocialStore()
+const pageScroll = new Map<string, number>()
+watch(page, async (destination, previous) => {
+  pageScroll.set(previous, window.scrollY)
+  await nextTick()
+  window.scrollTo({ top: pageScroll.get(destination) ?? 0, behavior: 'instant' })
+}, { flush: 'pre' })
 const catalogPage = ref<InstanceType<typeof CatalogPage>>()
 const peoplePage = ref<InstanceType<typeof PeoplePage>>()
 const recommendationsPage = ref<InstanceType<typeof RecommendationsPage>>()
@@ -103,7 +123,13 @@ async function openPerson(id: string) {
 }
 async function logout() {
   if (!await canLeaveCurrentPage()) return
+  logoutConfirmation.value = true
+}
+async function confirmLogout() {
+  if (auth.loading) return
   await auth.logout()
+  await dismissModal(document.querySelector<HTMLDialogElement>('dialog:has(.confirmation-message)'))
+  logoutConfirmation.value = false
   if (!auth.user) resetToken.value = ''
 }
 onMounted(() => {

@@ -9,12 +9,10 @@
 .social-modal-note {
   font-size: 13px;
   color: $color-muted;
-  margin: 0 0 18px;
+  margin: 0 0 $space-form-gap;
 }
 .social-modal-form {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
+  @include form-stack;
 }
 .social-error {
   color: $color-danger;
@@ -25,7 +23,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 20px;
+  margin-bottom: $space-form-gap;
   .companion-chip {
     display: inline-flex;
     align-items: center;
